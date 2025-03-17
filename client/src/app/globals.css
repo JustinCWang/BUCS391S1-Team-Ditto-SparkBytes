@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS Styling to ensure that the website fills the whole page */
 html,
 body,
 #__next {
