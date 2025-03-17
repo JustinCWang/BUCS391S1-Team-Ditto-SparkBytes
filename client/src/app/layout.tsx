@@ -16,16 +16,16 @@ const LayoutComponent = ({ children }: { children: React.ReactNode }) => {
       <body>
         <Layout className="layout" style={{ minHeight: "100vh" }}>
           <CustomHeader />
-          <Content style={{ padding: "0 50px", marginTop: 64 }}>
+          <Content style={{ padding: "0 50px", marginTop: 16 }}>
             <div
               className="site-layout-content"
-              style={{ padding: 24, minHeight: 380, height: "100%" }}
+              style={{ padding: 16, minHeight: 380, height: "100%" }}
             >
               {children}
             </div>
           </Content>
           <Footer style={{ textAlign: "center" }}>
-            Spark! ©2025 Created by Spark!
+            Spark!Bytes ©2025 Created by Team Ditto!
           </Footer>
         </Layout>
       </body>

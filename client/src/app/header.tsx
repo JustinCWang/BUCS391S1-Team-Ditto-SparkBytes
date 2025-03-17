@@ -9,7 +9,7 @@ const { Header } = Layout;
 const CustomHeader = () => {
   const menuItems: { key: string; label: string; href: string }[] = [
     { key: '0', label: 'Home', href: '/' },
-    { key: '1', label: 'News', href: '/events' },
+    { key: '1', label: 'Events', href: '/events' },
     { key: '2', label: 'About', href: '/about' },
     { key: '3', label: 'Profile', href: '/profile' },
   ];
