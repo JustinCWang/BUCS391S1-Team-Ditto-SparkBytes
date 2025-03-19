@@ -1,10 +1,12 @@
 'use client'
 import React from 'react';
-import { Input, Select, Row, Col } from 'antd';
+import { Input, Row, Col, Dropdown, Button } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import FilterMenu from '../../component/filterMenu';
 
 const { Search } = Input;
-const { Option } = Select;
 
+// Define the Events component
 const Events = () => {
   return (
     // Main container for the Events page content with padding
@@ -23,17 +25,12 @@ const Events = () => {
         </Col>
         {/* Column for the select dropdown, spans 24 columns on extra small screens and 8 on small screens */}
         <Col xs={24} sm={8}>
-          {/* Select dropdown with default value "All" and full width */}
-          <Select defaultValue="All" style={{ width: '100%' }}>
-            {/* Option for "All" events */}
-            <Option value="all">All</Option>
-            {/* Option for events happening "Today" */}
-            <Option value="today">Today</Option>
-            {/* Option for events happening "This Week" */}
-            <Option value="this_week">This Week</Option>
-            {/* Option for events happening "This Month" */}
-            <Option value="this_month">This Month</Option>
-          </Select>
+          {/* Dropdown for additional filters */}
+          <Dropdown overlay={<FilterMenu />} trigger={['click']}>
+            <Button style={{ width: '100%' }}>
+              Filters <DownOutlined />
+            </Button>
+          </Dropdown>
         </Col>
       </Row>
     </div>
