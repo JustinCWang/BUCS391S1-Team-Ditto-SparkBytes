@@ -1,6 +1,7 @@
 'use client'
 import React from 'react';
-import { Typography, Divider } from 'antd';
+import { Typography, Divider, Row, Col } from 'antd';
+import AboutMe from '../../component/aboutMe';
 
 // Destructure Title and Paragraph components from Typography
 const { Title, Paragraph } = Typography;
@@ -28,19 +29,38 @@ const About = () => {
       {/* Title for the Meet the Team section */}
       <Title level={2} className="text-2xl font-bold">Meet the Team</Title>
       
-      {/* Paragraphs for each team member */}
-      <Paragraph>
-        <strong>Member 1:</strong> Temporary text for member 1.
-      </Paragraph>
-      <Paragraph>
-        <strong>Member 2:</strong> Temporary text for member 2.
-      </Paragraph>
-      <Paragraph>
-        <strong>Member 3:</strong> Temporary text for member 3.
-      </Paragraph>
-      <Paragraph>
-        <strong>Member 4:</strong> Temporary text for member 4.
-      </Paragraph>
+      {/* Row container with gutter spacing and centered content */}
+      <Row gutter={[16, 16]} justify="center">
+        {/* Column for each team member */}
+        <Col xs={24} sm={12} md={8}>
+          <AboutMe 
+            name="Member 1" 
+            bio="This is the bio of Member 1." 
+            imageUrl="https://via.placeholder.com/100" 
+          />
+        </Col>
+        <Col xs={24} sm={12} md={8}>
+          <AboutMe 
+            name="Member 2" 
+            bio="This is the bio of Member 2." 
+            imageUrl="https://via.placeholder.com/100" 
+          />
+        </Col>
+        <Col xs={24} sm={12} md={8}>
+          <AboutMe 
+            name="Member 3" 
+            bio="This is the bio of Member 3." 
+            imageUrl="https://via.placeholder.com/100" 
+          />
+        </Col>
+        <Col xs={24} sm={12} md={8}>
+          <AboutMe 
+            name="Member 4" 
+            bio="This is the bio of Member 4." 
+            imageUrl="https://via.placeholder.com/100" 
+          />
+        </Col>
+      </Row>
     </div>
   );
 };
