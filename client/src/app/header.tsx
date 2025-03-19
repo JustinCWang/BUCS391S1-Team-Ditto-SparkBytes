@@ -12,6 +12,7 @@ const CustomHeader = () => {
     { key: '1', label: 'Events', href: '/events' },
     { key: '2', label: 'About', href: '/about' },
     { key: '3', label: 'Profile', href: '/profile' },
+    { key: '4', label: 'Login', href: '/login' },
   ];
 
   // Get the router and pathname from Next.js navigation
