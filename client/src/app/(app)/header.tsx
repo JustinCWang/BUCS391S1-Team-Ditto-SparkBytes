@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Layout, Menu } from "antd";
 import { MenuInfo } from "rc-menu/lib/interface";
 import { useRouter, usePathname } from "next/navigation";
-import './globals.css';
+
+import { Logout } from "@/lib/auth";
 
 const { Header } = Layout;
 const CustomHeader = () => {
   // Define the menu items with their keys, labels, and hrefs
   const menuItems: { key: string; label: string; href: string }[] = [
-    { key: '0', label: 'Home', href: '/' },
+    { key: '0', label: 'Dashboard', href: '/dashboard' },
     { key: '1', label: 'Events', href: '/events' },
-    { key: '2', label: 'About', href: '/about' },
-    { key: '3', label: 'Profile', href: '/profile' },
-    { key: '4', label: 'Login', href: '/login' },
+    { key: '2', label: 'Profile', href: '/profile' },
+    { key: '3', label: 'Logout', href:''}
   ];
 
   // Get the router and pathname from Next.js navigation
@@ -29,6 +29,11 @@ const CustomHeader = () => {
 
   // Handle menu item click events
   const handleClick = (e: MenuInfo) => {
+    if (e.key === '3') {
+      Logout();
+      return;
+    }
+
     const parsedKey = parseInt(e.key); // Parse the key from the event to an integer
     if (parsedKey < 0 || parsedKey >= menuItems.length) return; // Check if the key is out of bounds
     router.push(menuItems[parsedKey].href); // Navigate to the href of the selected menu item

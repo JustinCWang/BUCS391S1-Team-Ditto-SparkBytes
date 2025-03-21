@@ -1,10 +1,24 @@
 'use client'
-import React from 'react';
+import {useEffect} from 'react';
 import { Typography, Table, Descriptions } from 'antd';
 
 const { Title } = Typography;
 
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+
 const Profile = () => {
+
+  const router = useRouter();
+  const { user, userSession} = useAuth();
+
+  useEffect(() => {
+    console.log(user);
+      if (!user) {
+        router.push('/');
+      }
+  }, [user]);
+
   // User information object
   const userInfo = {
     username: 'john_doe',

@@ -1,13 +1,27 @@
 'use client'
-import React from 'react';
+import {useEffect} from 'react';
 import { Input, Row, Col, Dropdown, Button } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import FilterMenu from '../../component/filterMenu';
+import FilterMenu from '../../../component/filterMenu';
 
 const { Search } = Input;
 
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+
 // Define the Events component
 const Events = () => {
+
+  const router = useRouter();
+  const { user, userSession} = useAuth();
+
+  useEffect(() => {
+    console.log(user);
+      if (!user) {
+        router.push('/');
+      }
+  }, [user]);
+
   return (
     // Main container for the Events page content with padding
     <div className="site-layout-content" style={{ padding: '24px 0' }}>

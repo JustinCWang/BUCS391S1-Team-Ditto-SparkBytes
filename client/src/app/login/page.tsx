@@ -1,17 +1,46 @@
 'use client'
-import React from 'react';
-import { Form, Input, Button, Checkbox, Card } from 'antd';
+import React, {useState, useEffect} from 'react';
+import { Form, Input, Button, Checkbox, Card, message } from 'antd';
 import { useRouter } from 'next/navigation';
 
+import { Login } from '../../lib/auth'
+import { useAuth } from '@/context/AuthContext';
+
 // Define the LoginPage component as a React Functional Component
-const LoginPage: React.FC = () => {
+const LoginPage = () => {
   // Use the useRouter hook from Next.js for navigation
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const { user, userSession} = useAuth();
+
+  useEffect(() => {
+    console.log(user);
+      if (user) {
+        router.push('/dashboard');
+      }
+  }, [user]);
 
   // Function to handle form submission
-  const onFinish = (values: { username: string; password: string; remember: boolean }) => {
-    console.log('Received values of form: ', values);
-    // You can handle authentication here
+  const onFinish = async (values: { email: string, password: string }) => {
+    try {
+      setLoading(true);
+      const { data, error } = await Login(values);
+      
+      if (error) {
+        message.error(error.message);
+        return;
+      }
+      
+      message.success('Successfully logged in!');
+      // Redirect or update state as needed
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Login error:', error);
+      message.error('An error occurred during login');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -33,13 +62,13 @@ const LoginPage: React.FC = () => {
           initialValues={{ remember: true }}
           onFinish={onFinish}
         >
-          {/* Form item for the username input */}
+          {/* Form item for the email input */}
           <Form.Item
-            name="username"
+            name="email"
             rules={[{ required: true, message: 'Please input your Username!' }]}
           >
-            {/* Ant Design Input component for the username */}
-            <Input placeholder="Username" />
+            {/* Ant Design Input component for the email */}
+            <Input placeholder="Email" />
           </Form.Item>
 
           {/* Form item for the password input */}
@@ -51,17 +80,11 @@ const LoginPage: React.FC = () => {
             <Input.Password placeholder="Password" />
           </Form.Item>
 
-          {/* Form item for the remember me checkbox */}
-          <Form.Item name="remember" valuePropName="checked">
-            {/* Ant Design Checkbox component */}
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
-
           {/* Form item for the submit button */}
           <Form.Item>
             {/* Ant Design Button component for form submission */}
-            <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-              Log in
+            <Button type="primary" htmlType="submit" style={{ width: '100%' }} loading={loading}>
+              Login
             </Button>
           </Form.Item>
         </Form>
