@@ -2,7 +2,7 @@ import { supabase } from './supabase';
 import { SignInCredentials, SignUpCredentials } from '../types/supabase';
 
 export const Login = async ({ email, password}: SignUpCredentials) => {
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -11,7 +11,7 @@ export const Login = async ({ email, password}: SignUpCredentials) => {
 };
 
 export const Register = async ({ email, password }: SignInCredentials) => {
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
   });
