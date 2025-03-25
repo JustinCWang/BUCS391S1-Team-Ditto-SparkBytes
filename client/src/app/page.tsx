@@ -5,15 +5,26 @@ import Link from 'next/link';
 export default function LandingPage() {
   return (
     <div>
-      <nav>
+      <nav className="nav">
         <div>
-          <Link href="/about">About</Link>
-          <Link href="/login">Sign In</Link>
-          <Link href="/signup">Sign Up</Link>
+          <a href="/about">About</a>
+          <a href="/login">Sign In</a>
+          <a href="/signup">Sign Up</a>
         </div>
       </nav>
-      <h1>Welcome to Spark!Bytes</h1>
-      <p>Your one-stop portal for events, dashboards, and more.</p>
+      
+      <div className='content'>
+      <section
+    className="hero"
+    style={{
+      background: 'linear-gradient(to right,rgb(78, 169, 255),rgb(81, 210, 145))',
+      padding: '4rem 2rem',
+    }}
+  >
+      <h1 className="hero-title">Welcome to Spark!Bytes</h1>
+      <p className="hero-subtitle">Your one-stop portal for events, dashboards, and more.</p>
+      </section>
+      </div>
     </div>
   );
 }
