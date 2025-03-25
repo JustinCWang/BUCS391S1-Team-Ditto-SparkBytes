@@ -14,3 +14,51 @@ body,
 .layout {
   min-height: 100vh;
 }
+
+nav {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1em 2em;
+  background-color: #374d87;
+  color: white;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 1em;
+}
+
+/* Main content */
+.content {
+  padding: 2em;
+}
+
+body {
+  font-family: 'Tahoma', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  padding: 2em;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  background: linear-gradient(to right, #ffffff, #ededed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #333;
+  font-family: 'Inter', sans-serif;
+  text-align: center; /* centers the paragraph */
+  margin-top: 1rem;
+}
