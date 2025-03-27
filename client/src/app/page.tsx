@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import '@ant-design/v5-patch-for-react-19';
 
 export default function LandingPage() {

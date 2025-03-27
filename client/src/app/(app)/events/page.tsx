@@ -13,14 +13,14 @@ import { useAuth } from '@/context/AuthContext';
 const Events = () => {
 
   const router = useRouter();
-  const { user, userSession} = useAuth();
+  const { user} = useAuth();
 
   useEffect(() => {
     console.log(user);
       if (!user) {
         router.push('/');
       }
-  }, [user]);
+  }, [router, user]);
 
   return (
     // Main container for the Events page content with padding

@@ -19,14 +19,14 @@ const Dashboard: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null); // State to store selected event details
 
   const router = useRouter();
-  const { user, userSession} = useAuth();
+  const { user} = useAuth();
 
   useEffect(() => {
     console.log(user);
       if (!user) {
         router.push('/');
       }
-  }, [user]);
+  }, [router, user]);
 
   // Function to handle card click and show modal
   const showModal = (event: Event) => {
