@@ -97,7 +97,7 @@ const Dashboard: React.FC = () => {
       <Typography.Title level={1} style={{ fontWeight: 'bold' }}>Free Food Near You!</Typography.Title>
 
       {/* Modal to display detailed event information */}
-      <Modal title={selectedEvent?.title} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title={selectedEvent?.title} open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p><strong>Description:</strong> {selectedEvent?.description}</p>
         <p><strong>Time:</strong> {selectedEvent?.time}</p>
         <p><strong>Location:</strong> {selectedEvent?.location}</p>

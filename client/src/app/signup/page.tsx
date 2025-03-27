@@ -1,6 +1,7 @@
 'use client'
 import React, {useState, useEffect} from 'react';
 import { Form, Input, Button, Checkbox, Card, message } from 'antd';
+import '@ant-design/v5-patch-for-react-19';
 import { useRouter } from 'next/navigation';
 
 import { Register } from '../../lib/auth'

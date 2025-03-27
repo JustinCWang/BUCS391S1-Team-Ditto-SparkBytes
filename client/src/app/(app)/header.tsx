@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Layout, Menu } from "antd";
 import { MenuInfo } from "rc-menu/lib/interface";
 import { useRouter, usePathname } from "next/navigation";
+import '@ant-design/v5-patch-for-react-19';
 
 import { Logout } from "@/lib/auth";
 
