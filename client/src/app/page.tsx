@@ -4,6 +4,7 @@ import FooterSection from '@/component/footer';
 import MainButton from '@/component/primaryButton';
 import SecondaryButton from '@/component/secondaryButton';
 import FirstNav from '@/component/firstNav';
+import '@ant-design/v5-patch-for-react-19';
 
 export default function LandingPage() {
   return (
