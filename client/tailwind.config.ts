@@ -15,11 +15,6 @@ const config: Config = {
         lg: '2rem'
       }
     },
-    extend: {
-      colors: {
-        'brand-primary': '#E65E56',
-      },
-    },
   },
   plugins: [],
 };

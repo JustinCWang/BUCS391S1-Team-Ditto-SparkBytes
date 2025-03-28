@@ -1,77 +1,51 @@
 'use client';
 
-import { Button, ConfigProvider} from 'antd';
-import Link from 'next/link';
+import FooterSection from '@/component/footer';
+import MainButton from '@/component/primaryButton';
+import SecondaryButton from '@/component/secondaryButton';
+import FirstNav from '@/component/firstNav';
 
 export default function LandingPage() {
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          // Seed Token
-          colorPrimary: '#E65E5E',
-          borderRadius: 10,
-        },
-      }}
-    >
-      <main className="flex flex-col min-h-screen">
-        {/* Navigation */}
-        <nav className="w-full flex items-center justify-between px-8 py-4 border-b border-gray-200">
-          <div className="text-2xl font-bold text-gray-700">
-            Spark!Bytes
-          </div>
-          <div className="flex items-center space-x-4">
-            {/* Here you can use the Link component or antd's Menu */}
-            <Link href="/about" className="text-gray-700 font-semibold">
-              About
-            </Link>
-            <Link href="/login" className="text-red-500 font-semibold">
-              Sign In
-            </Link>
-            <Link href="/signup">
-              <Button type="primary" className="text-white bg-red-500 font-semibold">
-                Sign Up
-              </Button>
-            </Link>
-          </div>
-        </nav>
-
-        {/* The following content is the main content of the page */}
-        <HeaderSection />
-        <SectionOne />
-        <SectionTwo />
-        <SectionThree />
-        <FooterSection />
-      </main>
-    </ConfigProvider>
+    <main className="flex flex-col min-h-screen">
+      <FirstNav />
+      <HeaderSection />
+      <SectionOne />
+      <SectionTwo />
+      <SectionThree />
+      <FooterSection />
+    </main>
   );
 }
 
-// Below we split other sections into components
+/**
+ * Split the website into different sections
+ */
+
 function HeaderSection() {
   return (
     <header
       className="
-        relative        /* Allow child elements to be positioned absolutely */
+        relative
         flex flex-col items-center justify-center
         text-center
-        px-4 py-20
-        overflow-hidden /* Prevent scrollbars when circles overflow the boundaries */
+        px-4 pt-24 pb-52
+        overflow-hidden
       "
     >
       {/* Pink circle at the top left */}
       <div
         className="
           absolute
-          top-[-80px]     /* Adjust based on actual effect */
+          top-[-80px]
           left-[-80px]
-          w-[200px]       /* Diameter of the circle */
+          w-[200px]
           h-[200px]
           bg-pink-200
           rounded-full
           opacity-50
-          blur-2xl        /* Gives a soft shadow effect to the circle */
-          pointer-events-none /* Prevents interference with mouse interactions */
+          blur-2xl
+          pointer-events-none
         "
       />
 
@@ -79,7 +53,7 @@ function HeaderSection() {
       <div
         className="
           absolute
-          top-[50px]      /* Adjust position as needed */
+          top-[50px]
           right-[-100px]
           w-[300px]
           h-[300px]
@@ -91,49 +65,47 @@ function HeaderSection() {
         "
       />
 
-      <h1 className="text-[#E65E5E] font-bold text-4xl md:text-5xl mb-4">
+      <h1 className="text-brand-primary font-bold font-montserrat text-5xl lg:text-7xl mb-4">
         Free Food.
       </h1>
-      <h1 className="text-[#E65E5E] font-bold text-4xl md:text-5xl mb-4">
+      <h1 className="text-brand-primary font-bold font-montserrat text-5xl lg:text-7xl mb-4">
         No Strings Attached.
       </h1>
-      <p className="text-lg text-gray-700 md:text-xl max-w-2xl mb-6">
+      <p className=" text-text-primary font-inter text-xl lg:text-xl max-w-4xl mb-6">
         College is expensive—your next meal doesn&apos;t have to be. Spark Bytes helps BU students
         find free food on campus in seconds so you never miss out.
       </p>
-      <Link href="/join">
-        <Button type="primary" size="large">
-          Sign Up Now!
-        </Button>
-      </Link>
+      <div className='mt-4'>
+        <MainButton linkTo='/signup' text='Sign Up Now!' styling='px-10 py-3 text-3xl'/>
+      </div>
     </header>
   );
 }
 
 function SectionOne() {
   return (
-    <section className="px-4 pb-8 pt-3 max-w-5xl mx-auto text-center">
-      <h2 className="text-3xl font-bold mb-8">How Spark Bytes Works</h2>
-      <div className="grid md:grid-cols-3 gap-8">
+    <section className="text-text-primary px-4 py-20 text-center">
+      <h2 className="text-4xl lg:text-6xl font-bold mb-12 max-w-5xl mx-auto ">How Spark Bytes Works</h2>
+      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto ">
         {/* Here you can put a three-step process, for example: "Post Events", "Browse & Find", "Reduce Waste" */}
 
-        <div className="border border-black rounded-lg py-6 border-1">
-          <h3 className="text-xl font-semibold mb-2">Post Events</h3>
-          <p className="text-gray-700">
+        <div className="border-2 border-text-primary rounded-lg px-2 py-16 shadow-lg">
+          <h3 className="font-montserrat text-3xl font-bold mb-2">Post Events</h3>
+          <p className="font-inter">
             BU community members can share upcoming events with free food.
           </p>
         </div>
 
-        <div className="border border-black rounded-lg py-6 border-1">
-          <h3 className="text-xl font-semibold mb-2">Browse & Find</h3>
-          <p className="text-gray-700">
+        <div className="border-2 border-text-primary rounded-lg px-2 py-16 shadow-lg">
+          <h3 className="font-montserrat text-3xl font-bold mb-2">Browse & Find</h3>
+          <p className="font-inter">
             Easily discover events and free food spots around campus.
           </p>
         </div>
 
-        <div className="border border-black rounded-lg py-6 border-1">
-          <h3 className="text-xl font-semibold mb-2">Reduce Waste</h3>
-          <p className="text-gray-700">
+        <div className="border-2 border-text-primary rounded-lg px-2 py-16 shadow-lg">
+          <h3 className="font-montserrat text-3xl font-bold mb-2">Reduce Waste</h3>
+          <p className="font-inter">
             Enjoy free meals while helping reduce food waste on campus.
           </p>
         </div>
@@ -144,23 +116,20 @@ function SectionOne() {
 
 function SectionTwo() {
   return (
-    <section className="bg-gray-50 px-4 py-16">
+    <section className="bg-gray-50 px-4 py-32">
+      {/* Container for the items */}
       <div className="max-w-5xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-8">Our Mission</h2>
-        <p className="text-gray-700 mb-8">
+        {/* Title for this container */}
+        <h2 className="text-text-primary text-4xl lg:text-6xl font-montserrat font-bold mb-8">Our Mission</h2>
+        {/* Description */}
+        <p className="text-text-primary font-inter text-xl lg:text-2xl mb-8">
           Spark Bytes aims to create a more sustainable campus by reducing food
           waste from events while helping students access free meals.
         </p>
-        <Link href="/about" className="p-5">
-          <Button value="large" className="font-semibold" danger>
-            Learn More
-          </Button>
-        </Link>
-        <Link href="/join">
-          <Button type="primary" value="large" className="font-semibold">
-            Join Now
-          </Button>
-        </Link>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10 max-w-xl mx-auto'>
+          <SecondaryButton text='Meet the team!' linkTo='/about'/>
+          <MainButton linkTo='/signup' text='Sign Up Now!' styling='px-10 py-3 text-xl'/>
+        </div>
       </div>
     </section>
   );
@@ -168,31 +137,30 @@ function SectionTwo() {
 
 function SectionThree() {
   return (
-    <section className="px-4 py-16 max-w-5xl mx-auto text-center">
-      <h2 className="text-3xl font-bold mb-8">Our Impact</h2>
-      {/* Here you can include some statistics */}
-      <div className="flex flex-col md:flex-row md:justify-center gap-8">
-        <div>
-          <p className="text-4xl font-bold">500+</p>
-          <p className="text-gray-700">Events Shared</p>
-        </div>
-        <div>
-          <p className="text-4xl font-bold">100+</p>
-          <p className="text-gray-700">BU Students</p>
-        </div>
-        <div>
-          <p className="text-4xl font-bold">500 lb</p>
-          <p className="text-gray-700">Food Waste Prevented</p>
+    <section className="px-4 py-32 text-center">
+      {/* Title of the section */}
+      <h2 className="text-text-primary text-4xl lg:text-6xl font-montserrat font-bold mb-16 max-w-5xl mx-auto">BU Spark!Bytes Impact</h2>
+
+      {/* Background for the container */}
+      <div className="w-full border-2 border-text-primary rounded-lg shadow-lg px-2 py-16 max-w-6xl mx-auto">
+      
+      {/* The actual container for the text */}
+      <div className="grid md:grid-cols-3 gap-8">
+          {/* Text cards for the grid */}
+          <div className='text-center p-8'>
+            <p className="font-montserrat text-brand-primary text-4xl font-bold">500+</p>
+            <p className="font-inter text-xl text-text-primary">Events Shared</p>
+          </div>
+          <div className='text-center p-8'>
+            <p className="font-montserrat text-brand-primary text-4xl font-bold">100+</p>
+            <p className="font-inter text-xl text-text-primary">BU Students</p>
+          </div>
+          <div className='text-center p-8'>
+            <p className="font-montserrat text-brand-primary text-4xl font-bold">500 lb</p>
+            <p className="font-inter text-xl text-text-primary">Food Waste Prevented</p>
+          </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function FooterSection() {
-  return (
-    <footer className="border-t border-gray-200 px-4 py-4 text-center text-base text-gray-600">
-      Made With Love By Team Ditto
-    </footer>
   );
 }
