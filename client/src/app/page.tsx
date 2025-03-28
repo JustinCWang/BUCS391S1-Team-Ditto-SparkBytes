@@ -41,10 +41,10 @@ function HeaderSection() {
       {/* Blur Circle 2 */}
       <div className="absolute bottom-0 right-0 w-[200px] lg:w-[600px] h-[500px] bg-brand-primary/20 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2"></div>
 
-      <h1 className="text-brand-primary font-bold font-montserrat text-5xl lg:text-7xl mb-4">
+      <h1 className="text-text-primary font-bold font-montserrat text-5xl lg:text-7xl mb-4">
         Free Food.
       </h1>
-      <h1 className="text-brand-primary font-bold font-montserrat text-5xl lg:text-7xl mb-4">
+      <h1 className="text-text-primary font-bold font-montserrat text-5xl lg:text-7xl mb-4">
         No Strings Attached.
       </h1>
       <p className=" text-text-primary font-inter text-xl lg:text-xl max-w-4xl mb-6">
