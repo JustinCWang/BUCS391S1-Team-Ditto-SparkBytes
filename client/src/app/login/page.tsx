@@ -1,6 +1,7 @@
 'use client'
 import React, {useState, useEffect} from 'react';
-import { Form, Input, Button, Checkbox, Card, message } from 'antd';
+import { Form, Input, Button, Card, message } from 'antd';
+import '@ant-design/v5-patch-for-react-19';
 import { useRouter } from 'next/navigation';
 
 import { Login } from '../../lib/auth'
@@ -12,20 +13,20 @@ const LoginPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const { user, userSession} = useAuth();
+  const { user} = useAuth();
 
   useEffect(() => {
     console.log(user);
       if (user) {
         router.push('/dashboard');
       }
-  }, [user]);
+  }, [router, user]);
 
   // Function to handle form submission
   const onFinish = async (values: { email: string, password: string }) => {
     try {
       setLoading(true);
-      const { data, error } = await Login(values);
+      const { error } = await Login(values);
       
       if (error) {
         message.error(error.message);

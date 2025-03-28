@@ -5,6 +5,7 @@ import EventCard from '../../../component/eventCard';
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { supabase }  from '@/lib/supabase';
 
 const Dashboard: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false); // State to manage modal visibility
@@ -19,14 +20,14 @@ const Dashboard: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null); // State to store selected event details
 
   const router = useRouter();
-  const { user, userSession} = useAuth();
+  const { user} = useAuth();
 
   useEffect(() => {
     console.log(user);
       if (!user) {
         router.push('/');
       }
-  }, [user]);
+  }, [router, user]);
 
   // Function to handle card click and show modal
   const showModal = (event: Event) => {
@@ -42,6 +43,9 @@ const Dashboard: React.FC = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
+  // Test Supabase connection
+  console.log(supabase)
 
   return (
     // Main container div with centered text and margin at the top
@@ -97,7 +101,7 @@ const Dashboard: React.FC = () => {
       <Typography.Title level={1} style={{ fontWeight: 'bold' }}>Free Food Near You!</Typography.Title>
 
       {/* Modal to display detailed event information */}
-      <Modal title={selectedEvent?.title} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title={selectedEvent?.title} open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p><strong>Description:</strong> {selectedEvent?.description}</p>
         <p><strong>Time:</strong> {selectedEvent?.time}</p>
         <p><strong>Location:</strong> {selectedEvent?.location}</p>

@@ -2,6 +2,7 @@
 
 import { Layout } from 'antd';
 import CustomHeader from './header';
+import '@ant-design/v5-patch-for-react-19';
 
 // Destructure Content and Footer components from antd Layout
 const { Content, Footer } = Layout;
