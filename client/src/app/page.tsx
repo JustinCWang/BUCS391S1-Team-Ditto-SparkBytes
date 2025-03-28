@@ -29,41 +29,17 @@ function HeaderSection() {
         relative
         flex flex-col items-center justify-center
         text-center
-        px-4 pt-24 pb-52
+        px-4 pt-32 pb-52
         overflow-hidden
+        border-y-1 border-gray-200
       "
     >
-      {/* Pink circle at the top left */}
-      <div
-        className="
-          absolute
-          top-[-80px]
-          left-[-80px]
-          w-[200px]
-          h-[200px]
-          bg-pink-200
-          rounded-full
-          opacity-50
-          blur-2xl
-          pointer-events-none
-        "
-      />
+    
+      {/* Blur Circle 1 */}
+      <div className="absolute top-0 left-0 w-[200px] lg:w-[600px] h-[500px] bg-brand-primary/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2"></div>
 
-      {/* Pink circle at the top right or bottom right */}
-      <div
-        className="
-          absolute
-          top-[50px]
-          right-[-100px]
-          w-[300px]
-          h-[300px]
-          bg-pink-300
-          rounded-full
-          opacity-40
-          blur-3xl
-          pointer-events-none
-        "
-      />
+      {/* Blur Circle 2 */}
+      <div className="absolute bottom-0 right-0 w-[200px] lg:w-[600px] h-[500px] bg-brand-primary/20 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2"></div>
 
       <h1 className="text-brand-primary font-bold font-montserrat text-5xl lg:text-7xl mb-4">
         Free Food.
@@ -84,12 +60,15 @@ function HeaderSection() {
 
 function SectionOne() {
   return (
-    <section className="text-text-primary px-4 py-20 text-center">
+    <section className="text-text-primary px-4 py-32 text-center">
       <h2 className="text-4xl lg:text-6xl font-bold mb-12 max-w-5xl mx-auto ">How Spark Bytes Works</h2>
       <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto ">
         {/* Here you can put a three-step process, for example: "Post Events", "Browse & Find", "Reduce Waste" */}
 
         <div className="border-2 border-text-primary rounded-lg px-2 py-16 shadow-lg">
+          <div className="w-15 h-15 bg-brand-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-brand-primary font-montserrat font-bold text-2xl">1</span>
+          </div>
           <h3 className="font-montserrat text-3xl font-bold mb-2">Post Events</h3>
           <p className="font-inter">
             BU community members can share upcoming events with free food.
@@ -97,6 +76,9 @@ function SectionOne() {
         </div>
 
         <div className="border-2 border-text-primary rounded-lg px-2 py-16 shadow-lg">
+          <div className="w-15 h-15 bg-brand-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-brand-primary font-montserrat font-bold text-2xl">2</span>
+          </div>
           <h3 className="font-montserrat text-3xl font-bold mb-2">Browse & Find</h3>
           <p className="font-inter">
             Easily discover events and free food spots around campus.
@@ -104,6 +86,9 @@ function SectionOne() {
         </div>
 
         <div className="border-2 border-text-primary rounded-lg px-2 py-16 shadow-lg">
+          <div className="w-15 h-15 bg-brand-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-brand-primary font-montserrat font-bold text-2xl">3</span>
+          </div>
           <h3 className="font-montserrat text-3xl font-bold mb-2">Reduce Waste</h3>
           <p className="font-inter">
             Enjoy free meals while helping reduce food waste on campus.
