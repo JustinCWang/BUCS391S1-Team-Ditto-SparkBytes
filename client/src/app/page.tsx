@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, ConfigProvider, Card } from 'antd';
+import { Button, ConfigProvider} from 'antd';
 import Link from 'next/link';
 
 export default function LandingPage() {
@@ -112,7 +112,7 @@ function HeaderSection() {
 
 function SectionOne() {
   return (
-    <section className="px-4 py-16 max-w-5xl mx-auto text-center">
+    <section className="px-4 pb-8 pt-3 max-w-5xl mx-auto text-center">
       <h2 className="text-3xl font-bold mb-8">How Spark Bytes Works</h2>
       <div className="grid md:grid-cols-3 gap-8">
         {/* Here you can put a three-step process, for example: "Post Events", "Browse & Find", "Reduce Waste" */}
