@@ -5,6 +5,7 @@ import EventCard from '../../../component/eventCard';
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { supabase }  from '@/lib/supabase';
 
 const Dashboard: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false); // State to manage modal visibility
@@ -42,6 +43,9 @@ const Dashboard: React.FC = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
+  // Test Supabase connection
+  console.log(supabase)
 
   return (
     // Main container div with centered text and margin at the top
