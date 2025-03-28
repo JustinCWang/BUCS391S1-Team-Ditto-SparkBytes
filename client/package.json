@@ -12,6 +12,7 @@
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@supabase/supabase-js": "^2.49.1",
     "antd": "^5.24.4",
+    "lucide-react": "^0.485.0",
     "next": "^15.2.4",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
