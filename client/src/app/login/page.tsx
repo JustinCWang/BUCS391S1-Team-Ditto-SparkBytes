@@ -26,7 +26,6 @@ const LoginPage = () => {
   const { user} = useAuth();
 
   useEffect(() => {
-    console.log(user);
       if (user) {
         router.push('/dashboard');
       }
