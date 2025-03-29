@@ -13,3 +13,16 @@ export type SignInCredentials = {
   email: string;
   password: string;
 };
+
+export type EventProps = {
+  event_id: string;
+  name: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  location: string;
+  description: string;
+  organizer_id: string;
+  food_type: string;
+  food_id: string;
+}
