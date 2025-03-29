@@ -1,31 +1,54 @@
-import React from 'react';
-import { Card } from 'antd';
+import { EventProps } from "@/types/supabase"
+import { MapPin, UtensilsCrossed, Heart } from "lucide-react"
 
-// Define an interface to specify the types of props that the EventCard component will accept
-interface EventCardProps {
-  title: string;        // The title of the event
-  description: string;  // A brief description of the event
-  time: string;         // The time when the event will take place
-  location: string;     // The location where the event will be held
-  food: string;         // Information about the food available at the event
-  onClick: () => void;  // Function to handle click events
+function EventCard ({
+  name,
+  date,
+  start_time,
+  end_time,
+  location,
+  description,
+}:EventProps) {
+  return(
+    <div className="border-2 border-text-primary rounded-lg px-4 py-2 shadow-lg">
+      {/** Container for the actual image and text */}
+      <div className="flex flex-col">
+        {/** Container for the heading */}
+        <div className="text-text-primary mb-4">
+          <h2 className="text-xl font-montserrat font-bold my-2">{name}</h2>
+          <p className="font-inter text-sm">{date + " • " +  start_time + " - " + end_time}</p>
+        </div>
+        {/** Container for the text with icons */}
+        <div className="text-text-primary font-inter">
+          <div className="flex mb-2">
+            <MapPin />
+            <p className="ml-1">{location}</p>
+          </div>
+          <div className="flex mb-2">
+            <UtensilsCrossed />
+            <p className="ml-1">Pizza</p>
+          </div>
+          <p>Allergens: Lactose, Nuts</p>
+        </div>
+        {/** Like and learn more */}
+        <div className="flex justify-between items-center mt-4 mb-2">
+          <div className="flex text-text-primary font-inter">
+            <Heart />
+            <p className="ml-1">300 Students Liked</p>
+          </div>
+          <button className="bg-white 
+        text-brand-primary 
+          font-poppins font-black 
+          py-1.5 px-5 
+          rounded-md border border-brand-primary
+          duration-300 ease-in hover:bg-brand-primary hover:text-white 
+          flex items-center justify-center">
+            Edit
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
-// Define a functional React component named EventCard that accepts props of type EventCardProps
-const EventCard: React.FC<EventCardProps> = ({ title, description, time, location, food, onClick }) => {
-  return (
-    // Render a Card component with a title and hoverable effect
-    <Card title={title} hoverable onClick={onClick}>
-      {/* Render a paragraph displaying the event description */}
-      <p><strong>Description:</strong> {description}</p>
-      {/* Render a paragraph displaying the event time */}
-      <p><strong>Time:</strong> {time}</p>
-      {/* Render a paragraph displaying the event location */}
-      <p><strong>Location:</strong> {location}</p>
-      {/* Render a paragraph displaying information about the food */}
-      <p><strong>Food:</strong> {food}</p>
-    </Card>
-  );
-};
-
-export default EventCard;
+export default EventCard

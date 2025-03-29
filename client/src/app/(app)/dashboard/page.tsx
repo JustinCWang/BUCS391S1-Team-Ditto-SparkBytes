@@ -1,112 +1,64 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { Typography, Row, Col, Divider, Modal } from 'antd';
-import EventCard from '../../../component/eventCard';
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { supabase }  from '@/lib/supabase';
 
-const Dashboard: React.FC = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false); // State to manage modal visibility
-  interface Event {
-    title: string;
-    description: string;
-    time: string;
-    location: string;
-    food: string;
-  }
+import SecondaryButton from '@/component/secondaryButton';
+import EventCard from '@/component/eventCard';
 
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null); // State to store selected event details
+const Dashboard: React.FC = () => {
 
   const router = useRouter();
-  const { user} = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
-    console.log(user);
       if (!user) {
         router.push('/');
       }
   }, [router, user]);
 
-  // Function to handle card click and show modal
-  const showModal = (event: Event) => {
-    setSelectedEvent(event);
-    setIsModalVisible(true);
-  };
-
-  // Function to handle modal close
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  // Test Supabase connection
-  console.log(supabase)
-
   return (
-    // Main container div with centered text and margin at the top
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
-      {/* Main title with bold font */}
-      <Typography.Title level={1} style={{ fontWeight: 'bold' }}>Spark!Bytes</Typography.Title>
-      {/* Add your image or other content here */}
+    <div>
+      
+      {/** Header */}
+      <div className='w-full max-w-6xl mx-auto mt-6 flex justify-between items-center'>
+        <div>
+          <h1 className='text-text-primary font-bold font-montserrat text-xl lg:text-3xl'>Upcoming Events</h1>
+          <p className='text-text-primary font-inter text-sm lg:text-base'>Get some free food!</p>
+        </div>
+          <SecondaryButton text='View All' linkTo='/events' styling='text-xs sm:text-lg'/>
+      </div>
 
-      {/* Paragraph with some text */}
-      <Typography.Paragraph>
-        This is text
-      </Typography.Paragraph>
+      {/** 3 Events */}
+      <div className='w-full max-w-6xl mx-auto grid mt-8 lg:grid-cols-3 gap-8'>
+        <EventCard 
+          name='Computer Science Department Seminar'
+          date='Tuesday, April 1, 2025'
+          start_time='12:00 PM'
+          end_time='1:30 PM'
+          location='CDS 201'
+          description='Join us for a talk on the latest advancements in AI and machine learning.'
+        />
+        <EventCard 
+          name='Computer Science Department Seminar'
+          date='Tuesday, April 1, 2025'
+          start_time='12:00 PM'
+          end_time='1:30 PM'
+          location='CDS 201'
+          description='Join us for a talk on the latest advancements in AI and machine learning.'
+        />
+        <EventCard 
+          name='Computer Science Department Seminar'
+          date='Tuesday, April 1, 2025'
+          start_time='12:00 PM'
+          end_time='1:30 PM'
+          location='CDS 201'
+          description='Join us for a talk on the latest advancements in AI and machine learning.'
+        />
+      </div>
 
-      {/* Row container with gutter spacing and centered content */}
-      <Row gutter={[16, 16]} justify="center">
-        {/* Column for the first event card */}
-        <Col xs={24} sm={12} md={8}>
-          <EventCard 
-            title="Event 1" 
-            description="Description for Event 1" 
-            time="10:00 AM" 
-            location="Location 1" 
-            food="Food 1" 
-            onClick={() => showModal({ title: "Event 1", description: "Description for Event 1", time: "10:00 AM", location: "Location 1", food: "Food 1" })}
-          />
-        </Col>
-        {/* Column for the second event card */}
-        <Col xs={24} sm={12} md={8}>
-          <EventCard 
-            title="Event 2" 
-            description="Description for Event 2" 
-            time="11:00 AM" 
-            location="Location 2" 
-            food="Food 2" 
-            onClick={() => showModal({ title: "Event 2", description: "Description for Event 2", time: "11:00 AM", location: "Location 2", food: "Food 2" })}
-          />
-        </Col>
-        {/* Column for the third event card */}
-        <Col xs={24} sm={12} md={8}>
-          <EventCard 
-            title="Event 3" 
-            description="Description for Event 3" 
-            time="12:00 PM" 
-            location="Location 3" 
-            food="Food 3" 
-            onClick={() => showModal({ title: "Event 3", description: "Description for Event 3", time: "12:00 PM", location: "Location 3", food: "Food 3" })}
-          />
-        </Col>
-      </Row>
-      {/* Divider line */}
-      <Divider />
-      {/* Secondary title with bold font */}
-      <Typography.Title level={1} style={{ fontWeight: 'bold' }}>Free Food Near You!</Typography.Title>
-
-      {/* Modal to display detailed event information */}
-      <Modal title={selectedEvent?.title} open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        <p><strong>Description:</strong> {selectedEvent?.description}</p>
-        <p><strong>Time:</strong> {selectedEvent?.time}</p>
-        <p><strong>Location:</strong> {selectedEvent?.location}</p>
-        <p><strong>Food:</strong> {selectedEvent?.food}</p>
-      </Modal>
     </div>
   );
 };
