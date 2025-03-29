@@ -23,3 +23,22 @@ export const updateEmail = async (email: string, password: string, newEmail: str
 
   return { data, error };
 };
+
+export const updatePassword = async ( email: string, currentPassword: string, newPassword: string) => {
+  // Step 1: Re-authenticate the user
+  const { error: authError } = await supabase.auth.signInWithPassword({
+    email,
+    password: currentPassword,
+  });
+
+  if (authError) {
+    return { error: authError };
+  }
+
+  // Step 2: Update the user's password
+  const { error: updateError } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
+
+  return { error: updateError };
+};

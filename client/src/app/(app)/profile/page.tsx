@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { updateUserName, updateEmail } from '@/lib/user';
+import { updateUserName, updateEmail, updatePassword } from '@/lib/user';
 import { Loader } from 'lucide-react';
 
 import { message } from 'antd';
@@ -33,6 +33,11 @@ const Profile = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordConfirmError, setPasswordConfirmError] = useState(false);
   const [wrongPassword, setWrongPasswordError] = useState(false);
+  const [emptyPassword, setEmptyPasswordError] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordTooShort, setPasswordTooShort] = useState(false);
+  const [samePassword, setSamePassword] = useState(false);
+
 
   useEffect(() => {
     if (!user) {
@@ -116,6 +121,8 @@ const Profile = () => {
 
     if(!currentEmail) return;
   
+    setEmailLoading(true);
+
     // Clear errors
     setEmailAlreadyUsed(false);
     setEmailWrongPassword(false);
@@ -124,23 +131,24 @@ const Profile = () => {
   
     // Case 1: No change
     if (trimmedEmail === currentEmail) {
+      setEmailLoading(false);
       setEmailAlreadyUsed(true);
       return;
     }
 
+    // Case 2: No email
     if (trimmedEmail.length <= 0){
+      setEmailLoading(false);
       setNoEmail(true);
       return;
     }
   
-    // Case 2: No password entered
+    // Case 3: No password entered
     if (!emailCurrentPass) {
+      setEmailLoading(false);
       setEmailWrongPassword(true);
       return;
     }
-  
-    // Case 4: Try update
-    setEmailLoading(true);
   
     const { error } = await updateEmail(currentEmail, emailCurrentPass, trimmedEmail);
   
@@ -170,7 +178,76 @@ const Profile = () => {
     setNoEmail(false);
   }
 
-  // Start of end of the email change
+  // End of the email change
+
+  // Start of password change 
+
+  const handleChangePassword = async () => {
+    if (!user) return;
+  
+    setPasswordLoading(true);
+
+    setPasswordConfirmError(false);
+    setWrongPasswordError(false);
+    setEmptyPasswordError(false);
+    setPasswordTooShort(false);
+    setSamePassword(false);
+  
+    if(newPassword.length <= 0){
+      setEmptyPasswordError(true);
+      setPasswordLoading(false);
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      setPasswordTooShort(true);
+      setPasswordLoading(false);
+      return;
+    }
+  
+    if (oldPassword === newPassword) {
+      setSamePassword(true);
+      message.warning("New password must be different from the current one.");
+      setPasswordLoading(false);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordConfirmError(true);
+      setPasswordLoading(false);
+      return;
+    }
+  
+    const { error } = await updatePassword(user.email!, oldPassword, newPassword);
+  
+    if (error) {
+      if (error.message.toLowerCase().includes("invalid login credentials")) {
+        setWrongPasswordError(true);
+      } else {
+        message.error("Something went wrong while updating your password.");
+      }
+    } else {
+      message.success("Password updated successfully!");
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    }
+  
+    setPasswordLoading(false);
+  };
+
+  const handlePasswordClear = () => {
+    setOldPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    setPasswordConfirmError(false);
+    setWrongPasswordError(false);
+    setEmptyPasswordError(false);
+    setPasswordTooShort(false);
+    setSamePassword(false);
+  }
+
+  // End of password change
 
   return (
     <div className='my-6 w-full max-w-6xl mx-auto'>
@@ -332,9 +409,90 @@ const Profile = () => {
       </div>
 
       {/** Change Password */}
-      <div>
+      <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 mt-10 shadow-lg'>
+        <div className='max-w-xl mx-auto'> 
+          <h1 className='text-text-primary font-bold font-montserrat text-xl mb-6'>Change Password</h1>
 
+          {/** Field Inputs */}
+          <div className=''>
+            <input
+              type="password"
+              placeholder="Current Password"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
+                wrongPassword ? 'focus:border-red-500' : 'focus:border-text-primary'
+              } mb-4`}
+            />
+
+            <input
+              type="password"
+              placeholder="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
+                emptyPassword || passwordConfirmError ? 'focus:border-red-500' : 'focus:border-text-primary'
+              } mb-4`}
+            />
+
+            <input
+              type="password"
+              placeholder="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
+                passwordConfirmError ? 'focus:border-red-500' : 'focus:border-text-primary'
+              } mb-4`}
+            />
+          </div>
+
+          {wrongPassword && (
+            <p className="text-red-500 font-inter text-sm italic mb-2">Incorrect current password.</p>
+          )}
+          
+          {passwordConfirmError && (
+            <p className="text-red-500 font-inter text-sm italic mb-4">Passwords do not match.</p>
+          )}
+          
+          {emptyPassword && (
+            <p className="text-red-500 font-inter text-sm italic mb-4">Please enter a new password</p>
+          )}
+          
+          {passwordTooShort && (
+            <p className="text-red-500 font-inter text-sm italic mb-2">Password must be at least 8 characters long.</p>
+          )}
+
+          {samePassword && (
+            <p className="text-red-500 font-inter text-sm italic mb-2">New password must be different from current password.</p>
+          )}
+
+          <div className='flex justify-end gap-4'>
+            <button 
+              onClick={handlePasswordClear}
+              className='bg-white 
+              text-brand-primary 
+                font-poppins font-black 
+                py-1.5 px-5 
+                rounded-md border border-brand-primary
+                duration-300 ease-in hover:bg-brand-primary hover:text-white 
+                flex items-center justify-center'
+              
+              >
+                Cancel
+            </button>
+            <button 
+              onClick={handleChangePassword}
+              className='bg-brand-primary text-white font-poppins font-black py-1.5 px-5 rounded-md duration-300 ease-in hover:bg-hover-primary flex items-center justify-center'
+            >
+              {passwordLoading ?  
+                <Loader className="animate-spin" size={30} style={{ animationDuration: '3s' }} />
+                : 'Save'
+              }
+            </button>
+          </div>
+        </div>
       </div>
+
 
     </div>
   );
