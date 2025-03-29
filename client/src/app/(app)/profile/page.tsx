@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { updateUserName } from '@/lib/user';
+import { updateUserName, updateEmail } from '@/lib/user';
 import { Loader } from 'lucide-react';
 
 import { message } from 'antd';
@@ -20,14 +20,19 @@ const Profile = () => {
   const [nameError, setNameError] = useState(false);
   const [loadingName, setNameLoading] = useState(false);
 
+  const [email, setEmail] = useState('');
+  const [emailCurrentPass, setEmailPass] = useState('');
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [emailAlreadyUsed, setEmailAlreadyUsed] = useState(false);
+  const [emailWrongPassword, setEmailWrongPassword] = useState(false);
+  const [invalidEmailDomain, setInvalidEmailDomain] = useState(false);
+  const [noEmail, setNoEmail] = useState(false);
+
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  
   const [passwordConfirmError, setPasswordConfirmError] = useState(false);
   const [wrongPassword, setWrongPasswordError] = useState(false);
-
-  const [email, setEmail] = useState('');
 
   useEffect(() => {
     if (!user) {
@@ -55,6 +60,8 @@ const Profile = () => {
     fetchUserData();
 
   }, [router, user]);
+
+  // Start of save name section 
 
   const handleSaveName = async () => {
     if (!user) return;
@@ -97,6 +104,74 @@ const Profile = () => {
     setNameError(false);
   }
 
+  // End of save name section 
+
+  // Start of email change
+
+  const handleUpdateEmail = async () => {
+    if (!user) return;
+  
+    const trimmedEmail = email.trim();
+    const currentEmail = user.email;
+
+    if(!currentEmail) return;
+  
+    // Clear errors
+    setEmailAlreadyUsed(false);
+    setEmailWrongPassword(false);
+    setInvalidEmailDomain(false);
+    setNoEmail(false);
+  
+    // Case 1: No change
+    if (trimmedEmail === currentEmail) {
+      setEmailAlreadyUsed(true);
+      return;
+    }
+
+    if (trimmedEmail.length <= 0){
+      setNoEmail(true);
+      return;
+    }
+  
+    // Case 2: No password entered
+    if (!emailCurrentPass) {
+      setEmailWrongPassword(true);
+      return;
+    }
+  
+    // Case 4: Try update
+    setEmailLoading(true);
+  
+    const { error } = await updateEmail(currentEmail, emailCurrentPass, trimmedEmail);
+  
+    if (error) {
+      if (error.message.includes("already registered")) {
+        setEmailAlreadyUsed(true);
+        message.error("That email is already in use.");
+      } else if (error.message.toLowerCase().includes("invalid login credentials")) {
+        setEmailWrongPassword(true);
+        message.error("Incorrect password.");
+      } else {
+        message.error("Failed to update email. Please try again.");
+      }
+    } else {
+      message.success("Please check your email to confirm the change.");
+    }
+  
+    setEmailLoading(false);
+  };
+
+  const handleEmailClear = () => {
+    setEmail('');
+    setEmailPass('');
+    setEmailAlreadyUsed(false);
+    setEmailWrongPassword(false);
+    setInvalidEmailDomain(false);
+    setNoEmail(false);
+  }
+
+  // Start of end of the email change
+
   return (
     <div className='my-6 w-full max-w-6xl mx-auto'>
       {/** Header */}
@@ -108,9 +183,11 @@ const Profile = () => {
       </div>
 
       {/** Change Name */}
-      <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 shadow-lg'>
+      <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 mb-10 shadow-lg'>
         <div className='max-w-xl mx-auto'> 
           <h1 className='text-text-primary font-bold font-montserrat text-xl mb-6'>Profile Information</h1>
+
+          {/** Field Inputs */}
           <div className=''>
             <input
               type="text"
@@ -129,6 +206,8 @@ const Profile = () => {
               className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${nameError ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
             />
           </div>
+
+          {/** Errors and Buttons */}
           {nameError && (
             <p className="text-red-500 font-inter text-sm italic mb-4">
               No changes detected or fields are empty.
@@ -166,12 +245,93 @@ const Profile = () => {
         </div>
       </div>
 
-      {/** Change Password */}
-      <div>
+      {/** Change Email */}
+      <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 shadow-lg'>
+        <div className='max-w-xl mx-auto'> 
+          <h1 className='text-text-primary font-bold font-montserrat text-xl mb-6'>Email Information</h1>
 
+          {/** Field Inputs */}
+          <div className=''>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => {
+                setEmailAlreadyUsed(false);
+                setNoEmail(false);
+                setEmail(e.target.value);
+                setInvalidEmailDomain(!e.target.value.toLowerCase().endsWith('@bu.edu'));
+              }}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${invalidEmailDomain || emailAlreadyUsed ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
+            />
+            <input
+              type="password"
+              name="email password"
+              placeholder="Current Password"
+              value={emailCurrentPass}
+              onChange={(e) => setEmailPass(e.target.value)}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${emailWrongPassword ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
+            />
+          </div>
+
+          {invalidEmailDomain && (
+            <p className="text-red-500 font-inter text-sm italic mb-1">
+              Email must be a BU email address.
+            </p>
+          )}
+
+          {emailAlreadyUsed && (
+            <p className="text-red-500 font-inter text-sm italic mb-1">
+              This email is already in use.
+            </p>
+          )}
+
+          {emailWrongPassword && (
+            <p className="text-red-500 font-inter text-sm italic mb-4">
+              Incorrect password. Please try again.
+            </p>
+          )}
+
+          {noEmail && (
+            <p className="text-red-500 font-inter text-sm italic mb-4">
+              Please enter a BU email.
+            </p>
+          )}
+
+          <div className='flex justify-end gap-4'>
+            <button 
+            onClick={handleEmailClear}
+            className='bg-white 
+            text-brand-primary 
+              font-poppins font-black 
+              py-1.5 px-5 
+              rounded-md border border-brand-primary
+              duration-300 ease-in hover:bg-brand-primary hover:text-white 
+              flex items-center justify-center'
+            
+            >
+              Cancel
+            </button>
+            <button 
+            onClick={handleUpdateEmail}
+            className='bg-brand-primary 
+            text-white font-poppins font-black 
+              py-1.5 px-5 
+              rounded-md 
+              duration-300 ease-in hover:bg-hover-primary 
+              flex items-center justify-center'
+            
+            >
+              {emailLoading ?  
+              <Loader className="animate-spin" size={30} style={{ animationDuration: '3s' }}/>
+              : 'Save'}
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/** Change Email */}
+      {/** Change Password */}
       <div>
 
       </div>

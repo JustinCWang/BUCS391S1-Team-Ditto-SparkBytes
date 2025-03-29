@@ -8,3 +8,18 @@ export const updateUserName = async (userId: string, firstName: string, lastName
 
   return { error };
 };
+
+export const updateEmail = async (email: string, password: string, newEmail: string) => {
+  // Step 1: Reauthenticate to see if the password is valid for the current user
+  const { error: loginError } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (loginError) return { error: loginError };
+
+  // Step 2: Update the email
+  const { data, error } = await supabase.auth.updateUser({ email: newEmail });
+
+  return { data, error };
+};
