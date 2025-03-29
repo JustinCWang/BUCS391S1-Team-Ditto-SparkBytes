@@ -20,10 +20,10 @@ const Dashboard: React.FC = () => {
   }, [router, user]);
 
   return (
-    <div>
+    <div className='my-6'>
       
       {/** Header */}
-      <div className='w-full max-w-6xl mx-auto mt-6 flex justify-between items-center'>
+      <div className='w-full max-w-6xl mx-auto flex justify-between items-center'>
         <div>
           <h1 className='text-text-primary font-bold font-montserrat text-xl lg:text-3xl'>Upcoming Events</h1>
           <p className='text-text-primary font-inter text-sm lg:text-base'>Get some free food!</p>

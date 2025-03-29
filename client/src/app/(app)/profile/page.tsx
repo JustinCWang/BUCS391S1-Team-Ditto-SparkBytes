@@ -1,107 +1,181 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { Typography, Table, Descriptions } from 'antd';
 import { supabase } from '@/lib/supabase';
-
-const { Title } = Typography;
-
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { updateUserName } from '@/lib/user';
+import { Loader } from 'lucide-react';
+
+import { message } from 'antd';
+import '@ant-design/v5-patch-for-react-19';
 
 const Profile = () => {
   const router = useRouter();
   const { user } = useAuth();
-  const [userInfo, setUserInfo] = useState({
-    username: '',
-    email: ''
-  });
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [originalFirstName, setOriginalFirstName] = useState('');
+  const [originalLastName, setOriginalLastName] = useState('');
+  const [nameError, setNameError] = useState(false);
+  const [loadingName, setNameLoading] = useState(false);
+
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  
+  const [passwordConfirmError, setPasswordConfirmError] = useState(false);
+  const [wrongPassword, setWrongPasswordError] = useState(false);
+
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     if (!user) {
       router.push('/');
-    } else {
-      // Fetch user info from Supabase
-      const fetchUserInfo = async () => {
-        try {
-          const { data, error } = await supabase
-            .from('Users')
-            .select('bu_email, first_name, last_name')
-            .eq('first_name', 'justin') // Filter where first_name is 'justin'
-            .single();
-
-          if (error) {
-            console.error('Error fetching user info:', error);
-          } else if (data) {
-            setUserInfo({
-              username: `${data.first_name} ${data.last_name}`,
-              email: data.bu_email,
-            });
-          }
-        } catch (err) {
-          console.error('Unexpected error:', err);
-        }
-      };
-
-      fetchUserInfo();
     }
+
+    const fetchUserData = async () => {
+      const { data, error } = await supabase
+        .from('Users')
+        .select('first_name, last_name, bu_email')
+        .eq('user_id', user?.id)
+        .single();
+  
+      if (!error) {
+        setFirstName(data.first_name);
+        setLastName(data.last_name);
+        setOriginalFirstName(data.first_name)
+        setOriginalLastName(data.last_name)
+        setEmail(data.bu_email);
+      } else {
+        console.log(error);
+      }
+    };
+  
+    fetchUserData();
+
   }, [router, user]);
 
-  // Statistics data array
-  const statisticsData = [
-    {
-      key: '1',
-      statistic: 'Events Visited',
-      value: '15',
-    },
-    {
-      key: '2',
-      statistic: 'Food Waste Saved',
-      value: '10 kg',
-    },
-    {
-      key: '3',
-      statistic: 'Amount Walked',
-      value: '20 km',
-    },
-  ];
+  const handleSaveName = async () => {
+    if (!user) return;
 
-  // Columns configuration for the statistics table
-  const columns = [
-    {
-      title: 'Statistic',
-      dataIndex: 'statistic',
-      key: 'statistic',
-    },
-    {
-      title: 'Value',
-      dataIndex: 'value',
-      key: 'value',
-    },
-  ];
+    setNameLoading(true);
+    const trimmedFirst = firstName.trim();
+    const trimmedLast = lastName.trim();
+
+  // Prevent save if fields are empty
+  if (trimmedFirst.length <= 0 || trimmedLast.length <= 0) {
+    setNameError(true);
+    setNameLoading(false);
+    return;
+  }
+
+  // Prevent save if nothing changed
+  if (
+    trimmedFirst === originalFirstName.trim() &&
+    trimmedLast === originalLastName.trim()
+  ) {
+    setNameError(true);
+    setNameLoading(false);
+    return;
+  }
+
+    const { error } = await updateUserName(user.id, firstName, lastName);
+
+    if (error){
+      console.log(error)
+      message.error("Something went wrong while saving.");
+    } else {
+      setNameLoading(false)
+      message.success("Your changes have been saved!");
+    }
+  };
+
+  const handleSaveNameClear = () => {
+    setFirstName('');
+    setLastName('');
+    setNameError(false);
+  }
 
   return (
-    <div className="site-layout-content" style={{ padding: '24px 0' }}>
-      {/* Profile title */}
-      <Title level={2} className="text-2xl font-bold">Profile</Title>
-      <p>Welcome to the Profile page of Spark!Bytes. Here you can find more information about your profile.</p>
+    <div className='my-6 w-full max-w-6xl mx-auto'>
+      {/** Header */}
+      <div className='mb-6'>
+        <div>
+          <h1 className='text-text-primary font-bold font-montserrat text-xl lg:text-3xl'>User Preferences</h1>
+          <p className='text-text-primary font-inter text-sm lg:text-base'>Manage your account settings</p>
+        </div>
+      </div>
 
-      {/* User information section */}
-      <Descriptions title="User Info" bordered>
-        <Descriptions.Item label="Username">{userInfo.username}</Descriptions.Item>
-        <Descriptions.Item label="BU Email">{userInfo.email}</Descriptions.Item>
-      </Descriptions>
+      {/** Change Name */}
+      <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 shadow-lg'>
+        <div className='max-w-xl mx-auto'> 
+          <h1 className='text-text-primary font-bold font-montserrat text-xl mb-6'>Profile Information</h1>
+          <div className=''>
+            <input
+              type="text"
+              name="first name"
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${nameError ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
+            />
+            <input
+              type="text"
+              name="last name"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${nameError ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
+            />
+          </div>
+          {nameError && (
+            <p className="text-red-500 font-inter text-sm italic mb-4">
+              No changes detected or fields are empty.
+            </p>
+          )}
+          <div className='flex justify-end gap-4'>
+            <button 
+            onClick={handleSaveNameClear}
+            className='bg-white 
+            text-brand-primary 
+              font-poppins font-black 
+              py-1.5 px-5 
+              rounded-md border border-brand-primary
+              duration-300 ease-in hover:bg-brand-primary hover:text-white 
+              flex items-center justify-center'
+            
+            >
+              Cancel
+            </button>
+            <button 
+            onClick={handleSaveName}
+            className='bg-brand-primary 
+            text-white font-poppins font-black 
+              py-1.5 px-5 
+              rounded-md 
+              duration-300 ease-in hover:bg-hover-primary 
+              flex items-center justify-center'
+            
+            >
+              {loadingName ?  
+              <Loader className="animate-spin" size={30} style={{ animationDuration: '3s' }}/>
+              : 'Save'}
+            </button>
+          </div>
+        </div>
+      </div>
 
-      {/* Statistics section */}
-      <Title level={3} style={{ marginTop: '20px' }}>Statistics</Title>
-      <Table dataSource={statisticsData} columns={columns} pagination={false} />
+      {/** Change Password */}
+      <div>
 
-      {/* Preferences section */}
-      <Title level={3} style={{ marginTop: '20px' }}>Preferences</Title>
-      <p>Preferences content goes here...</p>
+      </div>
 
-      {/* Personal information section */}
-      <Title level={3} style={{ marginTop: '20px' }}>Personal Information</Title>
-      <p>Personal information content goes here...</p>
+      {/** Change Email */}
+      <div>
+
+      </div>
+
     </div>
   );
 };
