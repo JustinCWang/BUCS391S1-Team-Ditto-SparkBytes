@@ -18,7 +18,7 @@ const CustomHeader = () => {
   };
 
   return (
-    <nav className="w-full px-6 py-4 border-b border-gray-200">
+    <nav className="w-full px-4 py-4 border-b border-gray-200">
       <div className="max-w-6xl mx-auto flex items-center justify-between relative">
         <div className="flex-1">
           <Link
@@ -39,7 +39,7 @@ const CustomHeader = () => {
           <button
             onClick={handleLogout}
             className="bg-brand-primary text-white font-poppins font-black 
-              py-1.5 px-5 rounded-md duration-300 ease-in hover:bg-hover-primary"
+              py-1.5 px-5 rounded-md duration-300 ease-in hover:bg-hover-primary flex items-center justify-center"
           >
             Logout
           </button>

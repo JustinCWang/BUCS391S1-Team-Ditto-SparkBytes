@@ -15,14 +15,14 @@ export type SignInCredentials = {
 };
 
 export type EventProps = {
-  event_id: string;
+  event_id?: string;
   name: string;
   date: string;
   start_time: string;
   end_time: string;
   location: string;
   description: string;
-  organizer_id: string;
-  food_type: string;
-  food_id: string;
+  organizer_id?: string;
+  food_type?: string;
+  food_id?: string;
 }
