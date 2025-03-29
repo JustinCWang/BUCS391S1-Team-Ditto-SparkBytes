@@ -1,107 +1,499 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { Typography, Table, Descriptions } from 'antd';
 import { supabase } from '@/lib/supabase';
-
-const { Title } = Typography;
-
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { updateUserName, updateEmail, updatePassword } from '@/lib/user';
+import { Loader } from 'lucide-react';
+
+import { message } from 'antd';
+import '@ant-design/v5-patch-for-react-19';
 
 const Profile = () => {
   const router = useRouter();
   const { user } = useAuth();
-  const [userInfo, setUserInfo] = useState({
-    username: '',
-    email: ''
-  });
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [originalFirstName, setOriginalFirstName] = useState('');
+  const [originalLastName, setOriginalLastName] = useState('');
+  const [nameError, setNameError] = useState(false);
+  const [loadingName, setNameLoading] = useState(false);
+
+  const [email, setEmail] = useState('');
+  const [emailCurrentPass, setEmailPass] = useState('');
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [emailAlreadyUsed, setEmailAlreadyUsed] = useState(false);
+  const [emailWrongPassword, setEmailWrongPassword] = useState(false);
+  const [invalidEmailDomain, setInvalidEmailDomain] = useState(false);
+  const [noEmail, setNoEmail] = useState(false);
+
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordConfirmError, setPasswordConfirmError] = useState(false);
+  const [wrongPassword, setWrongPasswordError] = useState(false);
+  const [emptyPassword, setEmptyPasswordError] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordTooShort, setPasswordTooShort] = useState(false);
+  const [samePassword, setSamePassword] = useState(false);
+
 
   useEffect(() => {
     if (!user) {
       router.push('/');
-    } else {
-      // Fetch user info from Supabase
-      const fetchUserInfo = async () => {
-        try {
-          const { data, error } = await supabase
-            .from('Users')
-            .select('bu_email, first_name, last_name')
-            .eq('first_name', 'justin') // Filter where first_name is 'justin'
-            .single();
-
-          if (error) {
-            console.error('Error fetching user info:', error);
-          } else if (data) {
-            setUserInfo({
-              username: `${data.first_name} ${data.last_name}`,
-              email: data.bu_email,
-            });
-          }
-        } catch (err) {
-          console.error('Unexpected error:', err);
-        }
-      };
-
-      fetchUserInfo();
     }
+
+    const fetchUserData = async () => {
+      const { data, error } = await supabase
+        .from('Users')
+        .select('first_name, last_name, bu_email')
+        .eq('user_id', user?.id)
+        .single();
+  
+      if (!error) {
+        setFirstName(data.first_name);
+        setLastName(data.last_name);
+        setOriginalFirstName(data.first_name)
+        setOriginalLastName(data.last_name)
+        setEmail(data.bu_email);
+      } else {
+        console.log(error);
+      }
+    };
+  
+    fetchUserData();
+
   }, [router, user]);
 
-  // Statistics data array
-  const statisticsData = [
-    {
-      key: '1',
-      statistic: 'Events Visited',
-      value: '15',
-    },
-    {
-      key: '2',
-      statistic: 'Food Waste Saved',
-      value: '10 kg',
-    },
-    {
-      key: '3',
-      statistic: 'Amount Walked',
-      value: '20 km',
-    },
-  ];
+  // Start of save name section 
 
-  // Columns configuration for the statistics table
-  const columns = [
-    {
-      title: 'Statistic',
-      dataIndex: 'statistic',
-      key: 'statistic',
-    },
-    {
-      title: 'Value',
-      dataIndex: 'value',
-      key: 'value',
-    },
-  ];
+  const handleSaveName = async () => {
+    if (!user) return;
+
+    setNameLoading(true);
+    const trimmedFirst = firstName.trim();
+    const trimmedLast = lastName.trim();
+
+  // Prevent save if fields are empty
+  if (trimmedFirst.length <= 0 || trimmedLast.length <= 0) {
+    setNameError(true);
+    setNameLoading(false);
+    return;
+  }
+
+  // Prevent save if nothing changed
+  if (
+    trimmedFirst === originalFirstName.trim() &&
+    trimmedLast === originalLastName.trim()
+  ) {
+    setNameError(true);
+    setNameLoading(false);
+    return;
+  }
+
+    const { error } = await updateUserName(user.id, firstName, lastName);
+
+    if (error){
+      console.log(error)
+      message.error("Something went wrong while saving.");
+    } else {
+      setNameLoading(false)
+      message.success("Your changes have been saved!");
+    }
+  };
+
+  const handleSaveNameClear = () => {
+    setFirstName('');
+    setLastName('');
+    setNameError(false);
+  }
+
+  // End of save name section 
+
+  // Start of email change
+
+  const handleUpdateEmail = async () => {
+    if (!user) return;
+  
+    const trimmedEmail = email.trim();
+    const currentEmail = user.email;
+
+    if(!currentEmail) return;
+  
+    setEmailLoading(true);
+
+    // Clear errors
+    setEmailAlreadyUsed(false);
+    setEmailWrongPassword(false);
+    setInvalidEmailDomain(false);
+    setNoEmail(false);
+  
+    // Case 1: No change
+    if (trimmedEmail === currentEmail) {
+      setEmailLoading(false);
+      setEmailAlreadyUsed(true);
+      return;
+    }
+
+    // Case 2: No email
+    if (trimmedEmail.length <= 0){
+      setEmailLoading(false);
+      setNoEmail(true);
+      return;
+    }
+  
+    // Case 3: No password entered
+    if (!emailCurrentPass) {
+      setEmailLoading(false);
+      setEmailWrongPassword(true);
+      return;
+    }
+  
+    const { error } = await updateEmail(currentEmail, emailCurrentPass, trimmedEmail);
+  
+    if (error) {
+      if (error.message.includes("already registered")) {
+        setEmailAlreadyUsed(true);
+        message.error("That email is already in use.");
+      } else if (error.message.toLowerCase().includes("invalid login credentials")) {
+        setEmailWrongPassword(true);
+        message.error("Incorrect password.");
+      } else {
+        message.error("Failed to update email. Please try again.");
+      }
+    } else {
+      message.success("Please check your email to confirm the change.");
+    }
+  
+    setEmailLoading(false);
+  };
+
+  const handleEmailClear = () => {
+    setEmail('');
+    setEmailPass('');
+    setEmailAlreadyUsed(false);
+    setEmailWrongPassword(false);
+    setInvalidEmailDomain(false);
+    setNoEmail(false);
+  }
+
+  // End of the email change
+
+  // Start of password change 
+
+  const handleChangePassword = async () => {
+    if (!user) return;
+  
+    setPasswordLoading(true);
+
+    setPasswordConfirmError(false);
+    setWrongPasswordError(false);
+    setEmptyPasswordError(false);
+    setPasswordTooShort(false);
+    setSamePassword(false);
+  
+    if(newPassword.length <= 0){
+      setEmptyPasswordError(true);
+      setPasswordLoading(false);
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      setPasswordTooShort(true);
+      setPasswordLoading(false);
+      return;
+    }
+  
+    if (oldPassword === newPassword) {
+      setSamePassword(true);
+      message.warning("New password must be different from the current one.");
+      setPasswordLoading(false);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordConfirmError(true);
+      setPasswordLoading(false);
+      return;
+    }
+  
+    const { error } = await updatePassword(user.email!, oldPassword, newPassword);
+  
+    if (error) {
+      if (error.message.toLowerCase().includes("invalid login credentials")) {
+        setWrongPasswordError(true);
+      } else {
+        message.error("Something went wrong while updating your password.");
+      }
+    } else {
+      message.success("Password updated successfully!");
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    }
+  
+    setPasswordLoading(false);
+  };
+
+  const handlePasswordClear = () => {
+    setOldPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    setPasswordConfirmError(false);
+    setWrongPasswordError(false);
+    setEmptyPasswordError(false);
+    setPasswordTooShort(false);
+    setSamePassword(false);
+  }
+
+  // End of password change
 
   return (
-    <div className="site-layout-content" style={{ padding: '24px 0' }}>
-      {/* Profile title */}
-      <Title level={2} className="text-2xl font-bold">Profile</Title>
-      <p>Welcome to the Profile page of Spark!Bytes. Here you can find more information about your profile.</p>
+    <div className='my-6 w-full max-w-6xl mx-auto'>
+      {/** Header */}
+      <div className='mb-6'>
+        <div>
+          <h1 className='text-text-primary font-bold font-montserrat text-xl lg:text-3xl'>User Preferences</h1>
+          <p className='text-text-primary font-inter text-sm lg:text-base'>Manage your account settings</p>
+        </div>
+      </div>
 
-      {/* User information section */}
-      <Descriptions title="User Info" bordered>
-        <Descriptions.Item label="Username">{userInfo.username}</Descriptions.Item>
-        <Descriptions.Item label="BU Email">{userInfo.email}</Descriptions.Item>
-      </Descriptions>
+      {/** Change Name */}
+      <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 mb-10 shadow-lg'>
+        <div className='max-w-xl mx-auto'> 
+          <h1 className='text-text-primary font-bold font-montserrat text-xl mb-6'>Profile Information</h1>
 
-      {/* Statistics section */}
-      <Title level={3} style={{ marginTop: '20px' }}>Statistics</Title>
-      <Table dataSource={statisticsData} columns={columns} pagination={false} />
+          {/** Field Inputs */}
+          <div className=''>
+            <input
+              type="text"
+              name="first name"
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${nameError ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
+            />
+            <input
+              type="text"
+              name="last name"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${nameError ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
+            />
+          </div>
 
-      {/* Preferences section */}
-      <Title level={3} style={{ marginTop: '20px' }}>Preferences</Title>
-      <p>Preferences content goes here...</p>
+          {/** Errors and Buttons */}
+          {nameError && (
+            <p className="text-red-500 font-inter text-sm italic mb-4">
+              No changes detected or fields are empty.
+            </p>
+          )}
+          <div className='flex justify-end gap-4'>
+            <button 
+            onClick={handleSaveNameClear}
+            className='bg-white 
+            text-brand-primary 
+              font-poppins font-black 
+              py-1.5 px-5 
+              rounded-md border border-brand-primary
+              duration-300 ease-in hover:bg-brand-primary hover:text-white 
+              flex items-center justify-center'
+            
+            >
+              Cancel
+            </button>
+            <button 
+            onClick={handleSaveName}
+            className='bg-brand-primary 
+            text-white font-poppins font-black 
+              py-1.5 px-5 
+              rounded-md 
+              duration-300 ease-in hover:bg-hover-primary 
+              flex items-center justify-center'
+            
+            >
+              {loadingName ?  
+              <Loader className="animate-spin" size={30} style={{ animationDuration: '3s' }}/>
+              : 'Save'}
+            </button>
+          </div>
+        </div>
+      </div>
 
-      {/* Personal information section */}
-      <Title level={3} style={{ marginTop: '20px' }}>Personal Information</Title>
-      <p>Personal information content goes here...</p>
+      {/** Change Email */}
+      <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 shadow-lg'>
+        <div className='max-w-xl mx-auto'> 
+          <h1 className='text-text-primary font-bold font-montserrat text-xl mb-6'>Email Information</h1>
+
+          {/** Field Inputs */}
+          <div className=''>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => {
+                setEmailAlreadyUsed(false);
+                setNoEmail(false);
+                setEmail(e.target.value);
+                setInvalidEmailDomain(!e.target.value.toLowerCase().endsWith('@bu.edu'));
+              }}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${invalidEmailDomain || emailAlreadyUsed ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
+            />
+            <input
+              type="password"
+              name="email password"
+              placeholder="Current Password"
+              value={emailCurrentPass}
+              onChange={(e) => setEmailPass(e.target.value)}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${emailWrongPassword ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
+            />
+          </div>
+
+          {invalidEmailDomain && (
+            <p className="text-red-500 font-inter text-sm italic mb-1">
+              Email must be a BU email address.
+            </p>
+          )}
+
+          {emailAlreadyUsed && (
+            <p className="text-red-500 font-inter text-sm italic mb-1">
+              This email is already in use.
+            </p>
+          )}
+
+          {emailWrongPassword && (
+            <p className="text-red-500 font-inter text-sm italic mb-4">
+              Incorrect password. Please try again.
+            </p>
+          )}
+
+          {noEmail && (
+            <p className="text-red-500 font-inter text-sm italic mb-4">
+              Please enter a BU email.
+            </p>
+          )}
+
+          <div className='flex justify-end gap-4'>
+            <button 
+            onClick={handleEmailClear}
+            className='bg-white 
+            text-brand-primary 
+              font-poppins font-black 
+              py-1.5 px-5 
+              rounded-md border border-brand-primary
+              duration-300 ease-in hover:bg-brand-primary hover:text-white 
+              flex items-center justify-center'
+            
+            >
+              Cancel
+            </button>
+            <button 
+            onClick={handleUpdateEmail}
+            className='bg-brand-primary 
+            text-white font-poppins font-black 
+              py-1.5 px-5 
+              rounded-md 
+              duration-300 ease-in hover:bg-hover-primary 
+              flex items-center justify-center'
+            
+            >
+              {emailLoading ?  
+              <Loader className="animate-spin" size={30} style={{ animationDuration: '3s' }}/>
+              : 'Save'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/** Change Password */}
+      <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 mt-10 shadow-lg'>
+        <div className='max-w-xl mx-auto'> 
+          <h1 className='text-text-primary font-bold font-montserrat text-xl mb-6'>Change Password</h1>
+
+          {/** Field Inputs */}
+          <div className=''>
+            <input
+              type="password"
+              placeholder="Current Password"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
+                wrongPassword ? 'focus:border-red-500' : 'focus:border-text-primary'
+              } mb-4`}
+            />
+
+            <input
+              type="password"
+              placeholder="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
+                emptyPassword || passwordConfirmError ? 'focus:border-red-500' : 'focus:border-text-primary'
+              } mb-4`}
+            />
+
+            <input
+              type="password"
+              placeholder="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
+                passwordConfirmError ? 'focus:border-red-500' : 'focus:border-text-primary'
+              } mb-4`}
+            />
+          </div>
+
+          {wrongPassword && (
+            <p className="text-red-500 font-inter text-sm italic mb-2">Incorrect current password.</p>
+          )}
+          
+          {passwordConfirmError && (
+            <p className="text-red-500 font-inter text-sm italic mb-4">Passwords do not match.</p>
+          )}
+          
+          {emptyPassword && (
+            <p className="text-red-500 font-inter text-sm italic mb-4">Please enter a new password</p>
+          )}
+          
+          {passwordTooShort && (
+            <p className="text-red-500 font-inter text-sm italic mb-2">Password must be at least 8 characters long.</p>
+          )}
+
+          {samePassword && (
+            <p className="text-red-500 font-inter text-sm italic mb-2">New password must be different from current password.</p>
+          )}
+
+          <div className='flex justify-end gap-4'>
+            <button 
+              onClick={handlePasswordClear}
+              className='bg-white 
+              text-brand-primary 
+                font-poppins font-black 
+                py-1.5 px-5 
+                rounded-md border border-brand-primary
+                duration-300 ease-in hover:bg-brand-primary hover:text-white 
+                flex items-center justify-center'
+              
+              >
+                Cancel
+            </button>
+            <button 
+              onClick={handleChangePassword}
+              className='bg-brand-primary text-white font-poppins font-black py-1.5 px-5 rounded-md duration-300 ease-in hover:bg-hover-primary flex items-center justify-center'
+            >
+              {passwordLoading ?  
+                <Loader className="animate-spin" size={30} style={{ animationDuration: '3s' }} />
+                : 'Save'
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+
+
     </div>
   );
 };
