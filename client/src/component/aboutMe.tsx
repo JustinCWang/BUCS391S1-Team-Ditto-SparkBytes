@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 // Define an interface to specify the types of props that the AboutMe component will accept
 interface AboutMeProps {
   name: string;        // The name of the group member
@@ -13,7 +15,7 @@ const AboutMe: React.FC<AboutMeProps> = ({ name, bio, imageUrl, linkedIn }) => {
       <div className="border-2 border-text-primary rounded-lg px-4 py-8 shadow-lg">
         {/** Container for the actual image and text */}
         <div className="flex flex-col text-center">
-          <img 
+          <Image 
             src={imageUrl}
             alt={`${name}'s profile`}
             className="w-40 h-40 rounded-full object-cover mx-auto mb-4"

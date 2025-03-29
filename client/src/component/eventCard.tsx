@@ -7,7 +7,6 @@ function EventCard ({
   start_time,
   end_time,
   location,
-  description,
 }:EventProps) {
   return(
     <div className="border-2 border-text-primary rounded-lg px-4 py-2 shadow-lg">

@@ -69,7 +69,7 @@ const SignUpPage= () => {
         {/** Title and min-description */}
         <h2 className="text-3xl font-bold font-montserrat text-text-primary">Welcome to Spark!Bytes
         </h2>
-        <p className="text-sm font-inter mb-6">Use your "bu.edu" email address to make an account
+        <p className="text-sm font-inter mb-6">Use your &quot;bu.edu&quot; email address to make an account
         </p>
         {/** Actual form with the data */}
         <form

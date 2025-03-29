@@ -1,9 +1,8 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { supabase }  from '@/lib/supabase';
 
 import SecondaryButton from '@/component/secondaryButton';
 import EventCard from '@/component/eventCard';
