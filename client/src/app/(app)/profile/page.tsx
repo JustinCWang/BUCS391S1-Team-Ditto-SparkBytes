@@ -47,7 +47,7 @@ const Profile = () => {
     const fetchUserData = async () => {
       const { data, error } = await supabase
         .from('Users')
-        .select('first_name, last_name, bu_email')
+        .select('first_name, last_name, bu_email, phone_num')
         .eq('user_id', user?.id)
         .single();
   

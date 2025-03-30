@@ -1,8 +1,10 @@
 'use client'
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabase';
+import { EventProps } from '@/types/supabase';
 
 import SecondaryButton from '@/component/secondaryButton';
 import EventCard from '@/component/eventCard';
@@ -11,12 +13,32 @@ const Dashboard: React.FC = () => {
 
   const router = useRouter();
   const { user } = useAuth();
+  const [events, setEvents] = useState<EventProps[]>([]);
 
   useEffect(() => {
       if (!user) {
         router.push('/');
       }
   }, [router, user]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('Events')
+          .select('name, date, start_time, end_time, location, description')
+          .order('date', { ascending: false })
+          .limit(3);
+
+        if (error) throw error;
+        if (data) setEvents(data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
     <div className='my-6'>
@@ -32,30 +54,17 @@ const Dashboard: React.FC = () => {
 
       {/** 3 Events */}
       <div className='w-full max-w-6xl mx-auto grid mt-8 lg:grid-cols-3 gap-8'>
-        <EventCard 
-          name='Computer Science Department Seminar'
-          date='Tuesday, April 1, 2025'
-          start_time='12:00 PM'
-          end_time='1:30 PM'
-          location='CDS 201'
-          description='Join us for a talk on the latest advancements in AI and machine learning.'
-        />
-        <EventCard 
-          name='Computer Science Department Seminar'
-          date='Tuesday, April 1, 2025'
-          start_time='12:00 PM'
-          end_time='1:30 PM'
-          location='CDS 201'
-          description='Join us for a talk on the latest advancements in AI and machine learning.'
-        />
-        <EventCard 
-          name='Computer Science Department Seminar'
-          date='Tuesday, April 1, 2025'
-          start_time='12:00 PM'
-          end_time='1:30 PM'
-          location='CDS 201'
-          description='Join us for a talk on the latest advancements in AI and machine learning.'
-        />
+        {events.map((event, index) => (
+          <EventCard 
+            key={index}
+            name={event.name}
+            date={event.date}
+            start_time={event.start_time}
+            end_time={event.end_time}
+            location={event.location}
+            description={event.description}
+          />
+        ))}
       </div>
 
     </div>
