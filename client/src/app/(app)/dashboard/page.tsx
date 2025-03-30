@@ -26,7 +26,7 @@ const Dashboard: React.FC = () => {
       try {
         const { data, error } = await supabase
           .from('Events')
-          .select('name, date, start_time, end_time, location, description')
+          .select('name, date, start_time, end_time, location, description, food_type, building')
           .order('date', { ascending: false })
           .limit(3);
 
@@ -63,6 +63,8 @@ const Dashboard: React.FC = () => {
             end_time={event.end_time}
             location={event.location}
             description={event.description}
+            food_type={event.food_type}
+            building={event.building}
           />
         ))}
       </div>

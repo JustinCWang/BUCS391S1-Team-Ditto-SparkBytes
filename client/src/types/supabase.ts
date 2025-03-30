@@ -25,4 +25,6 @@ export type EventProps = {
   organizer_id?: string;
   food_type?: string;
   food_id?: string;
+  building?: string;
+  like_count?: number;
 }
