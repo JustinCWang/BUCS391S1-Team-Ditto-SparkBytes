@@ -23,8 +23,10 @@ export type EventProps = {
   location: string;
   description: string;
   organizer_id?: string;
-  food_type?: string;
   food_id?: string;
   building?: string;
   like_count?: number;
+  food_category?: string;
+  food_name?: string;
+  allergens?: string;
 }

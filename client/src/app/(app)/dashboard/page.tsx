@@ -26,12 +26,36 @@ const Dashboard: React.FC = () => {
       try {
         const { data, error } = await supabase
           .from('Events')
-          .select('name, date, start_time, end_time, location, description, food_type, building')
+          .select(`
+            name, 
+            date, 
+            start_time, 
+            end_time, 
+            location, 
+            description, 
+            building,
+            Food (
+              food_category,
+              name,
+              allergens
+            )
+          `)
           .order('date', { ascending: false })
           .limit(3);
 
-        if (error) throw error;
-        if (data) setEvents(data);
+        if (error) throw error
+        
+        if (data) {
+          const transformedData = data.map(event => {
+            return {
+              ...event,
+              food_category: event.Food?.food_category,
+              food_name: event.Food?.name,
+              allergens: event.Food?.allergens
+            };
+          });          
+          setEvents(transformedData);
+        }
       } catch (error) {
         console.error('Error fetching events:', error);
       }
@@ -63,8 +87,10 @@ const Dashboard: React.FC = () => {
             end_time={event.end_time}
             location={event.location}
             description={event.description}
-            food_type={event.food_type}
             building={event.building}
+            food_category={event.food_category}
+            food_name={event.food_name}
+            allergens={event.allergens}
           />
         ))}
       </div>

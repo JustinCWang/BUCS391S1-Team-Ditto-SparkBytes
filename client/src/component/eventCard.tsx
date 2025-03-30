@@ -8,8 +8,11 @@ function EventCard ({
   end_time,
   location,
   description, // Add in additional pop up when event is clicked on
-  food_type,
   building,
+  food_category,
+  food_name,
+  allergens,
+  like_count,
 }:EventProps) {
   return(
     <div className="border-2 border-text-primary rounded-lg px-4 py-2 shadow-lg">
@@ -28,9 +31,9 @@ function EventCard ({
           </div>
           <div className="flex mb-2">
             <UtensilsCrossed />
-            <p className="ml-1">Pizza</p>
+            <p className="ml-1">{food_name}</p>
           </div>
-          <p>Food Type: {food_type}</p>
+          <p>Allergens: {allergens}</p>
         </div>
         {/** Like and learn more */}
         <div className="flex justify-between items-center mt-4 mb-2">
