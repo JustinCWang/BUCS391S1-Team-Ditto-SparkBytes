@@ -14,7 +14,7 @@ export type SignInCredentials = {
   password: string;
 };
 
-export type EventProps = {
+export type EventBasicProps = {
   event_id?: string;
   name: string;
   date: string;
@@ -22,11 +22,19 @@ export type EventProps = {
   end_time: string;
   location: string;
   description: string;
-  organizer_id?: string;
-  food_id?: string;
   building?: string;
-  like_count?: number;
+  organizer_id?: string;
+}
+
+export type FoodProps = {
+  food_id?: string;
   food_category?: string;
   food_name?: string;
   allergens?: string;
 }
+
+export type LikeProps = {
+  like_count?: number;
+}
+
+export type EventCardProps = EventBasicProps & FoodProps & LikeProps;

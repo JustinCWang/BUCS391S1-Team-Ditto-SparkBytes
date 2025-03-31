@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { EventProps } from '@/types/supabase';
+import { EventCardProps } from '@/types/supabase';
 import EventCard from '@/component/eventCard';
 
 const ITEMS_PER_PAGE = 9; // Number of events per page
@@ -11,7 +11,7 @@ const ITEMS_PER_PAGE = 9; // Number of events per page
 const Events = () => {
   const router = useRouter();
   const { user } = useAuth();
-  const [events, setEvents] = useState<EventProps[]>([]);
+  const [events, setEvents] = useState<EventCardProps[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,45 +46,112 @@ const Events = () => {
           setTotalPages(Math.ceil(count / ITEMS_PER_PAGE));
         }
 
-        // Create separate query for fetching data
+        // Basic event info query
         let dataQuery = supabase
           .from('Events')
           .select(`
+            event_id,
+            food_id,
             name, 
             date, 
             start_time, 
             end_time, 
             location, 
             description, 
-            building,
-            Food (
-              food_category,
-              name,
-              allergens
-            )
+            building
           `);
 
-        // Add search filter to data query if search query exists
+        // Add search filter if exists
         if (searchQuery) {
           dataQuery = dataQuery.ilike('name', `%${searchQuery}%`);
         }
 
-        // Fetch paginated and filtered events
-        const { data, error } = await dataQuery
+        // Fetch paginated events
+        const { data: eventData, error: eventError } = await dataQuery
           .order('date', { ascending: false })
           .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1);
 
-        if (error) throw error;
-        
-        if (data) {
-          const transformedData = data.map(event => ({
-            ...event,
-            food_category: event.Food?.food_category,
-            food_name: event.Food?.name,
-            allergens: event.Food?.allergens
-          }));          
-          setEvents(transformedData);
+        if (eventError) {
+          console.error('Event fetch error:', eventError);
+          return;
         }
+
+        if (!eventData || eventData.length === 0) {
+          setEvents([]);
+          setIsLoading(false);
+          return;
+        }
+
+        // Get valid food IDs
+        const validFoodIds = eventData
+          .filter(event => event.food_id)
+          .map(event => event.food_id);
+
+        // Food info query
+        const { data: foodData, error: foodError } = await supabase
+          .from('Food')
+          .select(`
+            food_id,
+            food_category,
+            name,
+            allergens
+          `)
+          .in('food_id', validFoodIds);
+
+        if (foodError) {
+          console.error('Food fetch error:', foodError);
+        }
+
+        // Get likes count using group by
+        const { data: likesData, error: likesError } = await supabase
+          .from('Event_Likes')
+          .select('event_id, user_id.count()', { count: 'exact' })
+          .in('event_id', eventData.map(event => event.event_id));
+
+        console.log('Event IDs being queried:', eventData.map(event => event.event_id));
+
+        if (likesError) {
+          console.error('Likes fetch error:', likesError);
+          console.error('Full error details:', JSON.stringify(likesError, null, 2));
+        }
+
+        // Test if we can get any data from Event_Likes
+        const { data: testData, error: testError } = await supabase
+          .from('Event_Likes')
+          .select('*');
+
+        console.log('Test query of Event_Likes:', testData);
+        if (testError) {
+          console.error('Test query error:', testError);
+        }
+
+        console.log('Likes data:', likesData);
+
+        // Convert likes data to a lookup object
+        const likeCounts = likesData ? likesData.reduce((acc, like) => {
+          console.log('Like object:', like);
+          acc[like.event_id] = parseInt(like.count);
+          return acc;
+        }, {} as Record<string, number>) : {};
+
+        console.log('Final like counts:', likeCounts);
+
+        // Combine all the data
+        const combinedData = eventData.map(event => {
+          const foodInfo = foodData?.find(f => f.food_id === event.food_id) || {};
+          return {
+            ...event,
+            food_category: foodInfo.food_category || null,
+            food_name: foodInfo.name || null,
+            allergens: foodInfo.allergens || null,
+            like_count: likeCounts[event.event_id] || 0
+          };
+        });
+
+        // Add debug log for final combined data
+        console.log('Combined event data:', combinedData);
+
+        setEvents(combinedData);
       } catch (error) {
         console.error('Error fetching events:', error);
       } finally {
@@ -93,7 +160,7 @@ const Events = () => {
     };
 
     fetchEvents();
-  }, [currentPage, searchQuery]);
+  }, [currentPage, searchQuery]); // Dependencies for pagination and search
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -126,17 +193,18 @@ const Events = () => {
             <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
               {events.map((event, index) => (
                 <EventCard 
-                  key={index}
-                  name={event.name}
-                  date={event.date}
-                  start_time={event.start_time}
-                  end_time={event.end_time}
-                  location={event.location}
-                  description={event.description}
-                  building={event.building}
-                  food_category={event.food_category}
-                  food_name={event.food_name}
-                  allergens={event.allergens}
+                key={index}
+                name={event.name}
+                date={event.date}
+                start_time={event.start_time}
+                end_time={event.end_time}
+                location={event.location}
+                description={event.description}
+                building={event.building}
+                food_category={event.food_category}
+                food_name={event.food_name}
+                allergens={event.allergens}
+                like_count={event.like_count}
                 />
               ))}
             </div>

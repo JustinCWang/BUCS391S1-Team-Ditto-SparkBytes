@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { EventProps } from '@/types/supabase';
+import { EventCardProps } from '@/types/supabase';
 
 import SecondaryButton from '@/component/secondaryButton';
 import EventCard from '@/component/eventCard';
@@ -13,7 +13,7 @@ const Dashboard: React.FC = () => {
 
   const router = useRouter();
   const { user } = useAuth();
-  const [events, setEvents] = useState<EventProps[]>([]);
+  const [events, setEvents] = useState<EventCardProps[]>([]);
 
   useEffect(() => {
       if (!user) {
@@ -22,46 +22,120 @@ const Dashboard: React.FC = () => {
   }, [router, user]);
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchEventData = async () => {
       try {
-        const { data, error } = await supabase
+        // Basic event info query
+        const { data: eventData, error: eventError } = await supabase
           .from('Events')
           .select(`
+            event_id,
+            food_id,
             name, 
             date, 
             start_time, 
             end_time, 
             location, 
             description, 
-            building,
-            Food (
-              food_category,
-              name,
-              allergens
-            )
+            building
           `)
           .order('date', { ascending: false })
           .limit(3);
 
-        if (error) throw error;
-        
-        if (data) {
-          const transformedData = data.map(event => {
-            return {
-              ...event,
-              food_category: event.Food?.food_category,
-              food_name: event.Food?.name,
-              allergens: event.Food?.allergens
-            };
-          });          
-          setEvents(transformedData);
+        if (eventError) {
+          console.error('Event fetch error:', eventError);
+          return;
         }
+
+        if (!eventData || eventData.length === 0) {
+          console.log('No events found');
+          setEvents([]);
+          return;
+        }
+
+        // Get valid food IDs
+        const validFoodIds = eventData
+          .filter(event => event.food_id)
+          .map(event => event.food_id);
+
+        if (validFoodIds.length === 0) {
+          console.log('No valid food IDs found');
+          setEvents(eventData);
+          return;
+        }
+
+        // Food info query
+        const { data: foodData, error: foodError } = await supabase
+          .from('Food')
+          .select(`
+            food_id,
+            food_category,
+            name,
+            allergens
+          `)
+          .in('food_id', validFoodIds);
+
+        console.log(foodData);
+
+        if (foodError) {
+          console.error('Food fetch error:', foodError);
+          setEvents(eventData);
+          return;
+        }
+
+        // Get likes count using group by
+        const { data: likesData, error: likesError } = await supabase
+          .from('Event_Likes')
+          .select('event_id, user_id.count()', { count: 'exact' })
+          .in('event_id', eventData.map(event => event.event_id));
+
+        console.log('Event IDs being queried:', eventData.map(event => event.event_id));
+
+        if (likesError) {
+          console.error('Likes fetch error:', likesError);
+          console.error('Full error details:', JSON.stringify(likesError, null, 2));
+        }
+
+        // Test if we can get any data from Event_Likes
+        const { data: testData, error: testError } = await supabase
+          .from('Event_Likes')
+          .select('*');
+
+        console.log('Test query of Event_Likes:', testData);
+        if (testError) {
+          console.error('Test query error:', testError);
+        }
+
+        console.log('Likes data:', likesData);
+
+        // Convert likes data to a lookup object
+        const likeCounts = likesData ? likesData.reduce((acc, like) => {
+          console.log('Like object:', like);
+          acc[like.event_id] = parseInt(like.count);
+          return acc;
+        }, {} as Record<string, number>) : {};
+
+        console.log('Final like counts:', likeCounts);
+
+        // Combine all the data
+        const combinedData = eventData.map(event => {
+          const foodInfo = foodData?.find(f => f.food_id === event.food_id) || {};
+          return {
+            ...event,
+            food_category: foodInfo.food_category || null,
+            food_name: foodInfo.name || null,
+            allergens: foodInfo.allergens || null,
+            like_count: likeCounts[event.event_id] || 0
+          };
+        });
+
+        setEvents(combinedData);
       } catch (error) {
-        console.error('Error fetching events:', error);
+        console.error('Unexpected error:', error);
+        console.log('Full error object:', JSON.stringify(error, null, 2));
       }
     };
 
-    fetchEvents();
+    fetchEventData();
   }, []);
 
   return (
@@ -91,6 +165,7 @@ const Dashboard: React.FC = () => {
             food_category={event.food_category}
             food_name={event.food_name}
             allergens={event.allergens}
+            like_count={event.like_count}
           />
         ))}
       </div>

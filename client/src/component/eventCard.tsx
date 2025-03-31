@@ -1,19 +1,20 @@
-import { EventProps } from "@/types/supabase"
+import { EventCardProps } from "@/types/supabase"
 import { MapPin, UtensilsCrossed, Heart } from "lucide-react"
 
-function EventCard ({
+function EventCard({
+  // Event basic info
   name,
   date,
   start_time,
   end_time,
   location,
-  description, // Add in additional pop up when event is clicked on
   building,
-  food_category,
+  // Food info
   food_name,
   allergens,
-  like_count,
-}:EventProps) {
+  // Like info
+  like_count = 0, // Default value if not provided
+}: EventCardProps) {
   return(
     <div className="border-2 border-text-primary rounded-lg px-4 py-2 shadow-lg">
       {/** Container for the actual image and text */}
@@ -39,7 +40,7 @@ function EventCard ({
         <div className="flex justify-between items-center mt-4 mb-2">
           <div className="flex text-text-primary font-inter">
             <Heart />
-            <p className="ml-1">300 Students Liked</p>
+            <p className="ml-1">{like_count} Students Liked</p>
           </div>
           <button className="bg-white 
         text-brand-primary 
