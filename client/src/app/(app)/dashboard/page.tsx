@@ -43,7 +43,7 @@ const Dashboard: React.FC = () => {
           .order('date', { ascending: false })
           .limit(3);
 
-        if (error) throw error
+        if (error) throw error;
         
         if (data) {
           const transformedData = data.map(event => {

@@ -15,6 +15,8 @@ const Events = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+
 
   useEffect(() => {
     if (!user) {
@@ -25,17 +27,8 @@ const Events = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        // First get total count of events
-        const { count } = await supabase
-          .from('Events')
-          .select('*', { count: 'exact', head: true });
-
-        if (count) {
-          setTotalPages(Math.ceil(count / ITEMS_PER_PAGE));
-        }
-
-        // Then fetch paginated events
-        const { data, error } = await supabase
+        // Create base query
+        let query = supabase
           .from('Events')
           .select(`
             name, 
@@ -50,7 +43,22 @@ const Events = () => {
               name,
               allergens
             )
-          `)
+          `);
+
+        // Add search filter if search query exists
+        if (searchQuery) {
+          query = query.ilike('name', `%${searchQuery}%`);
+        }
+
+        // Get total count with search filter
+        const { count } = await query.select('*', { count: 'exact', head: true });
+
+        if (count) {
+          setTotalPages(Math.ceil(count / ITEMS_PER_PAGE));
+        }
+
+        // Fetch paginated and filtered events
+        const { data, error } = await query
           .order('date', { ascending: false })
           .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1);
 
@@ -73,7 +81,12 @@ const Events = () => {
     };
 
     fetchEvents();
-  }, [currentPage]);
+  }, [currentPage, searchQuery]); // Add searchQuery as dependency
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
 
   return (
     <div className='my-6 px-4'>
@@ -81,6 +94,17 @@ const Events = () => {
         <h1 className='text-text-primary font-bold font-montserrat text-xl lg:text-3xl mb-8'>
           All Events
         </h1>
+
+        {/* Search Bar TODO: Add Design based on Figma */}
+        <div className='mb-8'>
+          <input
+            type="text"
+            placeholder="Search events..."
+            value={searchQuery}
+            onChange={handleSearch}
+            className='w-full max-w-md px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+          />
+        </div>
 
         {isLoading ? (
           <div>Loading...</div>
