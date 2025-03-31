@@ -27,8 +27,27 @@ const Events = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        // Create base query
-        let query = supabase
+        // First create a query for counting
+        let countQuery = supabase
+          .from('Events')
+          .select('*', { count: 'exact' });
+
+        // Add search filter to count query if search query exists
+        if (searchQuery) {
+          countQuery = countQuery.ilike('name', `%${searchQuery}%`);
+        }
+
+        // Get total count
+        const { count, error: countError } = await countQuery;
+        
+        if (countError) throw countError;
+
+        if (count) {
+          setTotalPages(Math.ceil(count / ITEMS_PER_PAGE));
+        }
+
+        // Create separate query for fetching data
+        let dataQuery = supabase
           .from('Events')
           .select(`
             name, 
@@ -45,20 +64,13 @@ const Events = () => {
             )
           `);
 
-        // Add search filter if search query exists
+        // Add search filter to data query if search query exists
         if (searchQuery) {
-          query = query.ilike('name', `%${searchQuery}%`);
-        }
-
-        // Get total count with search filter
-        const { count } = await query.select('*', { count: 'exact', head: true });
-
-        if (count) {
-          setTotalPages(Math.ceil(count / ITEMS_PER_PAGE));
+          dataQuery = dataQuery.ilike('name', `%${searchQuery}%`);
         }
 
         // Fetch paginated and filtered events
-        const { data, error } = await query
+        const { data, error } = await dataQuery
           .order('date', { ascending: false })
           .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1);
 
@@ -81,7 +93,7 @@ const Events = () => {
     };
 
     fetchEvents();
-  }, [currentPage, searchQuery]); // Add searchQuery as dependency
+  }, [currentPage, searchQuery]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
