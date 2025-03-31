@@ -130,7 +130,7 @@ const Events = () => {
         // Convert likes data to a lookup object
         const likeCounts = likesData ? likesData.reduce((acc, like) => {
           console.log('Like object:', like);
-          acc[like.event_id] = parseInt(like.count);
+          acc[like.event_id] = like.count;
           return acc;
         }, {} as Record<string, number>) : {};
 
