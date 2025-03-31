@@ -8,6 +8,14 @@ import EventCard from '@/component/eventCard';
 
 const ITEMS_PER_PAGE = 9; // Number of events per page
 
+// Add this type near the top of the file
+type FoodInfo = {
+  food_id?: string;
+  food_category?: string | null;
+  name?: string | null;
+  allergens?: string | null;
+};
+
 const Events = () => {
   const router = useRouter();
   const { user } = useAuth();
@@ -138,12 +146,12 @@ const Events = () => {
 
         // Combine all the data
         const combinedData = eventData.map(event => {
-          const foodInfo = foodData?.find(f => f.food_id === event.food_id) || {};
+          const foodInfo = (foodData?.find(f => f.food_id === event.food_id) || {}) as FoodInfo;
           return {
             ...event,
-            food_category: foodInfo.food_category || null,
-            food_name: foodInfo.name || null,
-            allergens: foodInfo.allergens || null,
+            food_category: foodInfo.food_category || undefined,
+            food_name: foodInfo.name || undefined,
+            allergens: foodInfo.allergens || undefined,
             like_count: likeCounts[event.event_id] || 0
           };
         });

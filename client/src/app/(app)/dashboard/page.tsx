@@ -9,6 +9,14 @@ import { EventCardProps } from '@/types/supabase';
 import SecondaryButton from '@/component/secondaryButton';
 import EventCard from '@/component/eventCard';
 
+// Add this type near the top of the file
+type FoodInfo = {
+  food_id?: string;
+  food_category?: string | null;
+  name?: string | null;
+  allergens?: string | null;
+};
+
 const Dashboard: React.FC = () => {
 
   const router = useRouter();
@@ -118,12 +126,12 @@ const Dashboard: React.FC = () => {
 
         // Combine all the data
         const combinedData = eventData.map(event => {
-          const foodInfo = foodData?.find(f => f.food_id === event.food_id) || {};
+          const foodInfo = (foodData?.find(f => f.food_id === event.food_id) || {}) as FoodInfo;
           return {
             ...event,
-            food_category: foodInfo.food_category || null,
-            food_name: foodInfo.name || null,
-            allergens: foodInfo.allergens || null,
+            food_category: foodInfo.food_category || undefined,
+            food_name: foodInfo.name || undefined,
+            allergens: foodInfo.allergens || undefined,
             like_count: likeCounts[event.event_id] || 0
           };
         });
