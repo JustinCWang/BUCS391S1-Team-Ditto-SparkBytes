@@ -176,7 +176,7 @@ const Dashboard: React.FC = () => {
 
       {/** 3 Events */}
       {isLoading ? (
-        <div className="w-full flex justify-center items-center" style={{ height: '50vh' }}>
+        <div className="w-full flex justify-center items-center h-[50vh]">
           <Loader className="animate-spin text-brand-primary" size={32} style={{ animationDuration: '3s' }} />
         </div>
       ) : (

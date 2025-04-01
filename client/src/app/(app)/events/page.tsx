@@ -299,7 +299,7 @@ const Events = () => {
         />
 
         {isLoading ? (
-          <div className="flex justify-center items-center py-20">
+          <div className="w-full flex justify-center items-center h-[50vh]">
             <Loader className="animate-spin text-brand-primary" size={40} style={{ animationDuration: '3s' }} />
           </div>
         ) : (
