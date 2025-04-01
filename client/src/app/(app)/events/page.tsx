@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { EventCardProps } from '@/types/supabase';
 import EventCard from '@/component/eventCard';
+import EventFilter, { FilterState } from '@/component/EventFilter';
 
 const ITEMS_PER_PAGE = 9; // Number of events per page
 
@@ -24,7 +25,25 @@ const Events = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<FilterState>({
+    date: 'any',
+    location: '',
+    allergies: {
+      dairy: false,
+      treeNuts: false,
+      pescatarian: false,
+      glutenFree: false,
+      shellfish: false,
+      soy: false,
+      vegan: false,
+      kosher: false,
+      eggs: false,
+      peanuts: false,
+      vegetarian: false,
+      halal: false,
+    },
+  });
 
   useEffect(() => {
     if (!user) {
@@ -43,6 +62,27 @@ const Events = () => {
         // Add search filter to count query if search query exists
         if (searchQuery) {
           countQuery = countQuery.ilike('name', `%${searchQuery}%`);
+        }
+
+        // Add date filters
+        if (activeFilters.date === 'today') {
+          const today = new Date().toISOString().split('T')[0];
+          countQuery = countQuery.eq('date', today);
+        } else if (activeFilters.date === 'this_week') {
+          const today = new Date();
+          const weekStart = new Date(today);
+          weekStart.setDate(today.getDate() - today.getDay());
+          const weekEnd = new Date(today);
+          weekEnd.setDate(today.getDate() + (6 - today.getDay()));
+          
+          countQuery = countQuery
+            .gte('date', weekStart.toISOString().split('T')[0])
+            .lte('date', weekEnd.toISOString().split('T')[0]);
+        }
+
+        // Add location filter
+        if (activeFilters.location) {
+          countQuery = countQuery.eq('building', activeFilters.location);
         }
 
         // Get total count
@@ -72,6 +112,27 @@ const Events = () => {
         // Add search filter if exists
         if (searchQuery) {
           dataQuery = dataQuery.ilike('name', `%${searchQuery}%`);
+        }
+
+        // Add date filters
+        if (activeFilters.date === 'today') {
+          const today = new Date().toISOString().split('T')[0];
+          dataQuery = dataQuery.eq('date', today);
+        } else if (activeFilters.date === 'this_week') {
+          const today = new Date();
+          const weekStart = new Date(today);
+          weekStart.setDate(today.getDate() - today.getDay());
+          const weekEnd = new Date(today);
+          weekEnd.setDate(today.getDate() + (6 - today.getDay()));
+          
+          dataQuery = dataQuery
+            .gte('date', weekStart.toISOString().split('T')[0])
+            .lte('date', weekEnd.toISOString().split('T')[0]);
+        }
+
+        // Add location filter
+        if (activeFilters.location) {
+          dataQuery = dataQuery.eq('building', activeFilters.location);
         }
 
         // Fetch paginated events
@@ -159,7 +220,21 @@ const Events = () => {
         // Add debug log for final combined data
         console.log('Combined event data:', combinedData);
 
-        setEvents(combinedData);
+        // After fetching food data, filter out events with excluded allergens
+        const activeAllergens = Object.entries(activeFilters.allergies)
+          .filter(([, isExcluded]) => isExcluded)
+          .map(([allergen]) => allergen.toLowerCase());
+
+        let filteredData = [...combinedData];
+        if (activeAllergens.length > 0) {
+          filteredData = filteredData.filter(event => {
+            if (!event.allergens) return true;
+            const eventAllergens = event.allergens.toLowerCase().split(',').map(a => a.trim());
+            return !activeAllergens.some(allergen => eventAllergens.includes(allergen));
+          });
+        }
+
+        setEvents(filteredData);
       } catch (error) {
         console.error('Error fetching events:', error);
       } finally {
@@ -168,7 +243,7 @@ const Events = () => {
     };
 
     fetchEvents();
-  }, [currentPage, searchQuery]); // Dependencies for pagination and search
+  }, [currentPage, searchQuery, activeFilters]); // Added activeFilters as dependency
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -178,11 +253,19 @@ const Events = () => {
   return (
     <div className='my-6 px-4'>
       <div className='w-full max-w-6xl mx-auto'>
-        <h1 className='text-text-primary font-bold font-montserrat text-xl lg:text-3xl mb-8'>
-          All Events
-        </h1>
+        <div className='flex justify-between items-center mb-8'>
+          <h1 className='text-text-primary font-bold font-montserrat text-xl lg:text-3xl'>
+            All Events
+          </h1>
+          <button
+            onClick={() => setIsFilterOpen(true)}
+            className='px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-500'
+          >
+            Filter Events
+          </button>
+        </div>
 
-        {/* Search Bar TODO: Add Design based on Figma */}
+        {/* Search Bar */}
         <div className='mb-8'>
           <input
             type="text"
@@ -192,6 +275,17 @@ const Events = () => {
             className='w-full max-w-md px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
         </div>
+
+        {/* Filter Modal */}
+        <EventFilter
+          isOpen={isFilterOpen}
+          onClose={() => setIsFilterOpen(false)}
+          onApply={(filters) => {
+            setActiveFilters(filters);
+            setCurrentPage(1);
+            setIsFilterOpen(false);
+          }}
+        />
 
         {isLoading ? (
           <div>Loading...</div>
