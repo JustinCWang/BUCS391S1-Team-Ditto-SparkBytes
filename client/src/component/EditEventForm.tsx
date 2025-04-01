@@ -175,7 +175,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6">
         <div>
-          <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Editing "{eventData.name}"</h2>
+          <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Editing &quot;{eventData.name}&quot;</h2>
           <p className="text-text-primary font-inter text-xs lg:text-base mb-6">Update your event details.</p>
         </div>
 

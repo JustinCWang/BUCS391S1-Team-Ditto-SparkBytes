@@ -183,7 +183,6 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
           {/* Buttons */}
           <div className="flex justify-end gap-4 pt-4">
             <button
-              type="button"
               onClick={onClose}
               className="bg-white 
                 text-brand-primary 
@@ -196,7 +195,7 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
               Cancel
             </button>
             <button
-              type="submit"
+              onClick={handleApply}
               className="bg-brand-primary 
                 text-white font-poppins font-black 
                 py-1.5 px-5 
