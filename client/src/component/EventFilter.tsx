@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 interface FilterProps {
   isOpen: boolean;
@@ -40,6 +40,25 @@ const LOCATION_OPTIONS = [
 ];
 
 const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
+
+  const formStyle = "text-text-primary font-bold font-montserrat text-base"
+
+  // Prevents the user from scrolling
+  useEffect(() => {
+    if (isOpen) {
+      // Disable scroll
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Re-enable scroll
+      document.body.style.overflow = '';
+    }
+  
+    // Clean up when modal unmounts
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const [filters, setFilters] = React.useState<FilterState>({
     date: 'any',
     location: '',
@@ -67,23 +86,23 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-[400px] max-w-[90%]">
-        <h2 className="text-2xl font-bold mb-4">Filter Events</h2>
-        <p className="text-sm text-gray-600 mb-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6">
+        <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Filter Events</h2>
+        <p className="text-text-primary font-inter text-xs lg:text-base mb-6">
           Set filters to find events that match your preferences.
         </p>
 
         {/* Date Section */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Date</h3>
+          <h3 className={formStyle}>Date</h3>
           <div className="space-y-2">
             {[
               { value: 'any', label: 'Any date' },
               { value: 'today', label: 'Today' },
               { value: 'this_week', label: 'This week' },
             ].map((option) => (
-              <label key={option.value} className="flex items-center">
+              <label key={option.value} className="flex items-center font-poppins text-text-primary">
                 <input
                   type="radio"
                   name="date"
@@ -102,9 +121,9 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
 
         {/* Location Section */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Location</h3>
+          <h3 className={formStyle}>Location</h3>
           <div className="space-y-2 max-h-48 overflow-y-auto">
-            <label className="flex items-center">
+            <label className="flex items-center font-poppins text-text-primary">
               <input
                 type="radio"
                 name="location"
@@ -118,7 +137,7 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
               Any Location
             </label>
             {LOCATION_OPTIONS.map((option) => (
-              <label key={option.value} className="flex items-center">
+              <label key={option.value} className="flex items-center font-poppins text-text-primary">
                 <input
                   type="radio"
                   name="location"
@@ -137,13 +156,10 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
 
         {/* Allergies Section */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Exclude Allergies</h3>
-          <p className="text-sm text-gray-600 mb-2">
-            Events containing these allergens will be hidden.
-          </p>
+          <h3 className={formStyle}>Exclude Allergies</h3>
           <div className="grid grid-cols-2 gap-2">
             {Object.entries(filters.allergies).map(([key, value]) => (
-              <label key={key} className="flex items-center">
+              <label key={key} className="flex items-center font-poppins text-text-primary">
                 <input
                   type="checkbox"
                   checked={value}
@@ -164,21 +180,33 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
           </div>
         </div>
 
-        {/* Buttons */}
-        <div className="flex justify-between">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleApply}
-            className="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-500"
-          >
-            Apply filters
-          </button>
-        </div>
+          {/* Buttons */}
+          <div className="flex justify-end gap-4 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-white 
+                text-brand-primary 
+                font-poppins font-black 
+                py-1.5 px-5 
+                rounded-md border border-brand-primary
+                duration-300 ease-in hover:bg-brand-primary hover:text-white 
+                flex items-center justify-center text-sm sm:text-base"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="bg-brand-primary 
+                text-white font-poppins font-black 
+                py-1.5 px-5 
+                rounded-md 
+                duration-300 ease-in hover:bg-hover-primary 
+                flex items-center justify-center text-sm sm:text-base"
+            >
+              Apply Filters
+            </button>
+          </div>
       </div>
     </div>
   );

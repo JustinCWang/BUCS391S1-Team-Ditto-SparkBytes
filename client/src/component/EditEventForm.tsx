@@ -28,6 +28,26 @@ interface EventFormData {
 
 const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSuccess, eventData }) => {
   const { user } = useAuth();
+
+  const inputStyle = "w-full font-inter border border-gray-300 px-4 py-2 mt-2 rounded-md focus:outline-none focus:border-text-primary";
+  const formStyle = "text-text-primary font-bold font-montserrat text-base"
+
+  // Prevents the user from scrolling
+  useEffect(() => {
+    if (isOpen) {
+      // Disable scroll
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Re-enable scroll
+      document.body.style.overflow = '';
+    }
+  
+    // Clean up when modal unmounts
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const [formData, setFormData] = useState<EventFormData>({
     name: '',
     description: '',
@@ -152,56 +172,59 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-[500px] max-w-[90%] max-h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-2">Edit Event</h2>
-        <p className="text-gray-600 mb-6">Update your event details.</p>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6">
+        <div>
+          <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Editing "{eventData.name}"</h2>
+          <p className="text-text-primary font-inter text-xs lg:text-base mb-6">Update your event details.</p>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          
           {/* Title */}
           <div>
-            <label className="block font-medium mb-1">Title</label>
+            <label className={formStyle}>Title</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full p-2 border rounded-md"
+              className={inputStyle}
               required
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block font-medium mb-1">Description</label>
+            <label className={formStyle}>Description</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full p-2 border rounded-md"
+              className={inputStyle}
               rows={3}
               required
             />
           </div>
 
           {/* Date and Time */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block font-medium mb-1">Date</label>
+          <div className="grid grid-cols-1 gap-4">
+            <div className='flex flex-col'>
+              <label className={formStyle}>Date</label>
               <DatePicker
                 selected={formData.date}
                 onChange={(date: Date | null) => setFormData({ ...formData, date: date })}
-                className="w-full p-2 border rounded-md"
+                className={inputStyle}
                 placeholderText="Select a Date"
                 required
               />
             </div>
             <div className="space-y-2">
-              <label className="block font-medium">Time</label>
-              <div className="flex items-center gap-2">
+              <label className={formStyle}>Time</label>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                 <input
                   type="time"
                   value={formData.start_time}
                   onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
-                  className="flex-1 p-2 border rounded-md"
+                  className={inputStyle}
                   required
                 />
                 <span>To</span>
@@ -209,7 +232,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
                   type="time"
                   value={formData.end_time}
                   onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
-                  className="flex-1 p-2 border rounded-md"
+                  className={inputStyle}
                   required
                 />
               </div>
@@ -218,12 +241,12 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
 
           {/* Location */}
           <div>
-            <label className="block font-medium mb-1">Location</label>
+            <label className={formStyle}>Location</label>
             <input
               type="text"
               value={formData.location}
               onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              className="w-full p-2 border rounded-md"
+              className={inputStyle}
               placeholder="e.g., CDS 201"
               required
             />
@@ -231,12 +254,12 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
 
           {/* Building Code */}
           <div>
-            <label className="block font-medium mb-1">Building Code</label>
+            <label className={formStyle}>Building Code</label>
             <input
               type="text"
               value={formData.building}
               onChange={(e) => setFormData({ ...formData, building: e.target.value.toUpperCase() })}
-              className="w-full p-2 border rounded-md"
+              className={inputStyle}
               placeholder="e.g., CAS"
               maxLength={3}
               required
@@ -245,12 +268,12 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
 
           {/* Food Available */}
           <div>
-            <label className="block font-medium mb-1">Food Available</label>
+            <label className={formStyle}>Food Available</label>
             <input
               type="text"
               value={formData.food_name}
               onChange={(e) => setFormData({ ...formData, food_name: e.target.value })}
-              className="w-full p-2 border rounded-md"
+              className={inputStyle}
               placeholder="e.g., Pizza and Salad"
               required
             />
@@ -258,10 +281,10 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
 
           {/* Allergies */}
           <div>
-            <label className="block font-medium mb-2">Allergies</label>
-            <div className="grid grid-cols-2 gap-2">
+            <label className={formStyle}>Allergies</label>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {allergenOptions.map((allergen) => (
-                <label key={allergen} className="flex items-center">
+                <label key={allergen} className="flex items-center font-poppins text-text-primary">
                   <input
                     type="checkbox"
                     checked={formData.allergens.includes(allergen)}
@@ -275,26 +298,35 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-between pt-4">
-            <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row pt-4 w-full items-center justify-center gap-4 sm:gap-8">
+            {/* Cancel + Delete */}
+            <div className="flex flex-col sm:flex-row gap-2 w-full items-center justify-center">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50"
+                className="w-full bg-white text-brand-primary font-poppins font-black py-1.5 px-5 
+                          rounded-md border border-brand-primary duration-300 ease-in 
+                          hover:bg-brand-primary hover:text-white flex items-center justify-center"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                className="w-full bg-white text-brand-primary font-poppins font-black py-1.5 px-5 
+                          rounded-md border border-brand-primary duration-300 ease-in 
+                          hover:bg-brand-primary hover:text-white flex items-center justify-center"
               >
                 Delete Event
               </button>
             </div>
+
+            {/* Save Button */}
             <button
               type="submit"
-              className="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-500"
+              className="w-full sm:w-[50%] bg-brand-primary text-white font-poppins font-black py-1.5 px-5 
+                        rounded-md duration-300 ease-in hover:bg-hover-primary 
+                        flex items-center justify-center"
             >
               Save Changes
             </button>
