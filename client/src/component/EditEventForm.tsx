@@ -122,6 +122,33 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
     }
   };
 
+  const handleDelete = async () => {
+    if (!user || !formData.event_id || !formData.food_id) return;
+
+    try {
+      // Delete the food entry first (due to foreign key constraint)
+      const { error: foodError } = await supabase
+        .from('Food')
+        .delete()
+        .eq('food_id', formData.food_id);
+
+      if (foodError) throw foodError;
+
+      // Delete the event
+      const { error: eventError } = await supabase
+        .from('Events')
+        .delete()
+        .eq('event_id', formData.event_id);
+
+      if (eventError) throw eventError;
+
+      onSuccess?.();
+      onClose();
+    } catch (error) {
+      console.error('Error deleting event:', error);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -249,13 +276,22 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
 
           {/* Buttons */}
           <div className="flex justify-between pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50"
-            >
-              Cancel
-            </button>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+              >
+                Delete Event
+              </button>
+            </div>
             <button
               type="submit"
               className="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-500"

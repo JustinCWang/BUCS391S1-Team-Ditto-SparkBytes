@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -47,7 +47,7 @@ const Events = () => {
     },
   });
 
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     try {
       setIsLoading(true);
       // First create a query for counting
@@ -214,7 +214,7 @@ const Events = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentPage, searchQuery, activeFilters]);
 
   useEffect(() => {
     if (!user) {
@@ -224,7 +224,7 @@ const Events = () => {
 
   useEffect(() => {
     fetchEvents();
-  }, [currentPage, searchQuery, activeFilters]);
+  }, [fetchEvents]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
