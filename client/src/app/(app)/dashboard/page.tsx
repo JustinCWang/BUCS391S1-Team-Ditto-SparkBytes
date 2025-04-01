@@ -8,6 +8,7 @@ import { EventCardProps } from '@/types/supabase';
 
 import SecondaryButton from '@/component/secondaryButton';
 import EventCard from '@/component/eventCard';
+import { Loader } from 'lucide-react';
 
 // Add this type near the top of the file
 type FoodInfo = {
@@ -22,6 +23,7 @@ const Dashboard: React.FC = () => {
   const router = useRouter();
   const { user } = useAuth();
   const [events, setEvents] = useState<EventCardProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
       if (!user) {
@@ -32,6 +34,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchEventData = async () => {
       try {
+        setIsLoading(true);
         // Basic event info query
         const { data: eventData, error: eventError } = await supabase
           .from('Events')
@@ -50,11 +53,13 @@ const Dashboard: React.FC = () => {
           .limit(3);
 
         if (eventError) {
+          setIsLoading(false);
           console.error('Event fetch error:', eventError);
           return;
         }
 
         if (!eventData || eventData.length === 0) {
+          setIsLoading(false);
           console.log('No events found');
           setEvents([]);
           return;
@@ -66,6 +71,7 @@ const Dashboard: React.FC = () => {
           .map(event => event.food_id);
 
         if (validFoodIds.length === 0) {
+          setIsLoading(false);
           console.log('No valid food IDs found');
           setEvents(eventData);
           return;
@@ -85,6 +91,7 @@ const Dashboard: React.FC = () => {
         console.log(foodData);
 
         if (foodError) {
+          setIsLoading(false);
           console.error('Food fetch error:', foodError);
           setEvents(eventData);
           return;
@@ -136,8 +143,10 @@ const Dashboard: React.FC = () => {
           };
         });
 
+        setIsLoading(false);
         setEvents(combinedData);
       } catch (error) {
+        setIsLoading(false);
         console.error('Unexpected error:', error);
         console.log('Full error object:', JSON.stringify(error, null, 2));
       }
@@ -150,18 +159,30 @@ const Dashboard: React.FC = () => {
     <div className='my-6'>
       
       {/** Header */}
-      <div className='w-full max-w-6xl mx-auto flex justify-between items-center'>
+      <div className='w-full max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4'>
         <div>
-          <h1 className='text-text-primary font-bold font-montserrat text-xl lg:text-3xl'>Upcoming Events</h1>
-          <p className='text-text-primary font-inter text-sm lg:text-base'>Get some free food!</p>
+          <h1 className='text-text-primary font-bold font-montserrat text-2xl lg:text-3xl'>Upcoming Events</h1>
+          <p className='text-text-primary font-inter text-xs lg:text-base'>Get some free food!</p>
         </div>
-          <SecondaryButton text='View All' linkTo='/events' styling='text-xs sm:text-lg'/>
+
+        <div className='w-full lg:w-auto'>
+          <SecondaryButton 
+            text='View All' 
+            linkTo='/events' 
+            styling='py-3 w-full sm:w-auto' 
+          />
+        </div>
       </div>
 
       {/** 3 Events */}
-      <div className='w-full max-w-6xl mx-auto grid mt-8 lg:grid-cols-3 gap-8'>
-        {events.map((event, index) => (
-          <EventCard 
+      {isLoading ? (
+        <div className="w-full flex justify-center items-center" style={{ height: '50vh' }}>
+          <Loader className="animate-spin text-brand-primary" size={32} style={{ animationDuration: '3s' }} />
+        </div>
+      ) : (
+        <div className='w-full max-w-6xl mx-auto grid mt-8 lg:grid-cols-3 gap-8'>
+          {events.map((event, index) => (
+            <EventCard 
             key={index}
             name={event.name}
             date={event.date}
@@ -175,8 +196,9 @@ const Dashboard: React.FC = () => {
             allergens={event.allergens}
             like_count={event.like_count}
           />
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
     </div>
   );

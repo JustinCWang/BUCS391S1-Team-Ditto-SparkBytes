@@ -7,6 +7,7 @@ import { EventCardProps } from '@/types/supabase';
 import EventCard from '@/component/eventCard';
 import EventFilter, { FilterState } from '@/component/EventFilter';
 import CreateEventForm from '@/component/CreateEventForm';
+import { Loader } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 9; // Number of events per page
 
@@ -232,38 +233,48 @@ const Events = () => {
   };
 
   return (
-    <div className='my-6 px-4'>
+    <div className='my-6'>
       <div className='w-full max-w-6xl mx-auto'>
         <div className='flex justify-between items-center mb-8'>
-          <h1 className='text-text-primary font-bold font-montserrat text-xl lg:text-3xl'>
-            All Events
-          </h1>
-          <div className='flex gap-4'>
+          <div>
+            <h1 className='text-text-primary font-bold font-montserrat text-2xl lg:text-3xl'>
+              Events with Free Food
+            </h1>
+            <p className='text-text-primary font-inter text-xs lg:text-base'>
+              Browse upcoming events at Boston University offering free food and snacks.
+            </p>
+          </div>
+        </div>
+
+        <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4'>
+          {/* Search Input */}
+          <div className='w-full md:max-w-2xl'>
+            <input
+              type="text"
+              placeholder="Search events..."
+              value={searchQuery}
+              onChange={handleSearch}
+              className='w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:border-text-primary'
+            />
+          </div>
+
+          {/* Buttons */}
+          <div className='w-full flex flex-col sm:flex-row gap-4'>
             <button
               onClick={() => setIsFilterOpen(true)}
-              className='px-4 py-2 border border-red-400 text-red-400 rounded-md hover:bg-red-50'
+              className='bg-white text-brand-primary font-poppins font-black py-3 px-5 rounded-md border border-brand-primary duration-300 ease-in hover:bg-brand-primary hover:text-white flex items-center justify-center w-full'
             >
               Filter Events
             </button>
             <button
               onClick={() => setIsCreateEventOpen(true)}
-              className='px-4 py-2 bg-red-400 text-white rounded-md hover:bg-red-500'
+              className='bg-brand-primary text-white font-poppins font-black py-3 px-5 rounded-md duration-300 ease-in hover:bg-hover-primary flex items-center justify-center w-full'
             >
               Post an Event
             </button>
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className='mb-8'>
-          <input
-            type="text"
-            placeholder="Search events..."
-            value={searchQuery}
-            onChange={handleSearch}
-            className='w-full max-w-md px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-          />
-        </div>
 
         {/* Filter Modal */}
         <EventFilter
@@ -288,7 +299,9 @@ const Events = () => {
         />
 
         {isLoading ? (
-          <div>Loading...</div>
+          <div className="flex justify-center items-center py-20">
+            <Loader className="animate-spin text-brand-primary" size={40} style={{ animationDuration: '3s' }} />
+          </div>
         ) : (
           <>
             {/* Events Grid */}
@@ -303,21 +316,27 @@ const Events = () => {
             </div>
 
             {/* Pagination Controls */}
-            <div className='flex justify-center gap-2 mt-8'>
+            <div className="flex flex-row justify-center items-center gap-4 mt-8">
               <button 
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className='px-4 py-2 border rounded-md disabled:opacity-50'
+                className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
+                          text-brand-primary hover:bg-brand-primary hover:text-white 
+                          disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 Previous
               </button>
-              <span className='px-4 py-2'>
+
+              <span className="font-poppins text-sm sm:text-base text-text-primary">
                 Page {currentPage} of {totalPages}
               </span>
+
               <button 
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className='px-4 py-2 border rounded-md disabled:opacity-50'
+                className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
+                          text-brand-primary hover:bg-brand-primary hover:text-white 
+                          disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 Next
               </button>
