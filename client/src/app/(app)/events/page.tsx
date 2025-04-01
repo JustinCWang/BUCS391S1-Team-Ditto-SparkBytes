@@ -295,18 +295,9 @@ const Events = () => {
             <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
               {events.map((event, index) => (
                 <EventCard 
-                key={index}
-                name={event.name}
-                date={event.date}
-                start_time={event.start_time}
-                end_time={event.end_time}
-                location={event.location}
-                description={event.description}
-                building={event.building}
-                food_category={event.food_category}
-                food_name={event.food_name}
-                allergens={event.allergens}
-                like_count={event.like_count}
+                  key={event.event_id || index}
+                  {...event}
+                  onEventUpdated={fetchEvents}
                 />
               ))}
             </div>
