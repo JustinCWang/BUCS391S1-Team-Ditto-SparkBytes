@@ -18,6 +18,8 @@ const AboutMe: React.FC<AboutMeProps> = ({ name, bio, imageUrl, linkedIn }) => {
           <Image 
             src={imageUrl}
             alt={`${name}'s profile`}
+            width={160}
+            height={160}
             className="w-40 h-40 rounded-full object-cover mx-auto mb-4"
           />
           {/** Container for the text and also has a text box so that if there is overflow the cards won't be so different in height */}
