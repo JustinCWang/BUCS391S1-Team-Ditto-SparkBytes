@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { Logout } from "@/lib/auth";
 import { Menu, X } from "lucide-react";
 
+import Image from "next/image";
+
 const CustomHeader = () => {
   const router = useRouter();
   const [openMenu, setMenu] = useState(false);
@@ -25,7 +27,12 @@ const CustomHeader = () => {
             href="/dashboard"
             className="text-xl font-poppins font-semibold text-text-primary"
           >
-            Spark!Bytes
+            <Image
+              src="/images/Spark.png"
+              alt="SparkBytes Logo"
+              width={150}
+              height={0}
+            />
           </Link>
         </div>
 
