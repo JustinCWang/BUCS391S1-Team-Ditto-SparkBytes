@@ -13,6 +13,8 @@ const ResetPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const [onError, setError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  // Added state variable to indicate if the password is too short
+  const [passwordTooShort, setPasswordTooShort] = useState(false);
 
   // State for password inputs
   const [data, setData] = useState<{ password: string; confirmPassword: string }>({
@@ -23,12 +25,23 @@ const ResetPasswordPage = () => {
   // Handle input change events
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    // If the entered password reaches 8 characters, clear the error message
+    if (name === 'password' && value.length >= 8) {
+      setPasswordTooShort(false);
+    }
     setData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Confirm passwords match and update the user's password
+  // Confirm that passwords match and update the user's password
   const confirmPasswords = async () => {
     const { password, confirmPassword } = data;
+    
+    // Check if the password is at least 8 characters long
+    if (password.length < 8) {
+      setPasswordTooShort(true);
+      return;
+    }
+    
     if (password !== confirmPassword) {
       alert('Passwords do not match');
       return;
@@ -91,6 +104,12 @@ const ResetPasswordPage = () => {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </div>
           </div>
+          {/* Display error message if the password is too short */}
+          {passwordTooShort && (
+            <p className="font-inter italic text-sm text-red-500 mb-1">
+              Password must be at least 8 characters long.
+            </p>
+          )}
           <div className="relative mb-6">
             <input
               type={showPassword ? 'text' : 'password'}
