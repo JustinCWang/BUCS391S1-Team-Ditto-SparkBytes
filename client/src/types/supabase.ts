@@ -35,6 +35,8 @@ export type FoodProps = {
 
 export type LikeProps = {
   like_count?: number;
+  isLiked?: boolean;
 }
+
 
 export type EventCardProps = EventBasicProps & FoodProps & LikeProps;
