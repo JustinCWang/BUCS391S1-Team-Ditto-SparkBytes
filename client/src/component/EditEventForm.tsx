@@ -105,7 +105,8 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
     'CAS',
     'MET',
     'KHC',
-    'AGG'
+    'AGG',
+    'CDS'
   ];
 
   const handleAllergenChange = (allergen: string) => {

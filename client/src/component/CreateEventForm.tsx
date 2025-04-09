@@ -83,7 +83,8 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
     'CAS',
     'MET',
     'KHC',
-    'AGG'
+    'AGG',
+    'CDS'
   ];
 
   const handleAllergenChange = (allergen: string) => {
