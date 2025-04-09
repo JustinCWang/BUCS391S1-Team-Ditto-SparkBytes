@@ -36,7 +36,8 @@ const LOCATION_OPTIONS = [
   { value: 'CAS', label: 'CAS - College of Arts & Sciences' },
   { value: 'MET', label: 'MET - Metropolitan College' },
   { value: 'KHC', label: 'KHC - Kilachand Honors College' },
-  { value: 'AGG', label: 'AGG - Agganis Arena' }
+  { value: 'AGG', label: 'AGG - Agganis Arena' },
+  { value: 'CDS', label: 'CDS - Computing & Data Sciences' }
 ];
 
 const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
