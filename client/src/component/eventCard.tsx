@@ -31,6 +31,7 @@ function EventCard({
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
 
+  // Temp Link
   const eventLink = `http://localhost:3000/events/${event_id}`
 
   const shareEmail = () => {
@@ -187,3 +188,4 @@ function EventCard({
 }
 
 export default EventCard;
+
