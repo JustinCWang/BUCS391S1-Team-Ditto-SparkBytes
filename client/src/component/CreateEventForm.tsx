@@ -72,6 +72,20 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
     'Halal'
   ];
 
+  const LOCATION_OPTIONS = [
+    'ENG',
+    'SAR',
+    'STH',
+    'FLR',
+    'COM',
+    'GSU',
+    'MUG',
+    'CAS',
+    'MET',
+    'KHC',
+    'AGG'
+  ];
+
   const handleAllergenChange = (allergen: string) => {
     setFormData(prev => ({
       ...prev,
@@ -84,6 +98,11 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
+    // Check if building code is valid
+    if (!LOCATION_OPTIONS.includes(formData.building)) {
+      return; // Prevent submission if building code is invalid
+    }
 
     try {
       // First, create the food entry
@@ -214,12 +233,18 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
             <input
               type="text"
               value={formData.building}
-              onChange={(e) => setFormData({ ...formData, building: e.target.value.toUpperCase() })}
-              className={inputStyle}
+              onChange={(e) => {
+                const value = e.target.value.toUpperCase();
+                setFormData({ ...formData, building: value });
+              }}
+              className={`${inputStyle} ${formData.building && !LOCATION_OPTIONS.includes(formData.building) ? 'border-red-500' : ''}`}
               placeholder="e.g., CAS"
               maxLength={3}
               required
             />
+            {formData.building && !LOCATION_OPTIONS.includes(formData.building) && (
+              <p className="text-red-500 text-sm mt-1">Please enter a valid building code (e.g., CAS, ENG, GSU)</p>
+            )}
           </div>
 
           {/* Food Available */}
@@ -270,12 +295,15 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
             </button>
             <button
               type="submit"
-              className="bg-brand-primary 
-                text-white font-poppins font-black 
+              disabled={!LOCATION_OPTIONS.includes(formData.building)}
+              className={`font-poppins font-black 
                 py-1.5 px-5 
                 rounded-md 
-                duration-300 ease-in hover:bg-hover-primary 
-                flex items-center justify-center"
+                duration-300 ease-in 
+                flex items-center justify-center
+                ${!LOCATION_OPTIONS.includes(formData.building) 
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                  : 'bg-brand-primary text-white hover:bg-hover-primary'}`}
             >
               Post Event
             </button>
