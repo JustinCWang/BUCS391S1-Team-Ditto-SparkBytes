@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
+import { motion, AnimatePresence } from 'motion/react';
 
 interface CreateEventFormProps {
   isOpen: boolean;
@@ -147,171 +148,190 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6">
-
-        <div>
-          <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Post an Event</h2>
-          <p className="text-text-primary font-inter text-xs lg:text-base mb-6">Share details about your event with leftover food.</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4 ">
-          
-          {/* Title */}
-          <div>
-            <label className={formStyle}>Title</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className={inputStyle}
-              required
-            />
-          </div>
-
-          {/* Description */}
-          <div>
-            <label className={formStyle}>Description</label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className={inputStyle}
-              rows={3}
-              required
-            />
-          </div>
-
-          {/* Date and Time */}
-          <div className="grid grid-cols-1 gap-4">
-            <div className='flex flex-col'>
-              <label className={formStyle}>Date</label>
-              <DatePicker
-                selected={formData.date}
-                onChange={(date: Date | null) => setFormData({ ...formData, date: date })}
-                className={inputStyle}
-                placeholderText="Select a Date"
-                required
-              />
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          key="modal"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        >
+          <motion.div
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 40, opacity: 0 }}
+            transition={{
+              type: "spring",
+              bounce: 0,
+              duration: 0.4,
+            }}
+            className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6"
+          >
+            <div>
+              <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Post an Event</h2>
+              <p className="text-text-primary font-inter text-xs lg:text-base mb-6">Share details about your event with leftover food.</p>
             </div>
-            <div className="space-y-2">
-              <label className={formStyle}>Time</label>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+
+            <form onSubmit={handleSubmit} className="space-y-4 ">
+              
+              {/* Title */}
+              <div>
+                <label className={formStyle}>Title</label>
                 <input
-                  type="time"
-                  value={formData.start_time}
-                  onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
-                  className={inputStyle}
-                  required
-                />
-                <span>To</span>
-                <input
-                  type="time"
-                  value={formData.end_time}
-                  onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className={inputStyle}
                   required
                 />
               </div>
-            </div>
-          </div>
 
-          {/* Location */}
-          <div>
-            <label className={formStyle}>Location</label>
-            <input
-              type="text"
-              value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-              className={inputStyle}
-              placeholder="e.g., CDS 201"
-              required
-            />
-          </div>
+              {/* Description */}
+              <div>
+                <label className={formStyle}>Description</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className={inputStyle}
+                  rows={3}
+                  required
+                />
+              </div>
 
-          {/* Building Code */}
-          <div>
-            <label className={formStyle}>Building Code</label>
-            <input
-              type="text"
-              value={formData.building}
-              onChange={(e) => {
-                const value = e.target.value.toUpperCase();
-                setFormData({ ...formData, building: value });
-              }}
-              className={`${inputStyle} ${formData.building && !LOCATION_OPTIONS.includes(formData.building) ? 'border-red-500' : ''}`}
-              placeholder="e.g., CAS"
-              maxLength={3}
-              required
-            />
-            {formData.building && !LOCATION_OPTIONS.includes(formData.building) && (
-              <p className="text-red-500 text-sm mt-1">Please enter a valid building code (e.g., CAS, ENG, GSU)</p>
-            )}
-          </div>
-
-          {/* Food Available */}
-          <div>
-            <label className={formStyle}>Food Available</label>
-            <input
-              type="text"
-              value={formData.food_name}
-              onChange={(e) => setFormData({ ...formData, food_name: e.target.value })}
-              className={inputStyle}
-              placeholder="e.g., Pizza and Salad"
-              required
-            />
-          </div>
-
-          {/* Allergies */}
-          <div>
-            <label className={formStyle}>Allergies</label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {allergenOptions.map((allergen) => (
-                <label key={allergen} className="flex items-center font-poppins text-text-primary">
-                  <input
-                    type="checkbox"
-                    checked={formData.allergens.includes(allergen)}
-                    onChange={() => handleAllergenChange(allergen)}
-                    className="mr-2"
+              {/* Date and Time */}
+              <div className="grid grid-cols-1 gap-4">
+                <div className='flex flex-col'>
+                  <label className={formStyle}>Date</label>
+                  <DatePicker
+                    selected={formData.date}
+                    onChange={(date: Date | null) => setFormData({ ...formData, date: date })}
+                    className={inputStyle}
+                    placeholderText="Select a Date"
+                    required
                   />
-                  {allergen}
-                </label>
-              ))}
-            </div>
-          </div>
+                </div>
+                <div className="space-y-2">
+                  <label className={formStyle}>Time</label>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                    <input
+                      type="time"
+                      value={formData.start_time}
+                      onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
+                      className={inputStyle}
+                      required
+                    />
+                    <span>To</span>
+                    <input
+                      type="time"
+                      value={formData.end_time}
+                      onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
+                      className={inputStyle}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
 
-          {/* Buttons */}
-          <div className="flex justify-end gap-4 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-white 
-                text-brand-primary 
-                font-poppins font-black 
-                py-1.5 px-5 
-                rounded-md border border-brand-primary
-                duration-300 ease-in hover:bg-brand-primary hover:text-white 
-                flex items-center justify-center"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={!LOCATION_OPTIONS.includes(formData.building)}
-              className={`font-poppins font-black 
-                py-1.5 px-5 
-                rounded-md 
-                duration-300 ease-in 
-                flex items-center justify-center
-                ${!LOCATION_OPTIONS.includes(formData.building) 
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                  : 'bg-brand-primary text-white hover:bg-hover-primary'}`}
-            >
-              Post Event
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+              {/* Location */}
+              <div>
+                <label className={formStyle}>Location</label>
+                <input
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  className={inputStyle}
+                  placeholder="e.g., CDS 201"
+                  required
+                />
+              </div>
+
+              {/* Building Code */}
+              <div>
+                <label className={formStyle}>Building Code</label>
+                <input
+                  type="text"
+                  value={formData.building}
+                  onChange={(e) => {
+                    const value = e.target.value.toUpperCase();
+                    setFormData({ ...formData, building: value });
+                  }}
+                  className={`${inputStyle} ${formData.building && !LOCATION_OPTIONS.includes(formData.building) ? 'border-red-500' : ''}`}
+                  placeholder="e.g., CAS"
+                  maxLength={3}
+                  required
+                />
+                {formData.building && !LOCATION_OPTIONS.includes(formData.building) && (
+                  <p className="text-red-500 text-sm mt-1">Please enter a valid building code (e.g., CAS, ENG, GSU)</p>
+                )}
+              </div>
+
+              {/* Food Available */}
+              <div>
+                <label className={formStyle}>Food Available</label>
+                <input
+                  type="text"
+                  value={formData.food_name}
+                  onChange={(e) => setFormData({ ...formData, food_name: e.target.value })}
+                  className={inputStyle}
+                  placeholder="e.g., Pizza and Salad"
+                  required
+                />
+              </div>
+
+              {/* Allergies */}
+              <div>
+                <label className={formStyle}>Allergies</label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {allergenOptions.map((allergen) => (
+                    <label key={allergen} className="flex items-center font-poppins text-text-primary">
+                      <input
+                        type="checkbox"
+                        checked={formData.allergens.includes(allergen)}
+                        onChange={() => handleAllergenChange(allergen)}
+                        className="mr-2"
+                      />
+                      {allergen}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex justify-end gap-4 pt-4">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="bg-white 
+                    text-brand-primary 
+                    font-poppins font-black 
+                    py-1.5 px-5 
+                    rounded-md border border-brand-primary
+                    duration-300 ease-in hover:bg-brand-primary hover:text-white 
+                    flex items-center justify-center"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!LOCATION_OPTIONS.includes(formData.building)}
+                  className={`font-poppins font-black 
+                    py-1.5 px-5 
+                    rounded-md 
+                    duration-300 ease-in 
+                    flex items-center justify-center
+                    ${!LOCATION_OPTIONS.includes(formData.building) 
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                      : 'bg-brand-primary text-white hover:bg-hover-primary'}`}
+                >
+                  Post Event
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </motion.div>
+      )}
+  </AnimatePresence>
   );
 };
 
