@@ -2,87 +2,54 @@ import { animate, stagger, useInView } from "motion/react"
 import { useEffect, ReactNode, useRef } from "react"
 
 interface TextProps {
-  children:  ReactNode | ReactNode[];
+  children: ReactNode | ReactNode[];
 }
 
-export default function TextFade({children}:TextProps) {
-
-  // Set up a state where we reference type HTMLDivElement
-  // because we set this as our ref for the div in return
-  // to be able to see all the children HTML elements in the div
+export default function TextFade({ children }: TextProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.4 });
 
-  // useEffect so that on page load we first make sure we get the fonts from google,
-  // then does the animations after a few other checks.
+  // Minimal mobile check
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
   useEffect(() => {
     document.fonts.ready.then(() => {
-      // Check if the containerRef is not null. Since the component
-      // mounts onto the DOM before useEffect is called.
-      if (!containerRef.current || !isInView) return
+      if (!containerRef.current || !isInView) return;
 
-      // Make the container visible once fonts are loaded
-      containerRef.current.style.visibility = "visible"
+      containerRef.current.style.visibility = "visible";
 
-      // Select all DOM elements by referencing the HTML Elements in the Div
-      const elementsH1 = containerRef.current.querySelectorAll("h1 span");
-      const elementsP = containerRef.current.querySelectorAll("p span");
+      // Cast NodeLists to HTMLElement
+      const elementsH1 = containerRef.current.querySelectorAll("h1 span") as NodeListOf<HTMLElement>;
+      const elementsP = containerRef.current.querySelectorAll("p span") as NodeListOf<HTMLElement>;
+      const sectionHeader = containerRef.current.querySelectorAll("h2 span") as NodeListOf<HTMLElement>;
 
-      const sectionHeader = containerRef.current.querySelectorAll("h2 span");
+      const animateGroup = (
+        elements: NodeListOf<HTMLElement>,
+        delay: number
+      ) => {
+        if (elements.length === 0) return;
 
-      // If there are no elements then return
-      if (elementsH1.length > 0) {
-        // Then animate the fade in an stager each element.
         animate(
-          elementsH1,
+          elements,
           { opacity: [0, 1], y: [10, 0] },
           {
-            type: "spring",
-            stiffness: 100,
-            damping: 20,
-            mass: 0.5,
-            bounce: 0.25,
-            delay: stagger(0.07),
+            duration: 0.6,
+            ease: "easeOut",
+            delay: stagger(delay),
           }
-        )
-      } 
+        );
+      };
 
-      if (elementsP.length > 0) {
-        // So that elementsP goes at the same time as elements
-        animate(
-          elementsP,
-          { opacity: [0, 1], y: [10, 0] },
-          {
-            type: "spring",
-            stiffness: 100,
-            damping: 20,
-            mass: 0.5,
-            bounce: 0.25,
-            delay: stagger(0.03),
-          }
-        )
-      }
-      
-      if (sectionHeader.length > 0) {
-        animate(
-          sectionHeader,
-          { opacity: [0, 1], y: [10, 0] },
-          {
-            type: "spring",
-            stiffness: 100,
-            damping: 20,
-            mass: 0.5,
-            bounce: 0.25,
-            delay: stagger(0.07),
-          }
-        )
-      }
-  })
-  },[isInView]);
+      animateGroup(elementsH1, 0.07);
+      animateGroup(elementsP, 0.03);
+      animateGroup(sectionHeader, 0.07);
+    });
+  }, [isInView]);
 
-  return(
-    <div ref={containerRef}>
+  return (
+    <div ref={containerRef} style={{ visibility: "hidden", willChange: "transform, opacity" }}>
       {children}
     </div>
-  )
+  );
 }
+
