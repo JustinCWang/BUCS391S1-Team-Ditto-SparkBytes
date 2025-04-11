@@ -11,7 +11,8 @@ function MainButton ({ text, linkTo, styling = "" }: MainButtonProps) {
     <Link 
       className={`
         bg-brand-primary 
-        text-white font-poppins font-black 
+        text-white font-poppins font-black
+        cursor-pointer
         py-1.5 px-5 
         rounded-md 
         duration-300 ease-in hover:bg-hover-primary 

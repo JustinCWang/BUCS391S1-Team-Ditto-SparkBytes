@@ -167,7 +167,7 @@ const LoginPage = () => {
           }}
         >
           {onError && (
-            <p className="font-inter italic text-sm text-red-500 mb-1">
+            <p className="font-inter italic text-sm text-red-500 mb-1 text-center">
               Unable to send reset link.
             </p>
           )}
@@ -184,19 +184,10 @@ const LoginPage = () => {
             />
           </div>
           {success && (
-            <div className="mb-4 text-green-600">
+            <div className="mb-4 text-green-600 text-center">
               Success! Check your email to reset your password!
             </div>
           )}
-          <p
-            onClick={() => {
-              setResetPassword(false);
-              setSuccess(false);
-            }}
-            className="flex justify-end mt-2 mb-10 text-blue-600 text-sm font-inter underline cursor-pointer"
-          >
-            Login
-          </p>
           <button
             type="submit"
             className="w-full bg-brand-primary text-white text-2xl font-poppins font-black py-2 px-5 rounded-md duration-300 ease-in hover:bg-hover-primary flex items-center justify-center"
@@ -210,6 +201,18 @@ const LoginPage = () => {
           </button>
         </form>
         <div className="border-t border-gray-300 my-6" />
+        <p className="text-center font-inter text-sm mt-4">
+          Remember your password?{' '}
+          <span
+              onClick={() => {
+                setResetPassword(false);
+                setSuccess(false);
+              }}
+              className="text-blue-600 font-inter underline cursor-pointer"
+            >
+              Login
+          </span>
+        </p>
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ function SecondaryButton ({ text, linkTo, styling = "" }: SecondaryButtonProps) 
       className={`
         bg-white 
         text-brand-primary 
+        cursor-pointer
         font-poppins font-black 
         py-1.5 px-5 
         rounded-md border border-brand-primary
