@@ -9,9 +9,6 @@ export default function TextFade({ children }: TextProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.4 });
 
-  // Minimal mobile check
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-
   useEffect(() => {
     document.fonts.ready.then(() => {
       if (!containerRef.current || !isInView) return;
