@@ -50,10 +50,10 @@ function HeaderSection() {
       <div className="absolute bottom-0 right-0 w-[200px] lg:w-[600px] h-[500px] bg-brand-primary/20 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2"></div>
       <TextFade>
         <h1 className="text-text-primary font-bold font-montserrat text-5xl lg:text-7xl mb-0 sm:mb-4">
-          <TextToSpan text='Free Food.' splitBySpace={false}/>
+          <TextToSpan text='Free Food.' splitBySpace={true}/>
         </h1>
         <h1 className="text-text-primary font-bold font-montserrat text-5xl lg:text-7xl mb-4">
-          <TextToSpan text='No Strings Attached.' splitBySpace={false}/>
+          <TextToSpan text='No Strings Attached.' splitBySpace={true}/>
         </h1>
         <p className=" text-text-primary font-inter text-xl lg:text-xl max-w-4xl mb-6">
           <TextToSpan text='College is expensive—your next meal doesn&apos;t have to be. Spark Bytes helps BU students find free food on campus in seconds so you never miss out.' splitBySpace={true}/>
@@ -107,7 +107,7 @@ function SectionOne() {
     <section className="text-text-primary px-4 py-32 text-center">
       <TextFade>
         <h2 className="text-4xl lg:text-6xl font-bold mb-12 max-w-5xl mx-auto ">
-          <TextToSpan text='How Spark Bytes Works' splitBySpace={false}/>
+          <TextToSpan text='How Spark Bytes Works' splitBySpace={true}/>
         </h2>
       </TextFade>
       <motion.div
@@ -173,7 +173,7 @@ function SectionTwo() {
       <div className="max-w-5xl mx-auto text-center">
         <TextFade>
           <h2 className="text-text-primary text-4xl lg:text-6xl font-montserrat font-bold mb-8">
-            <TextToSpan text='Our Mission' splitBySpace={false}/>
+            <TextToSpan text='Our Mission' splitBySpace={true}/>
           </h2>
           <p className="text-text-primary font-inter text-xl lg:text-2xl mb-8">
             <TextToSpan text='Spark Bytes aims to create a more sustainable campus by reducing food
@@ -201,7 +201,7 @@ function SectionThree() {
 
       <TextFade>
         <h2 className="text-text-primary text-4xl lg:text-6xl font-montserrat font-bold mb-16 max-w-5xl mx-auto">
-          <TextToSpan text='BU Spark!Bytes Impact' splitBySpace={false}/>
+          <TextToSpan text='BU Spark!Bytes Impact' splitBySpace={true}/>
         </h2>
       </TextFade>
 

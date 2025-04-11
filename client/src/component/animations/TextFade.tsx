@@ -42,7 +42,7 @@ export default function TextFade({children}:TextProps) {
             damping: 20,
             mass: 0.5,
             bounce: 0.25,
-            delay: stagger(0.02),
+            delay: stagger(0.07),
           }
         )
       } 
@@ -73,7 +73,7 @@ export default function TextFade({children}:TextProps) {
             damping: 20,
             mass: 0.5,
             bounce: 0.25,
-            delay: stagger(0.02),
+            delay: stagger(0.07),
           }
         )
       }
