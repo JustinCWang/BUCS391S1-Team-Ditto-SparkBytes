@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import EditEventForm from "./EditEventForm";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
-
 import { motion, AnimatePresence } from "motion/react";
+import DetailedEventCard from "./detailedEventCard";
 
 function EventCard({
   // Event basic info
@@ -32,13 +32,14 @@ function EventCard({
   // State to control whether the edit modal is open
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isDetailedViewOpen, setIsDetailedViewOpen] = useState(false);
 
   // Temp Link
   const eventLink = `http://localhost:3000/events/${event_id}`
 
   const shareEmail = () => {
     const subject = encodeURIComponent("Check out this event!");
-    const body = encodeURIComponent(`Hungry? Thought you’d like this event: ${eventLink}`);
+    const body = encodeURIComponent(`Hungry? Thought you'd like this event: ${eventLink}`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
@@ -106,7 +107,10 @@ function EventCard({
 
   return (
     <>
-      <div className="border-2 border-text-primary rounded-lg px-4 py-2 shadow-lg">
+      <div 
+        className="border-2 border-text-primary rounded-lg px-4 py-2 shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300"
+        onClick={() => setIsDetailedViewOpen(true)}
+      >
         {/* Container for the event details */}
         <div className="flex flex-col">
           {/* Header section with event name and time */}
@@ -132,7 +136,8 @@ function EventCard({
           <div className="flex justify-between items-center mt-4 mb-2">
             <div className="flex text-text-primary font-inter">
               <Heart
-                onClick={async () => {
+                onClick={async (e) => {
+                  e.stopPropagation(); // Prevent event card click when clicking heart
                   await handleToggleLike();
                   // Refresh parent component data after toggling like
                   onEventUpdated?.();
@@ -145,7 +150,10 @@ function EventCard({
             </div>
             <div className="flex gap-2">
               <button 
-                onClick={() => setIsShareOpen(true)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent event card click when clicking share
+                  setIsShareOpen(true);
+                }}
                 className="bg-white 
                 text-brand-primary 
                 font-poppins font-black 
@@ -156,60 +164,63 @@ function EventCard({
               >
                 <Share2 className="w-4 h-4" />
               </button>
-            <button
-              onClick={() => setIsEditOpen(true)}
-              className="bg-white 
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent event card click when clicking edit
+                  setIsEditOpen(true);
+                }}
+                className="bg-white 
                 text-brand-primary 
                 font-poppins font-black 
                 py-1.5 px-3 
                 rounded-md border border-brand-primary
                 duration-300 ease-in hover:bg-brand-primary hover:text-white 
                 flex items-center justify-center"
-            >
-              Edit
-            </button>
+              >
+                Edit
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <AnimatePresence>
-      {isShareOpen && (
-        <motion.div
-          key="share-modal"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-        >
+      {/* Share modal */}
+      <AnimatePresence>
+        {isShareOpen && (
           <motion.div
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 40, opacity: 0 }}
-            transition={{
-              type: "spring",
-              bounce: 0,
-              duration: 0.4,
-            }}
-            className="bg-white p-6 rounded-xl shadow-xl w-72 space-y-4 text-center"
+            key="share-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
           >
-            <h2 className="text-xl font-montserrat font-bold text-text-primary">Share this Event</h2>
-            <button onClick={shareEmail} className="w-full font-poppins font-black bg-blue-500 text-white py-2 rounded-md duration-300 ease-in hover:bg-blue-600">
-              Share via Email
-            </button>
-            <button onClick={shareSMS} className="w-full font-poppins font-black bg-green-500 text-white py-2 rounded-md duration-300 ease-in hover:bg-green-600">
-              Share via SMS
-            </button>
-            <button onClick={() => setIsShareOpen(false)} className="text-gray-500 font-poppins font-black hover:underline">
-              Cancel
-            </button>
+            <motion.div
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 40, opacity: 0 }}
+              transition={{
+                type: "spring",
+                bounce: 0,
+                duration: 0.4,
+              }}
+              className="bg-white p-6 rounded-xl shadow-xl w-72 space-y-4 text-center"
+            >
+              <h2 className="text-xl font-montserrat font-bold text-text-primary">Share this Event</h2>
+              <button onClick={shareEmail} className="w-full font-poppins font-black bg-blue-500 text-white py-2 rounded-md duration-300 ease-in hover:bg-blue-600">
+                Share via Email
+              </button>
+              <button onClick={shareSMS} className="w-full font-poppins font-black bg-green-500 text-white py-2 rounded-md duration-300 ease-in hover:bg-green-600">
+                Share via SMS
+              </button>
+              <button onClick={() => setIsShareOpen(false)} className="text-gray-500 font-poppins font-black hover:underline">
+                Cancel
+              </button>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
 
-
-      {/* Edit event modal form */}
+      {/* Edit event modal */}
       <EditEventForm
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
@@ -231,6 +242,26 @@ function EventCard({
           // Refresh parent component data after successful edit
           onEventUpdated?.();
         }}
+      />
+
+      {/* Detailed view modal */}
+      <DetailedEventCard
+        isOpen={isDetailedViewOpen}
+        onClose={() => setIsDetailedViewOpen(false)}
+        event_id={event_id}
+        name={name}
+        date={date}
+        start_time={start_time}
+        end_time={end_time}
+        location={location}
+        building={building}
+        description={description}
+        food_id={food_id}
+        food_name={food_name}
+        allergens={allergens}
+        like_count={likeCount}
+        isLiked={liked}
+        onEventUpdated={onEventUpdated}
       />
     </>
   );
