@@ -13,13 +13,38 @@
 
 /* CSS Styling to ensure that the website fills the whole page */
 html,
-body,
+body {
+  background-color: white;;
+  margin: 0;
+  padding: 0;
+}
 #__next {
   height: 100%;
   margin: 0;
   padding: 0;
+} 
+.dark html, 
+.dark body {
+  background-color: #0f1117; /* Or dark-gray/black of your choice */
 }
 
 .layout {
   min-height: 100vh;
 }
+
+.text-text-primary {
+  color: var(--color-text-primary);
+}
+
+.dark .text-text-primary {
+  color: white;
+}
+
+.bg-surface {
+  background-color: white;
+}
+
+.dark .bg-surface {
+  background-color: #1a1a1a;
+}
+

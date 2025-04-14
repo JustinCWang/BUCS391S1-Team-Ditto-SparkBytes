@@ -1,5 +1,6 @@
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 export default function LayoutComponent({ children }: { children: React.ReactNode }) {
   return (
@@ -11,7 +12,9 @@ export default function LayoutComponent({ children }: { children: React.ReactNod
         <link rel="icon" type="image/png" href="/images/Spark.png" />
       </head>
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+          </AuthProvider>
       </body>
     </html>
   );
