@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { updateUserName, updateEmail, updatePassword } from '@/lib/user';
 import { Loader } from 'lucide-react';
+import ProfilePictureUpload from '@/component/ProfilePictureUpload';
 
 import { message } from 'antd';
 import '@ant-design/v5-patch-for-react-19';
@@ -258,6 +259,8 @@ const Profile = () => {
           <p className='text-text-primary font-inter text-sm lg:text-base'>Manage your account settings</p>
         </div>
       </div>
+
+      <ProfilePictureUpload />
 
       {/** Change Name */}
       <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 mb-10 shadow-lg'>
