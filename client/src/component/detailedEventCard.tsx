@@ -92,6 +92,13 @@ function DetailedEventCard({
     }
   };
 
+  // Handle modal close
+  const handleClose = () => {
+    onClose();
+    // Only refresh the parent component's data when the modal is closed
+    onEventUpdated?.();
+  };
+
   // Prevents the user from scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -130,7 +137,7 @@ function DetailedEventCard({
           >
             {/* Close button */}
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="absolute top-4 right-4 text-text-primary hover:text-brand-primary"
             >
               <X size={24} />

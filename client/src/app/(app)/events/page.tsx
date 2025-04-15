@@ -308,7 +308,7 @@ const Events = () => {
                 <EventCard
                   key={event.event_id || index}
                   {...event}
-                  onEventUpdated={fetchEvents}
+                  onEventUpdated={undefined}
                 />
               ))}
             </div>
