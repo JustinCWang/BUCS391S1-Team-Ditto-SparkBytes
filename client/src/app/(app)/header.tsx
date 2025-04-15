@@ -6,9 +6,11 @@ import { useRouter } from "next/navigation";
 import { Logout } from "@/lib/auth";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
+import { useAuth } from "@/context/AuthContext";
 
 const CustomHeader = () => {
   const router = useRouter();
+  const { avatarUrl } = useAuth();
   const [openMenu, setMenu] = useState(false);
 
   const handleLogout = async () => {
@@ -45,8 +47,19 @@ const CustomHeader = () => {
           <Link href="/profile">Profile</Link>
         </div>
 
-        {/* Desktop Logout Button */}
-        <div className="hidden md:flex">
+        {/* Desktop Avatar and Logout Button */}
+        <div className="hidden md:flex items-center gap-4">
+          {avatarUrl && (
+            <div className="w-10 h-10">
+              <Image
+                src={avatarUrl}
+                alt="User Avatar"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+            </div>
+          )}
           <button
             onClick={handleLogout}
             className="bg-brand-primary text-white font-poppins font-black py-1.5 px-5 rounded-md duration-300 ease-in hover:bg-hover-primary"
@@ -67,7 +80,7 @@ const CustomHeader = () => {
         </button>
       </div>
 
-      {/* Mobile Nav */}
+      {/* Mobile Navigation */}
       <AnimatePresence>
         {openMenu && (
           <motion.div
@@ -81,9 +94,7 @@ const CustomHeader = () => {
             }}
             className="fixed inset-0 z-10 bg-white pt-20 px-4"
           >
-            <motion.div
-              className="flex flex-col items-center justify-center gap-4"
-            >
+            <motion.div className="flex flex-col items-center justify-center gap-4">
               <Link href="/dashboard" onClick={() => setMenu(false)} className="text-xl font-poppins font-semibold text-text-primary">
                 Home
               </Link>
@@ -108,4 +119,3 @@ const CustomHeader = () => {
 };
 
 export default CustomHeader;
-
