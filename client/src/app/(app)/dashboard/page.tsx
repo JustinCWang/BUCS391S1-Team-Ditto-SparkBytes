@@ -23,8 +23,10 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const [events, setEvents] = useState<EventCardProps[]>([]);
   const [likedEvents, setLikedEvents] = useState<EventCardProps[]>([]);
+  const [myEvents, setMyEvents] = useState<EventCardProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingLiked, setIsLoadingLiked] = useState(true);
+  const [isLoadingMyEvents, setIsLoadingMyEvents] = useState(true);
 
   // Check if the user is logged in; if not, redirect to the homepage
   useEffect(() => {
@@ -286,6 +288,119 @@ const Dashboard: React.FC = () => {
     fetchLikedEvents();
   }, [user]);
 
+  useEffect(() => {
+    const fetchMyEvents = async () => {
+      if (!user) return;
+
+      try {
+        setIsLoadingMyEvents(true);
+
+        // Get events created by the current user
+        const { data: myEventsData, error: myEventsError } = await supabase
+          .from('Events')
+          .select(`
+            event_id,
+            food_id,
+            name,
+            date,
+            start_time,
+            end_time,
+            location,
+            description,
+            building,
+            organizer_id
+          `)
+          .eq('organizer_id', user.id)
+          .order('date', { ascending: false });
+
+        if (myEventsError) {
+          console.error('Error fetching my events:', myEventsError);
+          setIsLoadingMyEvents(false);
+          return;
+        }
+
+        if (!myEventsData || myEventsData.length === 0) {
+          setMyEvents([]);
+          setIsLoadingMyEvents(false);
+          return;
+        }
+
+        // Extract event data and get food information
+        const eventIds = myEventsData.map(event => event.event_id);
+        const foodIds = myEventsData
+          .filter(event => event.food_id)
+          .map(event => event.food_id);
+
+        // Get food information for my events
+        let foodData: FoodInfo[] = [];
+        if (foodIds.length > 0) {
+          const { data: foodInfo, error: foodError } = await supabase
+            .from('Food')
+            .select('food_id, food_category, name, allergens')
+            .in('food_id', foodIds);
+
+          if (!foodError) {
+            foodData = foodInfo || [];
+          }
+        }
+
+        // Get like counts for my events
+        const { data: likesData } = await supabase
+          .from('Event_Likes')
+          .select('event_id, user_id.count()', { count: 'exact' })
+          .in('event_id', eventIds);
+
+        const likeCounts = likesData
+          ? likesData.reduce((acc, like) => {
+              acc[like.event_id] = like.count;
+              return acc;
+            }, {} as Record<string, number>)
+          : {};
+
+        // Get which of my events the user has liked
+        let likedEventIds: string[] = [];
+        if (user) {
+          const { data: userLikesData } = await supabase
+            .from('Event_Likes')
+            .select('event_id')
+            .eq('user_id', user.id)
+            .in('event_id', eventIds);
+
+          likedEventIds = userLikesData?.map(item => item.event_id) || [];
+        }
+
+        // Combine all data
+        const combinedData: EventCardProps[] = myEventsData.map(event => {
+          const foodInfo = foodData.find(f => f.food_id === event.food_id) || {} as FoodInfo;
+          return {
+            event_id: event.event_id,
+            name: event.name,
+            date: event.date,
+            start_time: event.start_time,
+            end_time: event.end_time,
+            location: event.location,
+            description: event.description,
+            building: event.building || undefined,
+            food_id: event.food_id || undefined,
+            food_name: foodInfo.name || undefined,
+            allergens: foodInfo.allergens || undefined,
+            like_count: likeCounts[event.event_id] || 0,
+            isLiked: likedEventIds.includes(event.event_id),
+            organizer_id: event.organizer_id
+          };
+        });
+
+        setMyEvents(combinedData);
+        setIsLoadingMyEvents(false);
+      } catch (error) {
+        console.error('Error in fetchMyEvents:', error);
+        setIsLoadingMyEvents(false);
+      }
+    };
+
+    fetchMyEvents();
+  }, [user]);
+
   return (
     <div className="my-6">
       {/* Header section */}
@@ -377,6 +492,53 @@ const Dashboard: React.FC = () => {
           <div className="w-full text-center mt-8">
             <p className="text-text-primary font-inter text-lg">
               You haven&apos;t liked any events yet. Start exploring events to find ones you&apos;re interested in!
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* My Events section */}
+      <div className="w-full max-w-6xl mx-auto mt-16">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+          <div>
+            <h1 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">
+              My Events
+            </h1>
+            <p className="text-text-primary font-inter text-xs lg:text-base">
+              Events you&apos;ve created
+            </p>
+          </div>
+        </div>
+
+        {isLoadingMyEvents ? (
+          <div className="w-full flex justify-center items-center h-[30vh]">
+            <Loader className="animate-spin text-brand-primary" size={32} style={{ animationDuration: '3s' }} />
+          </div>
+        ) : myEvents.length > 0 ? (
+          <div className="w-full max-w-6xl mx-auto grid mt-8 lg:grid-cols-3 gap-8">
+            {myEvents.map((event, index) => (
+              <EventCard 
+                key={index}
+                event_id={event.event_id}
+                name={event.name}
+                date={event.date}
+                start_time={event.start_time}
+                end_time={event.end_time}
+                location={event.location}
+                description={event.description}
+                building={event.building}
+                food_name={event.food_name}
+                allergens={event.allergens}
+                like_count={event.like_count}
+                isLiked={event.isLiked}
+                organizer_id={event.organizer_id}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="w-full text-center mt-8">
+            <p className="text-text-primary font-inter text-lg">
+              You haven&apos;t created any events yet. Click &quot;Post an Event&quot; to get started!
             </p>
           </div>
         )}
