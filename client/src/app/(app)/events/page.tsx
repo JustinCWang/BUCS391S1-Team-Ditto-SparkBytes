@@ -102,7 +102,8 @@ const Events = () => {
           end_time, 
           location, 
           description, 
-          building
+          building,
+          organizer_id
         `);
 
       if (searchQuery) {
@@ -307,7 +308,7 @@ const Events = () => {
                 <EventCard
                   key={event.event_id || index}
                   {...event}
-                  onEventUpdated={fetchEvents}
+                  onEventUpdated={undefined}
                 />
               ))}
             </div>

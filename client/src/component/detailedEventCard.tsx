@@ -33,6 +33,7 @@ function DetailedEventCard({
   // Modal props
   isOpen,
   onClose,
+  organizer_id,
 }: DetailedEventCardProps) {
   // State to control whether the edit modal is open
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -58,6 +59,9 @@ function DetailedEventCard({
 
   // Retrieve current user from authentication context
   const { user } = useAuth();
+
+  // Check if current user is the organizer of the event
+  const isEventOrganizer = user?.id === organizer_id;
 
   // Handler for toggling the like status when the heart icon is clicked
   const handleToggleLike = async () => {
@@ -86,6 +90,13 @@ function DetailedEventCard({
     } catch (err) {
       console.error("Unexpected error toggling like:", err);
     }
+  };
+
+  // Handle modal close
+  const handleClose = () => {
+    onClose();
+    // Only refresh the parent component's data when the modal is closed
+    onEventUpdated?.();
   };
 
   // Prevents the user from scrolling when modal is open
@@ -126,7 +137,7 @@ function DetailedEventCard({
           >
             {/* Close button */}
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="absolute top-4 right-4 text-text-primary hover:text-brand-primary"
             >
               <X size={24} />
@@ -196,18 +207,20 @@ function DetailedEventCard({
                   >
                     <Share2 className="w-4 h-4" />
                   </button>
-                  <button
-                    onClick={() => setIsEditOpen(true)}
-                    className="bg-white 
-                      text-brand-primary 
-                      font-poppins font-black 
-                      py-1.5 px-3 
-                      rounded-md border border-brand-primary
-                      duration-300 ease-in hover:bg-brand-primary hover:text-white 
-                      flex items-center justify-center"
-                  >
-                    Edit
-                  </button>
+                  {isEventOrganizer && (
+                    <button
+                      onClick={() => setIsEditOpen(true)}
+                      className="bg-white 
+                        text-brand-primary 
+                        font-poppins font-black 
+                        py-1.5 px-3 
+                        rounded-md border border-brand-primary
+                        duration-300 ease-in hover:bg-brand-primary hover:text-white 
+                        flex items-center justify-center"
+                    >
+                      Edit
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
