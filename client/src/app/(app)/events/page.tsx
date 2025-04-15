@@ -102,7 +102,8 @@ const Events = () => {
           end_time, 
           location, 
           description, 
-          building
+          building,
+          organizer_id
         `);
 
       if (searchQuery) {

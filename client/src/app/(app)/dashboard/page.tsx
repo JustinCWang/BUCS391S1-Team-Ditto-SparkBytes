@@ -50,7 +50,8 @@ const Dashboard: React.FC = () => {
             end_time, 
             location, 
             description, 
-            building
+            building,
+            organizer_id
           `)
           .order('date', { ascending: false })
           .limit(3);
@@ -150,6 +151,7 @@ const Dashboard: React.FC = () => {
             allergens: foodInfo.allergens || undefined,
             like_count: likeCounts[event.event_id] || 0,
             isLiked: likedEventIds.includes(event.event_id),
+            organizer_id: event.organizer_id
           };
         });
 
@@ -202,7 +204,8 @@ const Dashboard: React.FC = () => {
             end_time,
             location,
             description,
-            building
+            building,
+            organizer_id
           `)
           .in('event_id', likedEventIds.map(item => item.event_id));
 
@@ -268,6 +271,7 @@ const Dashboard: React.FC = () => {
             allergens: foodInfo.allergens || undefined,
             like_count: likeCounts[event.event_id] || 0,
             isLiked: true,
+            organizer_id: event.organizer_id
           };
         });
 
@@ -325,6 +329,7 @@ const Dashboard: React.FC = () => {
               allergens={event.allergens}
               like_count={event.like_count}
               isLiked={event.isLiked}
+              organizer_id={event.organizer_id}
             />
           ))}
         </div>
@@ -364,6 +369,7 @@ const Dashboard: React.FC = () => {
                 allergens={event.allergens}
                 like_count={event.like_count}
                 isLiked={event.isLiked}
+                organizer_id={event.organizer_id}
               />
             ))}
           </div>

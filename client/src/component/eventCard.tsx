@@ -25,6 +25,7 @@ function EventCard({
   like_count = 0, // Default value is 0
   isLiked = false, // Default value is false
   onEventUpdated, // Callback to update parent component data
+  organizer_id,
 }: EventCardProps & {
   isLiked?: boolean;
   onEventUpdated?: () => void;
@@ -54,6 +55,9 @@ function EventCard({
 
   // Retrieve current user from authentication context
   const { user } = useAuth();
+
+  // Check if current user is the organizer of the event
+  const isEventOrganizer = user?.id === organizer_id;
 
   // Handler for toggling the like status when the heart icon is clicked
   const handleToggleLike = async () => {
@@ -164,21 +168,23 @@ function EventCard({
               >
                 <Share2 className="w-4 h-4" />
               </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent event card click when clicking edit
-                  setIsEditOpen(true);
-                }}
-                className="bg-white 
-                text-brand-primary 
-                font-poppins font-black 
-                py-1.5 px-3 
-                rounded-md border border-brand-primary
-                duration-300 ease-in hover:bg-brand-primary hover:text-white 
-                flex items-center justify-center"
-              >
-                Edit
-              </button>
+              {isEventOrganizer && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent event card click when clicking edit
+                    setIsEditOpen(true);
+                  }}
+                  className="bg-white 
+                  text-brand-primary 
+                  font-poppins font-black 
+                  py-1.5 px-3 
+                  rounded-md border border-brand-primary
+                  duration-300 ease-in hover:bg-brand-primary hover:text-white 
+                  flex items-center justify-center"
+                >
+                  Edit
+                </button>
+              )}
             </div>
           </div>
         </div>
