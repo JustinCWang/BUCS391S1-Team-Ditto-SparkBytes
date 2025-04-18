@@ -12,6 +12,7 @@ interface EditEventFormProps {
   onClose: () => void;
   onSuccess?: () => void;
   eventData: EventCardProps;
+  onEventUpdated?: () => void;
 }
 
 interface EventFormData {
@@ -28,7 +29,7 @@ interface EventFormData {
   food_id?: string;
 }
 
-const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSuccess, eventData }) => {
+const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSuccess, eventData, onEventUpdated }) => {
   const { user } = useAuth();
 
   const inputStyle = "w-full font-inter border border-gray-300 px-4 py-2 mt-2 rounded-md focus:outline-none focus:border-text-primary";
@@ -65,16 +66,24 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
   // Initialize form data when the component receives event data
   useEffect(() => {
     if (eventData) {
+      // Create a date object that preserves the local date
+      const eventDate = eventData.date ? new Date(eventData.date + 'T00:00:00') : null;
+      
+      // Split allergens and trim each one, then filter out any empty strings
+      const initialAllergens = eventData.allergens 
+        ? eventData.allergens.split(',').map(a => a.trim()).filter(a => a !== '')
+        : [];
+      
       setFormData({
         name: eventData.name || '',
         description: eventData.description || '',
-        date: eventData.date ? new Date(eventData.date) : null,
+        date: eventDate,
         start_time: eventData.start_time || '',
         end_time: eventData.end_time || '',
         location: eventData.location || '',
         building: eventData.building || '',
         food_name: eventData.food_name || '',
-        allergens: eventData.allergens ? eventData.allergens.split(',').map(a => a.trim()) : [],
+        allergens: initialAllergens,
         event_id: eventData.event_id,
         food_id: eventData.food_id
       });
@@ -112,12 +121,16 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
   ];
 
   const handleAllergenChange = (allergen: string) => {
-    setFormData(prev => ({
-      ...prev,
-      allergens: prev.allergens.includes(allergen)
+    setFormData(prev => {
+      const newAllergens = prev.allergens.includes(allergen)
         ? prev.allergens.filter(a => a !== allergen)
-        : [...prev.allergens, allergen]
-    }));
+        : [...prev.allergens, allergen];
+      
+      return {
+        ...prev,
+        allergens: newAllergens
+      };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -130,16 +143,21 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
     }
 
     try {
+      console.log('Current allergens:', formData.allergens);
+      
       // Update the food entry
       const { error: foodError } = await supabase
         .from('Food')
         .update({
           name: formData.food_name,
-          allergens: formData.allergens.join(', '),
+          allergens: formData.allergens.length > 0 ? formData.allergens.join(', ') : '',
         })
         .eq('food_id', formData.food_id);
 
-      if (foodError) throw foodError;
+      if (foodError) {
+        console.error('Food update error:', foodError);
+        throw foodError;
+      }
 
       // Update the event
       const { error: eventError } = await supabase
@@ -147,7 +165,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
         .update({
           name: formData.name,
           description: formData.description,
-          date: formData.date?.toISOString().split('T')[0],
+          date: formData.date ? formData.date.toLocaleDateString('en-CA') : null,
           start_time: formData.start_time,
           end_time: formData.end_time,
           location: formData.location,
@@ -155,9 +173,14 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
         })
         .eq('event_id', formData.event_id);
 
-      if (eventError) throw eventError;
+      if (eventError) {
+        console.error('Event update error:', eventError);
+        throw eventError;
+      }
 
+      console.log('Update successful');
       onSuccess?.();
+      onEventUpdated?.();
       onClose();
     } catch (error) {
       console.error('Error updating event:', error);

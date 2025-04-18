@@ -143,8 +143,6 @@ function EventCard({
                 onClick={async (e) => {
                   e.stopPropagation(); // Prevent event card click when clicking heart
                   await handleToggleLike();
-                  // Refresh parent component data after toggling like
-                  onEventUpdated?.();
                 }}
                 fill={liked ? "red" : "white"}
                 color={liked ? "red" : "black"}
@@ -248,6 +246,7 @@ function EventCard({
           // Refresh parent component data after successful edit
           onEventUpdated?.();
         }}
+        onEventUpdated={onEventUpdated}
       />
 
       {/* Detailed view modal */}
@@ -267,6 +266,7 @@ function EventCard({
         allergens={allergens}
         like_count={likeCount}
         isLiked={liked}
+        organizer_id={organizer_id}
         onEventUpdated={onEventUpdated}
       />
     </>
