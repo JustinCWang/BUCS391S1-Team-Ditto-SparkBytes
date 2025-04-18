@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Eye, EyeOff } from 'lucide-react';
 import { Loader } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
+import Link from 'next/link';
 
 const ResetPasswordPage = () => {
   const router = useRouter();
@@ -71,10 +73,29 @@ const ResetPasswordPage = () => {
     }
   };
 
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
+
+    const inputStyle = `
+  w-full font-inter border px-4 py-3 rounded-md mb-6
+  focus:outline-none focus:border-text-primary
+  ${isDark ? 'text-white bg-[#2a2a2a] border-gray-600 placeholder-gray-300' : 'text-black bg-white border-gray-300 placeholder-gray-400'}
+`;
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+    <div
+      className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-300 ${
+        isDark ? 'bg-[#222224] text-white' : 'bg-gray-50 text-black'
+      }`}
+    >
       <div className="w-full max-w-sm">
-        <h2 className="text-3xl font-bold font-montserrat text-text-primary">Reset Your Password</h2>
+      <h2 className={`text-3xl font-bold font-montserrat ${
+        isDark ? 'text-white' : 'text-black'
+        }`}>Reset Your Password</h2>
+        <p className={`text-sm text-center mb-6 ${isDark ? 'text-gray-300' : 'text-gray-500'}`}>
+          Enter your email to receive a password reset link.
+        </p>
+
         <form
           onSubmit={async (e) => {
             e.preventDefault();
@@ -87,19 +108,19 @@ const ResetPasswordPage = () => {
             </p>
           )}
           <div className="relative mb-6">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              name="password"
-              placeholder="Enter your new password"
-              value={data.password}
-              onChange={handleChange}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
-                onError ? 'focus:border-red-500' : 'focus:border-text-primary'
-              }`}
-            />
+          <input
+            type={showPassword ? 'text' : 'password'}
+            name="password"
+            placeholder="Enter your new password"
+            value={data.password}
+            onChange={handleChange}
+            className={`${inputStyle} ${onError ? 'focus:border-red-500' : ''}`}
+          />
             <div
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-primary cursor-pointer"
+              className={`absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer ${
+                isDark ? 'text-white' : 'text-black'
+              }`}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </div>
@@ -117,11 +138,13 @@ const ResetPasswordPage = () => {
               placeholder="Confirm your new password"
               value={data.confirmPassword}
               onChange={handleChange}
-              className="w-full font-inter border border-gray-300 px-4 py-3 rounded-md pr-10 focus:outline-none focus:border-text-primary"
+              className={inputStyle}
             />
             <div
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-primary cursor-pointer"
+              className={`absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer ${
+                isDark ? 'text-white' : 'text-black'
+              }`}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </div>
@@ -138,7 +161,16 @@ const ResetPasswordPage = () => {
             )}
           </button>
         </form>
-        <div className="border-t border-gray-300 my-6" />
+        <div className={`border-t my-6 ${isDark ? 'border-gray-600' : 'border-gray-300'}`} />
+        <p className={`text-center text-sm ${isDark ? 'text-gray-300' : 'text-gray-500'}`}>
+            Remember your password?{' '}
+          <Link
+            href="/login"
+            className={`font-semibold underline ${isDark ? 'text-white' : 'text-brand-primary'}`}
+          >
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );
