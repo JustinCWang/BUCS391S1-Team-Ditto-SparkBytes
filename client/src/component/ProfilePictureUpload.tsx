@@ -101,15 +101,22 @@ const ProfilePictureUpload: React.FC = () => {
             </aside>
           )}
         </section>
-
-        <button
-          onClick={handleUpload}
-          disabled={uploading || !selectedFile}
-          className="mt-4 px-4 py-2 bg-brand-primary text-white rounded"
-        >
-          {uploading ? 'Uploading...' : 'Upload'}
-        </button>
-        {uploading && <Loader className="animate-spin ml-2" size={24} />}
+        <div className='flex justify-end'>
+          <button
+            onClick={handleUpload}
+            disabled={uploading || !selectedFile}
+            className={`bg-brand-primary 
+              text-white font-poppins font-black 
+                py-1.5 px-5 
+                rounded-md 
+                duration-300 ease-in hover:bg-hover-primary 
+                flex items-center justify-center ${selectedFile ? "mt-4" : "mt-0"}`}
+          >
+            {uploading ?  
+                <Loader className="animate-spin" size={30} style={{ animationDuration: '3s' }}/>
+                : 'Upload'}
+          </button>
+        </div>
       </div>
     </div>
   );
