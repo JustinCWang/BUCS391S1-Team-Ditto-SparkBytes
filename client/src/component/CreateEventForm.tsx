@@ -1,3 +1,6 @@
+'use client';
+
+import { useTheme } from '@/context/ThemeContext';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
@@ -25,10 +28,18 @@ interface EventFormData {
 }
 
 const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSuccess }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const { user } = useAuth();
   
-  const inputStyle = "w-full font-inter border border-gray-300 px-4 py-2 mt-2 rounded-md focus:outline-none focus:border-text-primary";
-  const formStyle = "text-text-primary font-bold font-montserrat text-base"
+  const inputStyle = `
+  w-full font-inter px-4 py-2 mt-2 rounded-md 
+  focus:outline-none focus:border-text-primary 
+  border ${isDark ? 'border-gray-600' : 'border-gray-300'} 
+  ${isDark ? 'text-white bg-[#1e1e1e] placeholder-gray-500' : 'text-black bg-white placeholder-gray-400'}
+`;
+
+  const formStyle = `${isDark ? 'text-white' : 'text-black'} font-bold font-montserrat text-base`;
 
   // Prevents the user from scrolling
   useEffect(() => {
@@ -166,7 +177,9 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
               bounce: 0,
               duration: 0.4,
             }}
-            className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6"
+            className={`rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 transition-colors duration-300 ${
+              isDark ? 'bg-[#222224] text-white' : 'bg-white text-black'
+            }`}
           >
             <div>
               <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Post an Event</h2>
@@ -213,7 +226,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
                 </div>
                 <div className="space-y-2">
                   <label className={formStyle}>Time</label>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                  <div className="flex flex-col sm:flex-row dark:text-white items-start sm:items-center gap-2">
                     <input
                       type="time"
                       value={formData.start_time}
@@ -302,7 +315,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
                 <button
                   type="button"
                   onClick={onClose}
-                  className="bg-white 
+                  className="bg-translucent
                     text-brand-primary 
                     font-poppins font-black 
                     py-1.5 px-5 
