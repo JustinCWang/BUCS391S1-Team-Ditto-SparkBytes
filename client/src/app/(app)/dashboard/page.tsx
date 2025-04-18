@@ -8,6 +8,7 @@ import { EventCardProps } from '@/types/supabase';
 import EventCard from '@/component/eventCard';
 import SecondaryButton from '@/component/secondaryButton';
 import { Loader } from 'lucide-react';
+import SectionNavigator from '@/component/sectionNavigator';
 
 // Type definition for food-related data
 type FoodInfo = {
@@ -31,7 +32,7 @@ const Dashboard = () => {
   const [currentMyEventsPage, setCurrentMyEventsPage] = useState(1);
   const [totalMyEventsPages, setTotalMyEventsPages] = useState(0);
   const LIKED_ITEMS_PER_PAGE = 6; // Number of events per page for liked events
-  const MY_EVENTS_ITEMS_PER_PAGE = 6; // Number of events per page for my events
+  const MY_EVENTS_ITEMS_PER_PAGE = 4; // Number of events per page for my events
 
   // Fetch upcoming events from the database with pagination and like count
   const fetchUpcomingEvents = useCallback(async () => {
@@ -395,8 +396,24 @@ const Dashboard = () => {
     fetchMyEvents();
   }, [fetchUpcomingEvents, fetchLikedEvents, fetchMyEvents]);
 
+  // Add useEffects for handling scroll on page changes
+  useEffect(() => {
+    const element = document.getElementById('liked');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [currentLikedPage]);
+
+  useEffect(() => {
+    const element = document.getElementById('my');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [currentMyEventsPage]);
+
   return (
     <div className="my-6">
+      <SectionNavigator />
       <div className="w-full max-w-6xl mx-auto">
         {/* Header section */}
         <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
@@ -425,7 +442,7 @@ const Dashboard = () => {
         ) : (
           <>
             {/* Grid display for event cards */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+            <div id="upcoming" className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
               {upcomingEvents.map((event, index) => (
                 <EventCard
                   key={event.event_id || index}
@@ -438,7 +455,7 @@ const Dashboard = () => {
         )}
 
         {/* Liked Events section */}
-        <div className="mt-16">
+        <div id="liked" className="mt-16">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div>
               <h1 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">
@@ -499,7 +516,7 @@ const Dashboard = () => {
         </div>
 
         {/* My Events section */}
-        <div className="mt-0">
+        <div id="my" className="mt-16">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div>
               <h1 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">

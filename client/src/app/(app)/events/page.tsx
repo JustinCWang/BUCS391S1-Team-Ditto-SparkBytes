@@ -223,6 +223,11 @@ const Events = () => {
     fetchEvents();
   }, [fetchEvents]);
 
+  // Add useEffect for handling scroll on page change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
+
   // Handle search input change and reset to first page when searching
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
