@@ -8,6 +8,7 @@ import { EventCardProps } from '@/types/supabase';
 import EventCard from '@/component/eventCard';
 import SecondaryButton from '@/component/secondaryButton';
 import { Loader } from 'lucide-react';
+import SectionNavigator from '@/component/sectionNavigator';
 
 // Type definition for food-related data
 type FoodInfo = {
@@ -397,6 +398,7 @@ const Dashboard = () => {
 
   return (
     <div className="my-6">
+      <SectionNavigator />
       <div className="w-full max-w-6xl mx-auto">
         {/* Header section */}
         <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
@@ -425,7 +427,7 @@ const Dashboard = () => {
         ) : (
           <>
             {/* Grid display for event cards */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+            <div id="upcoming" className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
               {upcomingEvents.map((event, index) => (
                 <EventCard
                   key={event.event_id || index}
@@ -438,7 +440,7 @@ const Dashboard = () => {
         )}
 
         {/* Liked Events section */}
-        <div className="mt-16">
+        <div id="liked" className="mt-16">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div>
               <h1 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">
@@ -499,7 +501,7 @@ const Dashboard = () => {
         </div>
 
         {/* My Events section */}
-        <div className="mt-0">
+        <div id="my" className="mt-0">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div>
               <h1 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">
