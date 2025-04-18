@@ -81,7 +81,7 @@ const CustomHeader = () => {
             }`}
           >
             <div className="flex justify-center items-center duration-300 ease-in-out hover:bg-gray-100 rounded-lg p-2">
-              <House className="w-5 h-5 mr-1"/>
+              <CircleUser className="w-5 h-5 mr-1"/>
               <Link href="/profile" onClick={() => setDropdownOpen(false)} className="font-poppins font-semibold text-text-primary">
                 Profile
               </Link>
