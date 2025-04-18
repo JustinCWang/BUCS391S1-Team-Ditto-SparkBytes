@@ -75,10 +75,10 @@ const LoginPage = () => {
   if (!resetPassword) {
     // Render the login form
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+      <div className="flex items-center justify-center min-h-screen px-4 transition-colors duration-300">
         <div className="w-full max-w-sm">
           <h2 className="text-3xl font-bold font-montserrat text-text-primary">Welcome back</h2>
-          <p className="text-sm font-inter mb-6">Log In to your account</p>
+          <p className="text-text-primary text-sm font-inter mb-6">Log In to your account</p>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -97,7 +97,7 @@ const LoginPage = () => {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
+                className={`text-text-primary w-full bg-transparent font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
                   onError ? 'focus:border-red-500' : 'focus:border-text-primary'
                 } mb-6`}
               />
@@ -109,7 +109,7 @@ const LoginPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                className="w-full font-inter border border-gray-300 px-4 py-3 rounded-md pr-10 focus:outline-none focus:border-text-primary"
+                className="text-text-primary w-full font-inter border border-gray-300 px-4 py-3 rounded-md pr-10 focus:outline-none focus:border-text-primary"
               />
               <div
                 onClick={() => setShowPassword((prev) => !prev)}
@@ -123,7 +123,7 @@ const LoginPage = () => {
                 setResetPassword(true);
                 setSuccess(false);
               }}
-              className="flex justify-end mt-2 mb-10 text-blue-600 text-sm font-inter underline cursor-pointer"
+              className="flex justify-end mt-2 mb-10 text-blue-600 text-brand-primary text-sm font-semibold hover:underline cursor-pointer"
             >
               Forgot your password?
             </p>
@@ -140,11 +140,11 @@ const LoginPage = () => {
             </button>
           </form>
           <div className="border-t border-gray-300 my-6" />
-          <p className="text-center font-inter text-sm mt-4">
+          <p className="text-text-primary text-center font-inter text-sm mt-4">
             Don&apos;t have an account?{' '}
             <span
               onClick={() => router.push('/signup')}
-              className="text-blue-600 font-inter underline cursor-pointer"
+              className="text-blue-600 text-brand-primary font-semibold hover:underline cursor-pointer"
             >
               Register here
             </span>
@@ -156,7 +156,7 @@ const LoginPage = () => {
 
   // Render the reset password email form
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-[#222224] px-4 transition-colors duration-300">
       <div className="w-full max-w-sm">
         <h2 className="text-3xl font-bold font-montserrat text-text-primary">Reset Your Password</h2>
         <p className="text-sm font-inter mb-6">Enter your email to receive a password reset link.</p>
