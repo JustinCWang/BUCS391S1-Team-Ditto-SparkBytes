@@ -30,14 +30,14 @@ const Events = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isCreateEventOpen, setIsCreateEventOpen] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<FilterState>({
+  const [filters, setFilters] = useState<FilterState>({
     date: 'any',
     location: '',
     allergies: {
       dairy: false,
       treeNuts: false,
       pescatarian: false,
-      glutenFree: false,
+      'gluten-free': false,
       shellfish: false,
       soy: false,
       vegan: false,
@@ -53,42 +53,6 @@ const Events = () => {
   const fetchEvents = useCallback(async () => {
     try {
       setIsLoading(true);
-
-      // Build a query to count total events for pagination
-      let countQuery = supabase
-        .from('Events')
-        .select('*', { count: 'exact' });
-
-      if (searchQuery) {
-        countQuery = countQuery.ilike('name', `%${searchQuery}%`);
-      }
-
-      // Filter by date
-      if (activeFilters.date === 'today') {
-        const today = new Date().toISOString().split('T')[0];
-        countQuery = countQuery.eq('date', today);
-      } else if (activeFilters.date === 'this_week') {
-        const today = new Date();
-        const weekStart = new Date(today);
-        weekStart.setDate(today.getDate() - today.getDay());
-        const weekEnd = new Date(today);
-        weekEnd.setDate(today.getDate() + (6 - today.getDay()));
-        countQuery = countQuery
-          .gte('date', weekStart.toISOString().split('T')[0])
-          .lte('date', weekEnd.toISOString().split('T')[0]);
-      }
-
-      // Filter by location (building)
-      if (activeFilters.location) {
-        countQuery = countQuery.eq('building', activeFilters.location);
-      }
-
-      // Execute the count query
-      const { count, error: countError } = await countQuery;
-      if (countError) throw countError;
-      if (count) {
-        setTotalPages(Math.ceil(count / ITEMS_PER_PAGE));
-      }
 
       // Build the main query to fetch event data
       let dataQuery = supabase
@@ -109,10 +73,12 @@ const Events = () => {
       if (searchQuery) {
         dataQuery = dataQuery.ilike('name', `%${searchQuery}%`);
       }
-      if (activeFilters.date === 'today') {
+
+      // Filter by date
+      if (filters.date === 'today') {
         const today = new Date().toISOString().split('T')[0];
         dataQuery = dataQuery.eq('date', today);
-      } else if (activeFilters.date === 'this_week') {
+      } else if (filters.date === 'this_week') {
         const today = new Date();
         const weekStart = new Date(today);
         weekStart.setDate(today.getDate() - today.getDay());
@@ -122,14 +88,15 @@ const Events = () => {
           .gte('date', weekStart.toISOString().split('T')[0])
           .lte('date', weekEnd.toISOString().split('T')[0]);
       }
-      if (activeFilters.location) {
-        dataQuery = dataQuery.eq('building', activeFilters.location);
+
+      // Filter by location (building)
+      if (filters.location) {
+        dataQuery = dataQuery.eq('building', filters.location);
       }
 
-      // Fetch events with pagination
+      // Fetch all events that match the date and location filters
       const { data: eventData, error: eventError } = await dataQuery
-        .order('date', { ascending: false })
-        .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1);
+        .order('date', { ascending: false });
       if (eventError) {
         console.error('Event fetch error:', eventError);
         return;
@@ -203,13 +170,46 @@ const Events = () => {
         };
       });
 
-      setEvents(combinedData);
+      // Apply allergy filters
+      const filteredData = combinedData.filter(event => {
+        if (!event.allergens) return true; // If no allergens listed, show the event
+        
+        const eventAllergens = event.allergens.split(',').map(a => a.trim().toLowerCase());
+        
+        // Check if any of the selected allergies are in the event's allergens
+        const selectedAllergies = Object.entries(filters.allergies)
+          .filter(([, isSelected]) => isSelected)
+          .map(([allergy]) => {
+            const allergyKey = allergy.toLowerCase();
+            // Special case for gluten-free
+            if (allergyKey === 'glutenfree') {
+              return 'gluten-free';
+            }
+            return allergyKey;
+          });
+        
+        // Only show events that don't contain any of the selected allergies
+        return !selectedAllergies.some(allergy => 
+          eventAllergens.some(eventAllergen => 
+            eventAllergen.includes(allergy)
+          )
+        );
+      });
+
+      // Update total pages based on filtered data
+      setTotalPages(Math.ceil(filteredData.length / ITEMS_PER_PAGE));
+
+      // Apply pagination to the filtered data
+      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+      const endIndex = startIndex + ITEMS_PER_PAGE;
+      const paginatedData = filteredData.slice(startIndex, endIndex);
+
+      setEvents(paginatedData);
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching events:', error);
-    } finally {
-      setIsLoading(false);
     }
-  }, [currentPage, searchQuery, activeFilters, user]);
+  }, [currentPage, searchQuery, filters, user]);
 
   // Redirect to home if the user is not logged in
   useEffect(() => {
@@ -279,7 +279,7 @@ const Events = () => {
           isOpen={isFilterOpen}
           onClose={() => setIsFilterOpen(false)}
           onApply={(filters) => {
-            setActiveFilters(filters);
+            setFilters(filters);
             setCurrentPage(1);
             setIsFilterOpen(false);
           }}
@@ -308,7 +308,7 @@ const Events = () => {
                 <EventCard
                   key={event.event_id || index}
                   {...event}
-                  onEventUpdated={undefined}
+                  onEventUpdated={fetchEvents}
                 />
               ))}
             </div>

@@ -15,7 +15,7 @@ export interface FilterState {
     dairy: boolean;
     treeNuts: boolean;
     pescatarian: boolean;
-    glutenFree: boolean;
+    'gluten-free': boolean;
     shellfish: boolean;
     soy: boolean;
     vegan: boolean;
@@ -69,7 +69,7 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
       dairy: false,
       treeNuts: false,
       pescatarian: false,
-      glutenFree: false,
+      'gluten-free': false,
       shellfish: false,
       soy: false,
       vegan: false,

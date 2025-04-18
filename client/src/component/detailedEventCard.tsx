@@ -95,8 +95,6 @@ function DetailedEventCard({
   // Handle modal close
   const handleClose = () => {
     onClose();
-    // Only refresh the parent component's data when the modal is closed
-    onEventUpdated?.();
   };
 
   // Prevents the user from scrolling when modal is open
@@ -185,7 +183,6 @@ function DetailedEventCard({
                   <Heart
                     onClick={async () => {
                       await handleToggleLike();
-                      onEventUpdated?.();
                     }}
                     fill={liked ? "red" : "white"}
                     color={liked ? "red" : "black"}
@@ -282,6 +279,7 @@ function DetailedEventCard({
                 setIsEditOpen(false);
                 onEventUpdated?.();
               }}
+              onEventUpdated={onEventUpdated}
             />
           </motion.div>
         </motion.div>
