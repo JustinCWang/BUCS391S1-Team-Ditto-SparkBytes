@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Logout } from "@/lib/auth";
 import { motion, AnimatePresence } from "motion/react";
-import Image from "next/image";
+import MobileMenu from '@/component/MobileMenu';
+import LogoSwitcher from '@/component/LogoSwitcher';
 
 const CustomHeader = () => {
   const router = useRouter();
@@ -30,12 +31,7 @@ const CustomHeader = () => {
           href="/dashboard"
           className="text-sm sm:text-3xl font-poppins font-semibold text-text-primary mr-4 z-20"
         >
-          <Image
-            src="/images/Spark.png"
-            alt="SparkBytes Logo"
-            width={150}
-            height={0}
-          />
+        <LogoSwitcher />
         </Link>
 
         {/* Desktop Links */}
@@ -61,46 +57,16 @@ const CustomHeader = () => {
           className="z-[999] flex flex-col h-8 w-8 justify-center items-center relative overflow-hidden md:hidden"
           aria-label="Toggle menu"
         >
-          <span className={`h-0.5 w-6 rounded-full bg-black transition ease transform duration-300 ${openMenu ? "rotate-45 translate-y-2.5" : ""}`}></span>
-          <span className={`h-0.5 w-6 my-2 rounded-full bg-black transition ease transform duration-300 ${openMenu ? "opacity-0" : "opacity-100"}`}></span>
-          <span className={`h-0.5 w-6 rounded-full bg-black transition ease transform duration-300 ${openMenu ? "-rotate-45 -translate-y-2.5" : ""}`}></span>
+          <span className={`h-0.5 w-6 rounded-full bg-brand-primary transition ease transform duration-300 ${openMenu ? "rotate-45 translate-y-2.5" : ""}`}></span>
+          <span className={`h-0.5 w-6 my-2 rounded-full bg-brand-primary transition ease transform duration-300 ${openMenu ? "opacity-0" : "opacity-100"}`}></span>
+          <span className={`h-0.5 w-6 rounded-full bg-brand-primary transition ease transform duration-300 ${openMenu ? "-rotate-45 -translate-y-2.5" : ""}`}></span>
         </button>
       </div>
 
       {/* Mobile Nav */}
       <AnimatePresence>
-        {openMenu && (
-          <motion.div
-            key="mobile-nav"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20, scale: 0.98 }}
-            transition={{
-              ease: "easeInOut",
-              duration: 0.4,
-            }}
-            className="fixed inset-0 z-10 bg-white pt-20 px-4"
-          >
-            <motion.div
-              className="flex flex-col items-center justify-center gap-4"
-            >
-              <Link href="/dashboard" onClick={() => setMenu(false)} className="text-xl font-poppins font-semibold text-text-primary">
-                Home
-              </Link>
-              <Link href="/events" onClick={() => setMenu(false)} className="text-xl font-poppins font-semibold text-text-primary">
-                Events
-              </Link>
-              <Link href="/profile" onClick={() => setMenu(false)} className="text-xl font-poppins font-semibold text-text-primary">
-                Profile
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="bg-brand-primary text-white font-poppins font-black py-2 px-6 rounded-md hover:bg-hover-primary"
-              >
-                Logout
-              </button>
-            </motion.div>
-          </motion.div>
+      {openMenu && (
+        <MobileMenu onClose={() => setMenu(false)} onLogout={handleLogout} />
         )}
       </AnimatePresence>
     </nav>
