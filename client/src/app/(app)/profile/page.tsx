@@ -267,7 +267,7 @@ const Profile = () => {
   <div className='max-w-xl mx-auto flex items-center justify-between'>
     <div>
       <h1 className='text-text-primary font-bold font-montserrat text-xl mb-1'>Appearance</h1>
-      <p className='text-sm font-inter text-gray-600'>Toggle between light and dark themes</p>
+      <p className='text-sm font-inter text-gray-600 dark:text-gray'>Toggle between light and dark themes</p>
     </div>
 
     {/* Toggle Switch with Icon Inside */}
@@ -337,6 +337,7 @@ const Profile = () => {
             <button 
             onClick={handleSaveNameClear}
             className='bg-white 
+            dark:bg-transparent
             text-brand-primary 
               font-poppins font-black 
               py-1.5 px-5 
@@ -391,7 +392,7 @@ const Profile = () => {
               placeholder="Current Password"
               value={emailCurrentPass}
               onChange={(e) => setEmailPass(e.target.value)}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${emailWrongPassword ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
+              className={`w-full text-text-primary font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${emailWrongPassword ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
             />
           </div>
 
@@ -423,6 +424,7 @@ const Profile = () => {
             <button 
             onClick={handleEmailClear}
             className='bg-white 
+            dark:bg-transparent
             text-brand-primary 
               font-poppins font-black 
               py-1.5 px-5 
@@ -454,7 +456,7 @@ const Profile = () => {
       {/** Change Password */}
       <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 mt-10 shadow-lg'>
         <div className='max-w-xl mx-auto'> 
-          <h1 className='text-text-primary font-bold font-montserrat text-xl mb-6'>Change Password</h1>
+          <h1 className='text-brand-primary font-bold font-montserrat text-xl mb-6'>Change Password</h1>
 
           {/** Field Inputs */}
           <div className=''>
@@ -463,7 +465,7 @@ const Profile = () => {
               placeholder="Current Password"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
+              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md text-text-primary focus:outline-none ${
                 wrongPassword ? 'focus:border-red-500' : 'focus:border-text-primary'
               } mb-4`}
             />
@@ -473,7 +475,7 @@ const Profile = () => {
               placeholder="New Password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
+              className={`w-full font-inter border border-gray-300 px-4 py-3 text-text-primary rounded-md focus:outline-none ${
                 emptyPassword || passwordConfirmError ? 'focus:border-red-500' : 'focus:border-text-primary'
               } mb-4`}
             />
@@ -483,7 +485,7 @@ const Profile = () => {
               placeholder="Confirm New Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
+              className={`w-full font-inter border text-text-primary border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
                 passwordConfirmError ? 'focus:border-red-500' : 'focus:border-text-primary'
               } mb-4`}
             />
@@ -513,7 +515,8 @@ const Profile = () => {
             <button 
               onClick={handlePasswordClear}
               className='bg-white 
-              text-brand-primary 
+                dark:bg-transparent
+                text-brand-primary 
                 font-poppins font-black 
                 py-1.5 px-5 
                 rounded-md border border-brand-primary
