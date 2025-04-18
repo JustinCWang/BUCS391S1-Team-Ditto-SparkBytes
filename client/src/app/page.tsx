@@ -146,6 +146,7 @@ function SectionOne() {
   );
 }
 
+
 function SectionTwo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.4 });
@@ -168,7 +169,8 @@ function SectionTwo() {
   
 
   return (
-    <section className="bg-gray-50 px-4 py-32">
+    <section className="px-4 py-32 transition-colors duration-300">
+
       {/* Container for the items */}
       <div className="max-w-5xl mx-auto text-center">
         <TextFade>
