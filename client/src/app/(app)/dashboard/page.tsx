@@ -283,8 +283,7 @@ const Dashboard: React.FC = () => {
   }, [user]);
 
   return (
-    <div className="w-full min-h-screen bg-white text-black dark:bg-[#0f1117] dark:text-white transition-colors duration-300 py-6">
-      {/* Header section */}
+    <div className="my-6">      {/* Header section */}
       <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
           <h1 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">
