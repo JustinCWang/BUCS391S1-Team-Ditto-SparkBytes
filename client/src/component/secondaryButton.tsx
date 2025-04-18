@@ -10,13 +10,15 @@ function SecondaryButton ({ text, linkTo, styling = "" }: SecondaryButtonProps) 
   return (
     <Link 
       className={`
-        bg-white 
+        bg-white
+        dark:bg-transparent
         text-brand-primary 
         cursor-pointer
         font-poppins font-black 
         py-1.5 px-5 
         rounded-md border border-brand-primary
-        duration-300 ease-in hover:bg-brand-primary hover:text-white 
+        duration-300 ease-in hover:bg-brand-primary 
+        dark:hover:text-white hover:text-white 
         flex items-center justify-center ${styling}`}
       href={linkTo}
     >
