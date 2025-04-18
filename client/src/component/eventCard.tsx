@@ -6,6 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "motion/react";
 import DetailedEventCard from "./detailedEventCard";
+import Share from './shareOption';
+
 
 function EventCard({
   // Event basic info
@@ -155,6 +157,7 @@ function EventCard({
                   setIsShareOpen(true);
                 }}
                 className="bg-white 
+                dark:bg-transparent
                 text-brand-primary 
                 font-poppins font-black 
                 py-1.5 px-2.5
@@ -170,6 +173,7 @@ function EventCard({
                   setIsEditOpen(true);
                 }}
                 className="bg-white 
+                dark:bg-transparent
                 text-brand-primary 
                 font-poppins font-black 
                 py-1.5 px-3 
@@ -187,36 +191,10 @@ function EventCard({
       {/* Share modal */}
       <AnimatePresence>
         {isShareOpen && (
-          <motion.div
-            key="share-modal"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-          >
-            <motion.div
-              initial={{ y: 40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 40, opacity: 0 }}
-              transition={{
-                type: "spring",
-                bounce: 0,
-                duration: 0.4,
-              }}
-              className="bg-white p-6 rounded-xl shadow-xl w-72 space-y-4 text-center"
-            >
-              <h2 className="text-xl font-montserrat font-bold text-text-primary">Share this Event</h2>
-              <button onClick={shareEmail} className="w-full font-poppins font-black bg-blue-500 text-white py-2 rounded-md duration-300 ease-in hover:bg-blue-600">
-                Share via Email
-              </button>
-              <button onClick={shareSMS} className="w-full font-poppins font-black bg-green-500 text-white py-2 rounded-md duration-300 ease-in hover:bg-green-600">
-                Share via SMS
-              </button>
-              <button onClick={() => setIsShareOpen(false)} className="text-gray-500 font-poppins font-black hover:underline">
-                Cancel
-              </button>
-            </motion.div>
-          </motion.div>
+          <Share
+            eventLink={eventLink}
+            onClose={() => setIsShareOpen(false)}
+          />
         )}
       </AnimatePresence>
 
