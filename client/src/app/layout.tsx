@@ -14,7 +14,7 @@ export default function LayoutComponent({ children }: { children: React.ReactNod
       <body>
         <AuthProvider>
           <ThemeProvider>{children}</ThemeProvider>
-          </AuthProvider>
+        </AuthProvider>
       </body>
     </html>
   );
