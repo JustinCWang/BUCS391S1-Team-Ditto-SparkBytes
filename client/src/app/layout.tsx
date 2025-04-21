@@ -6,6 +6,7 @@ import Notification from '@/component/Notification';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { NotificationProvider } from '@/context/NotificationContext';
 import Notification from '@/component/Notification';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 export default function RootLayout({
   children,
