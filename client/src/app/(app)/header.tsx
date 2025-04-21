@@ -7,13 +7,14 @@ import { Logout } from "@/lib/auth";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
-import { CircleUser, House, CalendarClock } from "lucide-react";
+import { CircleUser, House, CalendarClock, Bell } from "lucide-react";
+import { useNotifications } from "@/context/NotificationContext";
 
 const CustomHeader = () => {
   const router = useRouter();
   const { avatarUrl } = useAuth();
+  const { clearShownEvents } = useNotifications();
   const [openMenu, setMenu] = useState(false);
-
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -21,6 +22,12 @@ const CustomHeader = () => {
     if (!error) {
       router.push("/");
     }
+  };
+
+  const handleResetNotifications = () => {
+    localStorage.removeItem('shownEventIds');
+    clearShownEvents();
+    console.log('[Notification] Reset notification history - users will receive notifications again');
   };
 
   useEffect(() => {
@@ -56,6 +63,15 @@ const CustomHeader = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-4 relative">
+          {/* New reset notifications button */}
+          <button
+            onClick={handleResetNotifications}
+            className="text-text-primary hover:text-brand-primary transition-colors duration-300 flex items-center justify-center"
+            title="Reset notifications for your liked events"
+          >
+            <Bell size={24} />
+          </button>
+          
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="w-12 h-12 flex items-center justify-center rounded-full overflow-hidden"
@@ -132,42 +148,57 @@ const CustomHeader = () => {
             className="fixed inset-0 z-10 bg-white pt-20 px-4"
           >
             <motion.div className="flex flex-col items-center justify-center gap-4">
-            <div className="flex justify-center items-center">
-              <House className="mr-1"/>
-              <Link href="/dashboard" onClick={() => setMenu(false)} className="text-xl font-poppins font-semibold text-text-primary">
-                Home
-              </Link>
-            </div>
-            <div className="flex justify-center items-center">
-              <CalendarClock className="mr-1"/>
-              <Link href="/events" onClick={() => setMenu(false)} className="text-xl font-poppins font-semibold text-text-primary">
-                Events
-              </Link>
-            </div>
-            <div className="flex justify-center items-center">
-              {avatarUrl ? (
-                <Link href="/profile">
-                  <div className="w-7 h-7 rounded-full overflow-hidden border mr-1">
-                    <Image
-                      src={avatarUrl}
-                      alt="User Avatar"
-                      width={40}
-                      height={40}
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
+              <div className="flex justify-center items-center">
+                <House className="mr-1"/>
+                <Link href="/dashboard" onClick={() => setMenu(false)} className="text-xl font-poppins font-semibold text-text-primary">
+                  Home
                 </Link>
-              ) : (
-                <Link href="/profile">
-                  <div className="w-7 h-7 flex justify-center items-center rounded-full overflow-hidden mr-1">
-                    <CircleUser className="w-full h-full"/>
-                  </div>
+              </div>
+              <div className="flex justify-center items-center">
+                <CalendarClock className="mr-1"/>
+                <Link href="/events" onClick={() => setMenu(false)} className="text-xl font-poppins font-semibold text-text-primary">
+                  Events
                 </Link>
-              )}
-              <Link href="/profile" onClick={() => setMenu(false)} className="text-xl font-poppins font-semibold text-text-primary">
-                Profile
-              </Link>
-            </div>
+              </div>
+              
+              {/* Add reset notifications button to mobile menu */}
+              <div className="flex justify-center items-center">
+                <Bell className="mr-1"/>
+                <button 
+                  onClick={() => {
+                    handleResetNotifications();
+                    setMenu(false);
+                  }}
+                  className="text-xl font-poppins font-semibold text-text-primary"
+                >
+                  Reset Notifications
+                </button>
+              </div>
+              
+              <div className="flex justify-center items-center">
+                {avatarUrl ? (
+                  <Link href="/profile">
+                    <div className="w-7 h-7 rounded-full overflow-hidden border mr-1">
+                      <Image
+                        src={avatarUrl}
+                        alt="User Avatar"
+                        width={40}
+                        height={40}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                  </Link>
+                ) : (
+                  <Link href="/profile">
+                    <div className="w-7 h-7 flex justify-center items-center rounded-full overflow-hidden mr-1">
+                      <CircleUser className="w-full h-full"/>
+                    </div>
+                  </Link>
+                )}
+                <Link href="/profile" onClick={() => setMenu(false)} className="text-xl font-poppins font-semibold text-text-primary">
+                  Profile
+                </Link>
+              </div>
               <button
                 onClick={handleLogout}
                 className="bg-brand-primary 

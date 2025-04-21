@@ -3,12 +3,10 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
-import { useNotifications } from '@/context/NotificationContext';
-import { Loader, Trash2 } from 'lucide-react';
+import { Loader } from 'lucide-react';
 
 const NotificationToggle = () => {
   const { user } = useAuth();
-  const { clearShownEvents } = useNotifications();
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -54,39 +52,24 @@ const NotificationToggle = () => {
     }
   };
 
-  const clearNotificationHistory = () => {
-    localStorage.removeItem('shownEventIds');
-    clearShownEvents();
-    console.log('[Notification] Cleared notification history');
-  };
-
   if (loading) {
     return <Loader className="animate-spin" size={20} />;
   }
 
   return (
-    <div className="flex items-center gap-4">
-      <button
-        onClick={handleToggle}
-        className={`w-12 h-6 rounded-full transition-colors duration-200 ${
-          notificationsEnabled ? 'bg-brand-primary' : 'bg-gray-300'
+    <button
+      onClick={handleToggle}
+      className={`w-12 h-6 rounded-full transition-colors duration-200 ${
+        notificationsEnabled ? 'bg-brand-primary' : 'bg-gray-300'
+      }`}
+    >
+      <div
+        className={`w-5 h-5 rounded-full bg-white transform transition-transform duration-200 ${
+          notificationsEnabled ? 'translate-x-6' : 'translate-x-1'
         }`}
-      >
-        <div
-          className={`w-5 h-5 rounded-full bg-white transform transition-transform duration-200 ${
-            notificationsEnabled ? 'translate-x-6' : 'translate-x-1'
-          }`}
-        />
-      </button>
-      <button
-        onClick={clearNotificationHistory}
-        className="text-red-500 hover:text-red-700 transition-colors"
-        title="Clear notification history (for testing)"
-      >
-        <Trash2 size={16} />
-      </button>
-    </div>
+      />
+    </button>
   );
 };
 
-export default NotificationToggle; 
+export default NotificationToggle;
