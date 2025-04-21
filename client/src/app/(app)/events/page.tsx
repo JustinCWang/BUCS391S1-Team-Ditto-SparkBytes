@@ -10,6 +10,7 @@ import EventCard from '@/component/eventCard';
 import EventFilter, { FilterState } from '@/component/EventFilter';
 import CreateEventForm from '@/component/CreateEventForm';
 import { Loader } from 'lucide-react';
+import EventSearchBar from '@/component/EventSearchBar';
 
 const ITEMS_PER_PAGE = 9; // Number of events per page
 
@@ -261,20 +262,22 @@ function EventsContent() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           {/* Search input field */}
           <div className="w-full md:max-w-2xl">
-            <input
-              type="text"
-              placeholder="Search events..."
-              value={searchQuery}
-              onChange={handleSearch}
-              className="w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:border-text-primary"
-            />
+          <EventSearchBar
+             searchQuery={searchQuery}
+             onChange={handleSearch}
+           />
           </div>
 
           {/* Buttons for filtering and creating events */}
           <div className="w-full flex flex-col sm:flex-row gap-4">
             <button
               onClick={() => setIsFilterOpen(true)}
-              className="bg-white text-brand-primary font-poppins font-black py-3 px-5 rounded-md border border-brand-primary duration-300 ease-in hover:bg-brand-primary hover:text-white flex items-center justify-center w-full"
+              className="bg-white dark:bg-transparent 
+               text-brand-primary font-poppins 
+               font-black py-3 px-5 rounded-md border 
+               border-brand-primary duration-300 ease-in 
+               hover:bg-brand-primary hover:text-white dark:hover:bg-transparent 
+               flex items-center justify-center w-full"
             >
               Filter Events
             </button>

@@ -1,5 +1,7 @@
-import React, {useEffect} from 'react';
+'use client';
 
+import React, {useEffect} from 'react';
+import { useTheme } from '@/context/ThemeContext';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface FilterProps {
@@ -43,7 +45,8 @@ const LOCATION_OPTIONS = [
 ];
 
 const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
-
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const formStyle = "text-text-primary font-bold font-montserrat text-base"
 
   // Prevents the user from scrolling
@@ -107,7 +110,9 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
               bounce: 0,
               duration: 0.4,
             }}
-            className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6"
+            className={`rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 transition-colors duration-300 ${
+              isDark ? 'bg-[#222224] text-white' : 'bg-white text-black'
+            }`}          
           >
             <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Filter Events</h2>
             <p className="text-text-primary font-inter text-xs lg:text-base mb-6">
@@ -205,8 +210,7 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
               <div className="flex justify-end gap-4 pt-4">
                 <button
                   onClick={onClose}
-                  className="bg-white 
-                    text-brand-primary 
+                  className="text-brand-primary 
                     font-poppins font-black 
                     py-1.5 px-5 
                     rounded-md border border-brand-primary

@@ -3,6 +3,8 @@ import { AuthProvider } from '@/context/AuthContext';
 import { NotificationProvider } from '@/context/NotificationContext';
 import Notification from '@/component/Notification';
 
+import { ThemeProvider } from '@/context/ThemeContext';
+
 export default function RootLayout({
   children,
 }: {
@@ -17,12 +19,14 @@ export default function RootLayout({
         <link rel="icon" type="image/png" href="/images/tabSpark.png" />
       </head>
       <body>
-        <AuthProvider>
+      <AuthProvider>
+        <ThemeProvider>
           <NotificationProvider>
             <Notification />
             {children}
           </NotificationProvider>
-        </AuthProvider>
+        </ThemeProvider>
+      </AuthProvider>
       </body>
     </html>
   );

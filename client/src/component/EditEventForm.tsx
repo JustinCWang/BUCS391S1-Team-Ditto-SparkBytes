@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
@@ -5,6 +7,8 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { EventCardProps } from '@/types/supabase';
 import { X } from "lucide-react";
+
+import { useTheme } from '@/context/ThemeContext';
 
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -33,9 +37,16 @@ interface EventFormData {
 
 const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSuccess, eventData, onEventUpdated }) => {
   const { user } = useAuth();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
-  const inputStyle = "w-full font-inter border border-gray-300 px-4 py-2 mt-2 rounded-md focus:outline-none focus:border-text-primary";
-  const formStyle = "text-text-primary font-bold font-montserrat text-base"
+  const inputStyle = `w-full font-inter px-4 py-2 mt-2 rounded-md 
+  focus:outline-none focus:border-text-primary 
+  border ${isDark ? 'border-gray-600' : 'border-gray-300'} 
+  ${isDark ? 'text-white bg-[#1e1e1e] placeholder-gray-500' : 'text-black bg-white placeholder-gray-400'}
+ `;
+
+  const formStyle =`${isDark ? 'text-white' : 'text-black'} font-bold font-montserrat text-base`;
 
   // Prevents the user from scrolling
   useEffect(() => {
@@ -240,7 +251,9 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
               bounce: 0,
               duration: 0.4,
             }}
-            className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 relative"
+            className={`rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 transition-colors duration-300 ${
+              isDark ? 'bg-[#222224] text-white' : 'bg-white text-black'
+            }`}
           >
             {/* Close button */}
             <button
@@ -295,7 +308,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
                 </div>
                 <div className="space-y-2">
                   <label className={formStyle}>Time</label>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                  <div className="dark:text-white flex flex-col sm:flex-row items-start sm:items-center gap-2">
                     <input
                       type="time"
                       value={formData.start_time}
@@ -400,7 +413,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
                   <button
                     type="button"
                     onClick={onClose}
-                    className="w-full bg-white text-brand-primary font-poppins font-black py-1.5 px-5 
+                    className="w-full bg-translucent text-brand-primary font-poppins font-black py-1.5 px-5 
                               rounded-md border border-brand-primary duration-300 ease-in 
                               hover:bg-brand-primary hover:text-white flex items-center justify-center"
                   >
@@ -409,7 +422,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
                   <button
                     type="button"
                     onClick={handleDelete}
-                    className="w-full bg-white text-brand-primary font-poppins font-black py-1.5 px-5 
+                    className="w-full bg-translucent text-brand-primary font-poppins font-black py-1.5 px-5 
                               rounded-md border border-brand-primary duration-300 ease-in 
                               hover:bg-brand-primary hover:text-white flex items-center justify-center"
                   >

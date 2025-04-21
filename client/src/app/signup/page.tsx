@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 
 import { Eye, EyeOff } from 'lucide-react';
 import { Loader } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 // Define the LoginPage component as a React Functional Component
 const SignUpPage= () => {
@@ -30,6 +31,15 @@ const SignUpPage= () => {
   const [password, setPassword] = useState('');
 
   const { user } = useAuth();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
+  const inputStyle = `w-full font-inter px-4 py-3 rounded-md border mb-4
+  focus:outline-none focus:border-text-primary
+  ${isDark 
+    ? 'text-white bg-[#222224] border-gray-600 placeholder-gray-300' 
+    : 'text-black bg-white border-gray-300 placeholder-text-primary'}
+`;
 
   useEffect(() => {
       if (user) {
@@ -63,11 +73,15 @@ const SignUpPage= () => {
 
   return (
     // Flex the form so that its in the middle of the screen
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+    <div
+       className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-300 ${
+         isDark ? 'bg-[#1e1e1e] text-white' : 'bg-gray-50 text-black'
+       }`}
+     >
       {/** Define the container for the actual form */}
       <div className="w-full max-w-sm">
         {/** Title and min-description */}
-        <h2 className="text-3xl font-bold font-montserrat text-text-primary">Welcome to Spark!Bytes
+        <h2 className="text-3xl text-black dark:white font-bold font-montserrat text-text-primary">Welcome to Spark!Bytes
         </h2>
         <p className="text-sm font-inter mb-6">Use your &quot;bu.edu&quot; email address to make an account
         </p>
@@ -187,7 +201,7 @@ const SignUpPage= () => {
           Already have an account?{' '}
           <span
             onClick={() => router.push('/login')}
-            className="text-blue-600 font-inter underline cursor-pointer"
+            className="text-brand-primary font-semibold hover:underline"
           >
             Log in
           </span>
