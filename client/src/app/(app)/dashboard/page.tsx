@@ -33,7 +33,7 @@ const Dashboard = () => {
   const [currentMyEventsPage, setCurrentMyEventsPage] = useState(1);
   const [totalMyEventsPages, setTotalMyEventsPages] = useState(0);
   const LIKED_ITEMS_PER_PAGE = 6; // Number of events per page for liked events
-  const MY_EVENTS_ITEMS_PER_PAGE = 4; // Number of events per page for my events
+  const MY_EVENTS_ITEMS_PER_PAGE = 6; // Number of events per page for my events
 
   // Fetch upcoming events from the database with pagination and like count
   const fetchUpcomingEvents = useCallback(async () => {
