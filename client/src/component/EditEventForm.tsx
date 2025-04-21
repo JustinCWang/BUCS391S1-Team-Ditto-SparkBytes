@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { EventCardProps } from '@/types/supabase';
+import { X } from "lucide-react";
 
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -239,8 +240,16 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
               bounce: 0,
               duration: 0.4,
             }}
-            className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6"
+            className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 relative"
           >
+            {/* Close button */}
+            <button
+              onClick={onClose}
+              className="absolute top-2 right-2 text-text-primary hover:text-brand-primary"
+            >
+              <X size={24} />
+            </button>
+
             <div>
               <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Editing &quot;{eventData.name}&quot;</h2>
               <p className="text-text-primary font-inter text-xs lg:text-base mb-6">Update your event details.</p>

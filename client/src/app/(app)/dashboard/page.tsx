@@ -33,7 +33,7 @@ const Dashboard = () => {
   const [currentMyEventsPage, setCurrentMyEventsPage] = useState(1);
   const [totalMyEventsPages, setTotalMyEventsPages] = useState(0);
   const LIKED_ITEMS_PER_PAGE = 6; // Number of events per page for liked events
-  const MY_EVENTS_ITEMS_PER_PAGE = 4; // Number of events per page for my events
+  const MY_EVENTS_ITEMS_PER_PAGE = 6; // Number of events per page for my events
 
   // Fetch upcoming events from the database with pagination and like count
   const fetchUpcomingEvents = useCallback(async () => {
@@ -400,21 +400,6 @@ const Dashboard = () => {
     fetchLikedEvents();
     fetchMyEvents();
   }, [fetchUpcomingEvents, fetchLikedEvents, fetchMyEvents]);
-
-  // Add useEffects for handling scroll on page changes
-  useEffect(() => {
-    const element = document.getElementById('liked');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [currentLikedPage]);
-
-  useEffect(() => {
-    const element = document.getElementById('my');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [currentMyEventsPage]);
 
   return (
     <div className="my-6">

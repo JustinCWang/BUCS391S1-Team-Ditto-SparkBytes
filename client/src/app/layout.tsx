@@ -1,7 +1,13 @@
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
+import { NotificationProvider } from '@/context/NotificationContext';
+import Notification from '@/component/Notification';
 
-export default function LayoutComponent({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <head>
@@ -11,7 +17,12 @@ export default function LayoutComponent({ children }: { children: React.ReactNod
         <link rel="icon" type="image/png" href="/images/tabSpark.png" />
       </head>
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <NotificationProvider>
+            <Notification />
+            {children}
+          </NotificationProvider>
+        </AuthProvider>
       </body>
     </html>
   );
