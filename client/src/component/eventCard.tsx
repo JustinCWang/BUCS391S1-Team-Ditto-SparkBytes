@@ -1,11 +1,12 @@
 import { EventCardProps } from "@/types/supabase";
-import { MapPin, UtensilsCrossed, Heart, Share2, Package, AlertTriangle } from "lucide-react"
+import { MapPin, UtensilsCrossed, Heart, Share2, Package, AlertTriangle, Bell } from "lucide-react"
 import { useState, useEffect } from "react";
 import EditEventForm from "./EditEventForm";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "motion/react";
 import DetailedEventCard from "./detailedEventCard";
+import { isEventCurrentlyHappening } from '@/lib/utils';
 
 function EventCard({
   // Event basic info
@@ -111,7 +112,12 @@ function EventCard({
   }, [isShareOpen]);
 
   return (
-    <>
+    <div className="relative bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+      {isEventCurrentlyHappening(date, start_time, end_time) && (
+        <div className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 shadow-lg">
+          <Bell className="w-4 h-4" />
+        </div>
+      )}
       <div 
         className="border-2 border-text-primary rounded-lg px-4 py-2 shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300"
         onClick={() => setIsDetailedViewOpen(true)}
@@ -278,7 +284,7 @@ function EventCard({
         organizer_id={organizer_id}
         onEventUpdated={onEventUpdated}
       />
-    </>
+    </div>
   );
 }
 
