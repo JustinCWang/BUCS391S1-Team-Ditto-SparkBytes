@@ -10,6 +10,8 @@ import { X } from "lucide-react";
 
 import { useTheme } from '@/context/ThemeContext';
 
+import { X } from "lucide-react";
+
 import { motion, AnimatePresence } from 'motion/react';
 
 interface EditEventFormProps {
@@ -251,9 +253,9 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
               bounce: 0,
               duration: 0.4,
             }}
-            className={`rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 transition-colors duration-300 ${
+            className={`relative rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 transition-colors duration-300 ${
               isDark ? 'bg-[#222224] text-white' : 'bg-white text-black'
-            }`}
+            }`}            
           >
             {/* Close button */}
             <button

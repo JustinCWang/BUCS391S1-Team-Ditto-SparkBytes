@@ -181,9 +181,9 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
               bounce: 0,
               duration: 0.4,
             }}
-            className={`rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 transition-colors duration-300 ${
-               isDark ? 'bg-[#222224] text-white' : 'bg-white text-black'
-             }`}
+            className={`relative rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 transition-colors duration-300 ${
+              isDark ? 'bg-[#222224] text-white' : 'bg-white text-black'
+            }`}            
           >
             <div>
               <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Post an Event</h2>
