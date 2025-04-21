@@ -23,9 +23,23 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [shownEventIds, setShownEventIds] = useState<Set<string>>(new Set());
+  const [shownEventIds, setShownEventIds] = useState<Set<string>>(() => {
+    // Initialize from localStorage on first render
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('shownEventIds');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    }
+    return new Set();
+  });
   const { user, userSession } = useAuth();
   const pathname = usePathname();
+
+  // Update localStorage whenever shownEventIds changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('shownEventIds', JSON.stringify([...shownEventIds]));
+    }
+  }, [shownEventIds]);
 
   const addNotification = useCallback((message: string, type: Notification['type'], eventId?: string) => {
     // Only add notification if user is logged in and not on landing page
