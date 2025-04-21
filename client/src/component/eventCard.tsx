@@ -1,5 +1,5 @@
 import { EventCardProps } from "@/types/supabase";
-import { MapPin, UtensilsCrossed, Heart, Share2 } from "lucide-react"
+import { MapPin, UtensilsCrossed, Heart, Share2, Package, AlertTriangle } from "lucide-react"
 import { useState, useEffect } from "react";
 import EditEventForm from "./EditEventForm";
 import { useAuth } from "@/context/AuthContext";
@@ -21,6 +21,7 @@ function EventCard({
   food_id,
   food_name,
   allergens,
+  quantity,
   // Like info with default values
   like_count = 0, // Default value is 0
   isLiked = false, // Default value is false
@@ -134,7 +135,14 @@ function EventCard({
               <UtensilsCrossed />
               <p className="ml-1">{food_name}</p>
             </div>
-            <p>Allergens: {allergens}</p>
+            <div className="flex mb-2">
+              <Package />
+              <p className="ml-1">Quantity: {quantity}</p>
+            </div>
+            <div className="flex mb-2">
+              <AlertTriangle />
+              <p className="ml-1">Allergens: {allergens}</p>
+            </div>
           </div>
           {/* Section for like functionality and edit button */}
           <div className="flex justify-between items-center mt-4 mb-2">
@@ -240,6 +248,7 @@ function EventCard({
           food_id,
           food_name,
           allergens,
+          quantity,
         }}
         onSuccess={() => {
           setIsEditOpen(false);

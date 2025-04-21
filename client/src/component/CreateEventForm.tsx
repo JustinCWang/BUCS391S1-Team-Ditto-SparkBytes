@@ -22,6 +22,7 @@ interface EventFormData {
   building: string;
   food_name: string;
   allergens: string[];
+  quantity: number;
 }
 
 const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSuccess }) => {
@@ -56,6 +57,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
     building: '',
     food_name: '',
     allergens: [],
+    quantity: 0,
   });
 
   const allergenOptions = [
@@ -113,7 +115,8 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
         .insert([{
           name: formData.food_name,
           allergens: formData.allergens.join(', '),
-          status: 'available'
+          status: 'available',
+          quantity: formData.quantity
         }])
         .select()
         .single();
@@ -275,6 +278,20 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
                   onChange={(e) => setFormData({ ...formData, food_name: e.target.value })}
                   className={inputStyle}
                   placeholder="e.g., Pizza and Salad"
+                  required
+                />
+              </div>
+
+              {/* Food Quantity */}
+              <div>
+                <label className={formStyle}>Food Quantity</label>
+                <input
+                  type="number"
+                  value={formData.quantity || ''}
+                  onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) || 0 })}
+                  className={inputStyle}
+                  placeholder="e.g., 10"
+                  min="1"
                   required
                 />
               </div>
