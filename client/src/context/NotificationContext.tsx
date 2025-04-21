@@ -10,21 +10,22 @@ interface Notification {
   message: string;
   type: 'info' | 'warning' | 'success' | 'error';
   timestamp: Date;
-  eventId?: string; // Add eventId to track which event triggered the notification
+  eventId?: string;
 }
 
 interface NotificationContextType {
-  notifications: Notification[];
+  currentNotification: Notification | null;
   addNotification: (message: string, type: Notification['type'], eventId?: string) => void;
   removeNotification: (id: string) => void;
+  clearShownEvents: () => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [currentNotification, setCurrentNotification] = useState<Notification | null>(null);
+  const [notificationQueue, setNotificationQueue] = useState<Notification[]>([]);
   const [shownEventIds, setShownEventIds] = useState<Set<string>>(() => {
-    // Initialize from localStorage on first render
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('shownEventIds');
       return saved ? new Set(JSON.parse(saved)) : new Set();
@@ -42,7 +43,6 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   }, [shownEventIds]);
 
   const addNotification = useCallback((message: string, type: Notification['type'], eventId?: string) => {
-    // Only add notification if user is logged in and not on landing page
     if (!userSession || pathname === '/') {
       console.log('[Notification] Skipping notification - user not logged in or on landing page');
       return;
@@ -53,8 +53,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       console.log(`[Notification] Skipping notification - already shown for event ${eventId}`);
       return;
     }
-    
-    console.log(`[Notification] Adding notification: ${message}`);
+
+    console.log(`[Notification] Adding notification to queue: ${message}`);
     const newNotification: Notification = {
       id: Date.now().toString(),
       message,
@@ -68,14 +68,38 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       setShownEventIds(prev => new Set(prev).add(eventId));
     }
 
-    // Clear any existing notifications before adding the new one
-    setNotifications([newNotification]);
+    // Add to queue
+    setNotificationQueue(prev => [...prev, newNotification]);
   }, [userSession, pathname, shownEventIds]);
 
-  const removeNotification = (id: string) => {
+  const removeNotification = useCallback((id: string) => {
     console.log(`[Notification] Removing notification with ID: ${id}`);
-    setNotifications(prev => prev.filter(notification => notification.id !== id));
-  };
+    
+    // If the removed notification is the current one, show the next one from the queue
+    if (currentNotification?.id === id) {
+      setCurrentNotification(null);
+      // Show next notification from queue after a short delay
+      setTimeout(() => {
+        setNotificationQueue(prev => {
+          const nextNotification = prev[0];
+          if (nextNotification) {
+            setCurrentNotification(nextNotification);
+            return prev.slice(1);
+          }
+          return prev;
+        });
+      }, 300); // Small delay for smooth transition
+    }
+  }, [currentNotification]);
+
+  // Show next notification from queue when current notification is null
+  useEffect(() => {
+    if (!currentNotification && notificationQueue.length > 0) {
+      const nextNotification = notificationQueue[0];
+      setCurrentNotification(nextNotification);
+      setNotificationQueue(prev => prev.slice(1));
+    }
+  }, [currentNotification, notificationQueue]);
 
   // Check for events in current hour
   useEffect(() => {
@@ -188,8 +212,12 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return () => clearInterval(interval);
   }, [user, userSession, addNotification, pathname]);
 
+  const clearShownEvents = useCallback(() => {
+    setShownEventIds(new Set());
+  }, []);
+
   return (
-    <NotificationContext.Provider value={{ notifications, addNotification, removeNotification }}>
+    <NotificationContext.Provider value={{ currentNotification, addNotification, removeNotification, clearShownEvents }}>
       {children}
     </NotificationContext.Provider>
   );

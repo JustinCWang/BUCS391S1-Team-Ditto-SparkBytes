@@ -5,37 +5,38 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useNotifications } from '@/context/NotificationContext';
 
-export default function Notification() {
-  const { notifications, removeNotification } = useNotifications();
+const Notification = () => {
+  const { currentNotification, removeNotification } = useNotifications();
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
       <AnimatePresence>
-        {notifications.map((notification) => (
+        {currentNotification && (
           <motion.div
-            key={notification.id}
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
-            transition={{ duration: 0.3 }}
-            className="mx-auto max-w-md w-full p-4"
+            className={`p-4 rounded-lg shadow-lg max-w-sm ${
+              currentNotification.type === 'info' ? 'bg-white border border-black' :
+              currentNotification.type === 'warning' ? 'bg-yellow-100 border border-yellow-500' :
+              currentNotification.type === 'success' ? 'bg-green-100 border border-green-500' :
+              'bg-red-100 border border-red-500'
+            }`}
           >
-            <div className="bg-white border-2 border-black rounded-lg shadow-lg p-4 pointer-events-auto">
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <p className="text-black whitespace-pre-line">{notification.message}</p>
-                </div>
-                <button
-                  onClick={() => removeNotification(notification.id)}
-                  className="ml-4 text-black hover:text-red-500 transition-colors"
-                >
-                  <X size={20} />
-                </button>
-              </div>
+            <div className="flex justify-between items-start">
+              <p className="text-sm whitespace-pre-line">{currentNotification.message}</p>
+              <button
+                onClick={() => removeNotification(currentNotification.id)}
+                className="ml-4 text-gray-500 hover:text-gray-700"
+              >
+                <X size={16} />
+              </button>
             </div>
           </motion.div>
-        ))}
+        )}
       </AnimatePresence>
     </div>
   );
-} 
+};
+
+export default Notification; 
