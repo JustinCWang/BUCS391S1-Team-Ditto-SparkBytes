@@ -401,21 +401,6 @@ const Dashboard = () => {
     fetchMyEvents();
   }, [fetchUpcomingEvents, fetchLikedEvents, fetchMyEvents]);
 
-  // Add useEffects for handling scroll on page changes
-  useEffect(() => {
-    const element = document.getElementById('liked');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [currentLikedPage]);
-
-  useEffect(() => {
-    const element = document.getElementById('my');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [currentMyEventsPage]);
-
   return (
     <div className="my-6">
       <SectionNavigator />
