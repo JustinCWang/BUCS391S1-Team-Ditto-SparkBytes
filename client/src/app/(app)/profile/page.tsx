@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { updateUserName, updateEmail, updatePassword } from '@/lib/user';
 import { Loader } from 'lucide-react';
 import ProfilePictureUpload from '@/component/ProfilePictureUpload';
+import NotificationToggle from '@/component/NotificationToggle';
 
 import { message } from 'antd';
 import '@ant-design/v5-patch-for-react-19';
@@ -261,6 +262,17 @@ const Profile = () => {
       </div>
 
       <ProfilePictureUpload />
+
+      {/** Notification Preferences */}
+      <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 mb-10 shadow-lg'>
+        <div className='max-w-xl mx-auto'>
+          <h1 className='text-text-primary font-bold font-montserrat text-xl mb-6'>Notification Preferences</h1>
+          <div className='flex items-center justify-between'>
+            <p className='text-text-primary font-inter text-sm lg:text-base'>Enable event notifications</p>
+            <NotificationToggle />
+          </div>
+        </div>
+      </div>
 
       {/** Change Name */}
       <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 mb-10 shadow-lg'>
