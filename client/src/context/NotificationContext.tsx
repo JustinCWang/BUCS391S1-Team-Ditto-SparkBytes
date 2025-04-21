@@ -10,63 +10,27 @@ interface Notification {
   message: string;
   type: 'info' | 'warning' | 'success' | 'error';
   timestamp: Date;
-  eventId?: string;
+  eventId?: string; // Add eventId to track which event triggered the notification
 }
 
 interface NotificationContextType {
-  currentNotification: Notification | null;
+  notifications: Notification[];
   addNotification: (message: string, type: Notification['type'], eventId?: string) => void;
   removeNotification: (id: string) => void;
-  clearShownEvents: () => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentNotification, setCurrentNotification] = useState<Notification | null>(null);
-  const [notificationQueue, setNotificationQueue] = useState<Notification[]>([]);
-  const [shownEventIds, setShownEventIds] = useState<Set<string>>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('shownEventIds');
-      return saved ? new Set(JSON.parse(saved)) : new Set();
-    }
-    return new Set();
-  });
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [shownEventIds, setShownEventIds] = useState<Set<string>>(new Set());
   const { user, userSession } = useAuth();
   const pathname = usePathname();
 
-  // Update localStorage whenever shownEventIds changes
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('shownEventIds', JSON.stringify([...shownEventIds]));
-    }
-  }, [shownEventIds]);
-
-  const addNotification = useCallback(async (message: string, type: Notification['type'], eventId?: string) => {
+  const addNotification = useCallback((message: string, type: Notification['type'], eventId?: string) => {
+    // Only add notification if user is logged in and not on landing page
     if (!userSession || pathname === '/') {
       console.log('[Notification] Skipping notification - user not logged in or on landing page');
-      return;
-    }
-
-    // Check user's notification preference
-    try {
-      const { data, error } = await supabase
-        .from('Users')
-        .select('notifications')
-        .eq('user_id', user?.id)
-        .single();
-
-      if (error) {
-        console.error('Error checking notification preference:', error);
-        return;
-      }
-
-      if (!data?.notifications) {
-        console.log('[Notification] Skipping notification - notifications disabled by user');
-        return;
-      }
-    } catch (error) {
-      console.error('Error checking notification preference:', error);
       return;
     }
 
@@ -75,8 +39,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       console.log(`[Notification] Skipping notification - already shown for event ${eventId}`);
       return;
     }
-
-    console.log(`[Notification] Adding notification to queue: ${message}`);
+    
+    console.log(`[Notification] Adding notification: ${message}`);
     const newNotification: Notification = {
       id: Date.now().toString(),
       message,
@@ -90,38 +54,14 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       setShownEventIds(prev => new Set(prev).add(eventId));
     }
 
-    // Add to queue
-    setNotificationQueue(prev => [...prev, newNotification]);
-  }, [userSession, pathname, shownEventIds, user?.id]);
+    // Clear any existing notifications before adding the new one
+    setNotifications([newNotification]);
+  }, [userSession, pathname, shownEventIds]);
 
-  const removeNotification = useCallback((id: string) => {
+  const removeNotification = (id: string) => {
     console.log(`[Notification] Removing notification with ID: ${id}`);
-    
-    // If the removed notification is the current one, show the next one from the queue
-    if (currentNotification?.id === id) {
-      setCurrentNotification(null);
-      // Show next notification from queue after a short delay
-      setTimeout(() => {
-        setNotificationQueue(prev => {
-          const nextNotification = prev[0];
-          if (nextNotification) {
-            setCurrentNotification(nextNotification);
-            return prev.slice(1);
-          }
-          return prev;
-        });
-      }, 300); // Small delay for smooth transition
-    }
-  }, [currentNotification]);
-
-  // Show next notification from queue when current notification is null
-  useEffect(() => {
-    if (!currentNotification && notificationQueue.length > 0) {
-      const nextNotification = notificationQueue[0];
-      setCurrentNotification(nextNotification);
-      setNotificationQueue(prev => prev.slice(1));
-    }
-  }, [currentNotification, notificationQueue]);
+    setNotifications(prev => prev.filter(notification => notification.id !== id));
+  };
 
   // Check for events in current hour
   useEffect(() => {
@@ -234,12 +174,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return () => clearInterval(interval);
   }, [user, userSession, addNotification, pathname]);
 
-  const clearShownEvents = useCallback(() => {
-    setShownEventIds(new Set());
-  }, []);
-
   return (
-    <NotificationContext.Provider value={{ currentNotification, addNotification, removeNotification, clearShownEvents }}>
+    <NotificationContext.Provider value={{ notifications, addNotification, removeNotification }}>
       {children}
     </NotificationContext.Provider>
   );
