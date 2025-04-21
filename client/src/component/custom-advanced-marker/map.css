@@ -1,0 +1,61 @@
+.custom-marker-container {
+    position: relative;            /* ① make this the positioning context */
+    transform: translate(-50%, 0); /* ② only shift horizontally to center */
+    cursor: pointer;
+  }
+  
+  /* default icon (still centered horizontally, but stays at the bottom of the container) */
+  .marker-default-icon {
+    width: 40px;
+    height: 40px;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  /* popup card now absolutely positioned above the icon */
+  .marker-popup-card {
+    position: absolute;            /* ③ take out of document flow */
+    bottom: 100%;                  /* sit exactly on top of the icon */
+    left: 50%;                     /* center horizontally */
+    transform: translateX(-50%);   /* shift by half its width */
+    margin-bottom: 8px;            /* small gap between icon and card */
+    width: 260px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    overflow: hidden;
+    z-index: 1000;                 /* ensure it sits on top */
+  }
+  .marker-popup-card .popup-images {
+    width: 100%;
+    height: 140px;
+  }
+  .marker-popup-card .popup-images img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .marker-popup-card .popup-content {
+    padding: 10px 12px;
+  }
+  .marker-popup-card h3 {
+    margin: 0 0 6px;
+    font-size: 1.1rem;
+  }
+  .marker-popup-card p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #333;
+  }
+  
+  
+  .popup-link {
+    margin-top: 8px;
+  }
+  
+  .popup-link a {
+    color: #0070f3;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  

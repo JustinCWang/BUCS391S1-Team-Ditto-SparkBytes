@@ -7,7 +7,7 @@ import { Logout } from "@/lib/auth";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
-import { CircleUser, House, CalendarClock } from "lucide-react";
+import { CircleUser, House, CalendarClock, MapPinCheck } from "lucide-react";
 
 const CustomHeader = () => {
   const router = useRouter();
@@ -51,6 +51,10 @@ const CustomHeader = () => {
             <div className="flex justify-center items-center">
               <CalendarClock className="mr-1"/>
               <Link href="/events">Events</Link>
+            </div>
+            <div className="flex justify-center items-center">
+              <MapPinCheck className="mr-1"/>
+              <Link href="/map">Map</Link>
             </div>
           </div>
         </div>

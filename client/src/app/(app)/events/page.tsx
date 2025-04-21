@@ -1,5 +1,6 @@
 'use client'
 
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -21,6 +22,10 @@ type FoodInfo = {
 };
 
 const Events = () => {
+  // These two is for map functionality
+  const searchParams = useSearchParams();
+  const location = searchParams.get('location'); // 'ENG'
+
   const router = useRouter();
   const { user } = useAuth();
   const [events, setEvents] = useState<EventCardProps[]>([]);
@@ -32,7 +37,8 @@ const Events = () => {
   const [isCreateEventOpen, setIsCreateEventOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     date: 'any',
-    location: '',
+    // minor change here
+    location: location,
     allergies: {
       dairy: false,
       treeNuts: false,
