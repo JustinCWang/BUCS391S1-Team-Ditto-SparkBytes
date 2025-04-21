@@ -18,6 +18,7 @@ type FoodInfo = {
   food_category?: string | null;
   name?: string | null;
   allergens?: string | null;
+  quantity?: number | null;
 };
 
 const Events = () => {
@@ -119,7 +120,8 @@ const Events = () => {
           food_id,
           food_category,
           name,
-          allergens
+          allergens,
+          quantity
         `)
         .in('food_id', validFoodIds);
       if (foodError) {
@@ -165,6 +167,7 @@ const Events = () => {
           food_category: foodInfo.food_category || undefined,
           food_name: foodInfo.name || undefined,
           allergens: foodInfo.allergens || undefined,
+          quantity: foodInfo.quantity || 1,
           like_count: likeCounts[event.event_id] || 0,
           isLiked: likedEventIds.includes(event.event_id),
         };

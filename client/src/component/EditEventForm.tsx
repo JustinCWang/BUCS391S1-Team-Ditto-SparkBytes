@@ -27,6 +27,7 @@ interface EventFormData {
   allergens: string[];
   event_id?: string;
   food_id?: string;
+  quantity: number;
 }
 
 const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSuccess, eventData, onEventUpdated }) => {
@@ -61,6 +62,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
     building: '',
     food_name: '',
     allergens: [],
+    quantity: 1,
   });
 
   // Initialize form data when the component receives event data
@@ -85,7 +87,8 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
         food_name: eventData.food_name || '',
         allergens: initialAllergens,
         event_id: eventData.event_id,
-        food_id: eventData.food_id
+        food_id: eventData.food_id,
+        quantity: eventData.quantity || 1,
       });
     }
   }, [eventData]);
@@ -151,6 +154,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
         .update({
           name: formData.food_name,
           allergens: formData.allergens.length > 0 ? formData.allergens.join(', ') : '',
+          quantity: formData.quantity
         })
         .eq('food_id', formData.food_id);
 
@@ -344,6 +348,20 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
                   onChange={(e) => setFormData({ ...formData, food_name: e.target.value })}
                   className={inputStyle}
                   placeholder="e.g., Pizza and Salad"
+                  required
+                />
+              </div>
+
+              {/* Food Quantity */}
+              <div>
+                <label className={formStyle}>Food Quantity</label>
+                <input
+                  type="number"
+                  value={formData.quantity}
+                  onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) || 1 })}
+                  className={inputStyle}
+                  placeholder="e.g., 10"
+                  min="1"
                   required
                 />
               </div>

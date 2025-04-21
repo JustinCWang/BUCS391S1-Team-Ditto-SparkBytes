@@ -1,5 +1,5 @@
 import { EventCardProps } from "@/types/supabase";
-import { MapPin, UtensilsCrossed, Heart, Share2, X } from "lucide-react"
+import { MapPin, UtensilsCrossed, Heart, Share2, X, Package, AlertTriangle } from "lucide-react"
 import { useState, useEffect } from "react";
 import EditEventForm from "./EditEventForm";
 import { useAuth } from "@/context/AuthContext";
@@ -26,6 +26,7 @@ function DetailedEventCard({
   food_id,
   food_name,
   allergens,
+  quantity,
   // Like info with default values
   like_count = 0,
   isLiked = false,
@@ -166,7 +167,14 @@ function DetailedEventCard({
                   <div>
                     <p className="font-inter text-text-primary font-bold">Food Available</p>
                     <p className="font-inter text-text-primary">{food_name}</p>
-                    <p className="font-inter text-text-primary mt-1">Allergens: {allergens}</p>
+                    <div className="flex items-center mt-1">
+                      <Package className="mr-2 text-text-primary" />
+                      <p className="font-inter text-text-primary">Quantity: {quantity || 1}</p>
+                    </div>
+                    <div className="flex items-center mt-1">
+                      <AlertTriangle className="mr-2 text-text-primary" />
+                      <p className="font-inter text-text-primary">Allergens: {allergens}</p>
+                    </div>
                   </div>
                 </div>
               </div>
