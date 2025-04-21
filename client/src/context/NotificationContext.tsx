@@ -42,9 +42,31 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   }, [shownEventIds]);
 
-  const addNotification = useCallback((message: string, type: Notification['type'], eventId?: string) => {
+  const addNotification = useCallback(async (message: string, type: Notification['type'], eventId?: string) => {
     if (!userSession || pathname === '/') {
       console.log('[Notification] Skipping notification - user not logged in or on landing page');
+      return;
+    }
+
+    // Check user's notification preference
+    try {
+      const { data, error } = await supabase
+        .from('Users')
+        .select('notifications')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (error) {
+        console.error('Error checking notification preference:', error);
+        return;
+      }
+
+      if (!data?.notifications) {
+        console.log('[Notification] Skipping notification - notifications disabled by user');
+        return;
+      }
+    } catch (error) {
+      console.error('Error checking notification preference:', error);
       return;
     }
 
@@ -70,7 +92,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
     // Add to queue
     setNotificationQueue(prev => [...prev, newNotification]);
-  }, [userSession, pathname, shownEventIds]);
+  }, [userSession, pathname, shownEventIds, user?.id]);
 
   const removeNotification = useCallback((id: string) => {
     console.log(`[Notification] Removing notification with ID: ${id}`);
