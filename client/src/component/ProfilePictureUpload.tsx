@@ -76,7 +76,7 @@ const ProfilePictureUpload: React.FC = () => {
         {avatarUrl ? (
           <img src={avatarUrl} alt="Avatar" className="w-24 h-24 rounded-full mb-4" />
         ) : (
-          <div className="w-24 h-24 bg-gray-200 rounded-full mb-4 flex items-center justify-center">
+          <div className="dark:text-text-primary w-24 h-24 bg-gray-200 rounded-full mb-4 flex items-center justify-center">
             <span>No Avatar</span>
           </div>
         )}
