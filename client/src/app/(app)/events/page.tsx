@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -22,12 +22,11 @@ type FoodInfo = {
   quantity?: number | null;
 };
 
-const Events = () => {
-  // These two is for map functionality
+// Create a client component that uses useSearchParams
+function EventsContent() {
   const searchParams = useSearchParams();
   const initialLocation = (searchParams.get('location') ?? '') as FilterState['location'];
-
-
+  
   const router = useRouter();
   const { user } = useAuth();
   const [events, setEvents] = useState<EventCardProps[]>([]);
@@ -39,7 +38,6 @@ const Events = () => {
   const [isCreateEventOpen, setIsCreateEventOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     date: 'any',
-    // minor change here
     location: initialLocation,
     allergies: {
       dairy: false,
@@ -359,6 +357,17 @@ const Events = () => {
       </div>
     </div>
   );
-};
+}
 
-export default Events;
+// Main Page component that wraps the content in a Suspense boundary
+export default function Events() {
+  return (
+    <Suspense fallback={
+      <div className="w-full flex justify-center items-center h-screen">
+        <Loader className="animate-spin text-brand-primary" size={40} style={{ animationDuration: '3s' }} />
+      </div>
+    }>
+      <EventsContent />
+    </Suspense>
+  );
+}

@@ -56,7 +56,7 @@ export function CustomMarker({ listing }: { listing: Listing }) {
               <p>{listing.description}</p>
               <p className="popup-link">
                 <Link href={`/events?location=${listing.code}`}>
-                  Click to view the corresponding events
+                  Click to view corresponding events
                 </Link>
               </p>
             </div>
