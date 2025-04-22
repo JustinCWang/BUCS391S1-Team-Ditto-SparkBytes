@@ -7,8 +7,10 @@ import { Logout } from "@/lib/auth";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
-import { CircleUser, House, CalendarClock, Bell } from "lucide-react";
+
+import { CircleUser, House, CalendarClock, Bell, MapPinCheck } from "lucide-react";
 import { useNotifications } from "@/context/NotificationContext";
+
 
 const CustomHeader = () => {
   const router = useRouter();
@@ -58,6 +60,10 @@ const CustomHeader = () => {
             <div className="flex justify-center items-center">
               <CalendarClock className="mr-1"/>
               <Link href="/events">Events</Link>
+            </div>
+            <div className="flex justify-center items-center">
+              <MapPinCheck className="mr-1"/>
+              <Link href="/map">Map</Link>
             </div>
           </div>
         </div>

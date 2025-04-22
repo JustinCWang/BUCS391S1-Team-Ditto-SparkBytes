@@ -1,0 +1,65 @@
+/* app/map/custom-advanced-marker/map.css */
+
+/* 1. Marker Container */
+.custom-marker-container {
+    transform: translateX(-50%);
+    cursor: pointer;
+  }
+  
+  /* 2. Default Red‑Dot Icon */
+  .marker-default-icon {
+    width: 40px;
+    height: 40px;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  /* 3. Popup Card (your custom overlay) */
+  .marker-popup-card {
+    position: relative;        /* position relative to its container */
+    bottom: 100%;              /* sit directly above the marker */
+    left: 50%;                 /* center horizontally */
+    transform: translateX(-50%);
+    margin-bottom: 8px;        /* small gap below the card */
+    width: 260px;
+    background: #ffffff;       /* white background */
+    border-radius: 8px;        /* rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    overflow: hidden;          /* clip child overflow */
+    font-family: sans-serif;
+  }
+  
+  /* 4. Image Carousel Area */
+  .marker-popup-card .popup-images {
+    width: 100%;
+    height: 100%;
+  }
+  .marker-popup-card .popup-images img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;         /* maintain aspect ratio, cover entire box */
+  }
+  
+  /* 5. Text Content */
+  .marker-popup-card .popup-content {
+    padding: 10px 12px;
+  }
+  .marker-popup-card .popup-content h3 {
+    margin: 0 0 6px;
+    font-size: 1.1rem;
+  }
+  .marker-popup-card .popup-content p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #333;
+  }
+  
+  /* 6. Bottom Link */
+  .marker-popup-card .popup-link {
+    margin-top: 8px;
+  }
+  .marker-popup-card .popup-link a {
+    color: #0070f3;
+    text-decoration: underline;
+    cursor: pointer;
+  }
