@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { CircleUser, House, CalendarClock, Bell, MapPinCheck } from "lucide-react";
 import { useNotifications } from "@/context/NotificationContext";
+import { useTheme } from '@/context/ThemeContext';
 
 import MobileMenu from '@/component/MobileMenu';
 import LogoSwitcher from '@/component/LogoSwitcher';
@@ -20,6 +21,9 @@ const CustomHeader = () => {
   const { clearShownEvents } = useNotifications();
   const [openMenu, setMenu] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
 
   const handleLogout = async () => {
     const { error } = await Logout();
@@ -77,7 +81,9 @@ const CustomHeader = () => {
           
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="w-12 h-12 flex items-center justify-center rounded-full overflow-hidden"
+            className={`w-12 h-12 flex items-center justify-center rounded-full overflow-hidden transition-colors duration-300 ${
+              isDark ? 'bg-[#2a2a2c] hover:bg-[#3a3a3c]' : 'bg-gray-100 hover:bg-gray-200'
+            }`}
           >
             {avatarUrl ? (
               <Image
@@ -88,20 +94,30 @@ const CustomHeader = () => {
                 className="object-cover w-full h-full"
               />
             ) : (
-              <CircleUser className="w-full h-full" />
+              <CircleUser className={`w-full h-full ${isDark ? 'text-white' : 'text-[#222224]'}`} />
             )}
           </button>
 
           <div
-            className={`absolute right-0 top-14 bg-white shadow-lg rounded-lg p-2 z-30 w-40 transition-all duration-300 ease-in-out transform ${
+            className={`absolute right-0 top-14 shadow-lg rounded-lg p-2 z-30 w-40 transition-all duration-300 ease-in-out transform ${
               dropdownOpen
-                ? "opacity-100 translate-y-0 scale-100"
-                : "opacity-0 -translate-y-2 scale-95 pointer-events-none"
-            }`}
+                ? 'opacity-100 translate-y-0 scale-100'
+                : 'opacity-0 -translate-y-2 scale-95 pointer-events-none'
+            } ${isDark ? 'bg-[#222224] text-white' : 'bg-white text-black'}`}
           >
-            <div className="flex justify-center items-center duration-300 ease-in-out hover:bg-gray-100 rounded-lg p-2">
-              <CircleUser className="w-5 h-5 mr-1"/>
-              <Link href="/profile" onClick={() => setDropdownOpen(false)} className="font-poppins font-semibold text-text-primary">
+            <div
+              className={`flex justify-center items-center duration-300 ease-in-out rounded-lg p-2 ${
+                isDark ? 'hover:bg-[#2e2e30]' : 'hover:bg-gray-100'
+              }`}
+            >
+              <CircleUser className="w-5 h-5 mr-1" />
+              <Link
+                href="/profile"
+                onClick={() => setDropdownOpen(false)}
+                className={`font-poppins font-semibold ${
+                  isDark ? 'text-white' : 'text-text-primary'
+                }`}
+              >
                 Profile
               </Link>
             </div>
