@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
 import { Loader } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { useTheme } from '@/context/ThemeContext';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -24,6 +25,9 @@ const LoginPage = () => {
   const [success, setSuccess] = useState<boolean>(false);
 
   const { user } = useAuth();
+
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     // Redirect to dashboard if the user is already logged in
@@ -75,10 +79,16 @@ const LoginPage = () => {
   if (!resetPassword) {
     // Render the login form
     return (
-      <div className="flex items-center justify-center min-h-screen px-4 transition-colors duration-300">
+      <div className={`flex items-center justify-center min-h-screen px-4 ${
+        isDark ? 'bg-[#222224]' : 'bg-gray-50'
+      }`}>
         <div className="w-full max-w-sm">
-          <h2 className="text-3xl font-bold font-montserrat text-text-primary">Welcome back</h2>
-          <p className="text-text-primary text-sm font-inter mb-6">Log In to your account</p>
+        <h2 className={`text-3xl font-bold font-montserrat ${
+        isDark ? 'text-white' : 'text-text-primary'
+        }`}>Welcome back</h2>
+        <p className={`text-sm font-inter mb-6 ${
+        isDark ? 'text-gray-300' : 'text-text-primary'
+        }`}>Log In to your account</p>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -91,16 +101,17 @@ const LoginPage = () => {
               </p>
             )}
             <div>
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={`text-text-primary w-full bg-transparent font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
-                  onError ? 'focus:border-red-500' : 'focus:border-text-primary'
-                } mb-6`}
-              />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-6 ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600 focus:border-white'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300 focus:border-text-primary'
+              } ${onError ? 'focus:border-red-500' : ''}`}
+            />
             </div>
             <div className="relative">
               <input
@@ -139,7 +150,7 @@ const LoginPage = () => {
               )}
             </button>
           </form>
-          <div className="border-t border-gray-300 my-6" />
+          <div className={`border-t my-6 ${isDark ? 'border-gray-700' : 'border-gray-300'}`} />
           <p className="text-text-primary text-center font-inter text-sm mt-4">
             Don&apos;t have an account?{' '}
             <span
@@ -159,7 +170,9 @@ const LoginPage = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-[#222224] px-4 transition-colors duration-300">
       <div className="w-full max-w-sm">
         <h2 className="text-3xl font-bold font-montserrat text-text-primary">Reset Your Password</h2>
-        <p className="text-sm font-inter mb-6">Enter your email to receive a password reset link.</p>
+        <p className={`text-sm font-inter mb-6 ${isDark ? 'text-gray-300' : 'text-text-primary'}`}>
+          Enter your email to receive a password reset link. 
+        </p>  
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -200,9 +213,10 @@ const LoginPage = () => {
             )}
           </button>
         </form>
-        <div className="border-t border-gray-300 my-6" />
-        <p className="text-center font-inter text-sm mt-4">
-          Remember your password?{' '}
+        <div className={`border-t my-6 ${isDark ? 'border-gray-700' : 'border-gray-300'}`} />
+        <p className={`text-center font-inter text-sm mt-4 ${
+        isDark ? 'text-gray-300' : 'text-text-primary'}`}>
+        Remember your password?{' '}
           <span
               onClick={() => {
                 setResetPassword(false);
