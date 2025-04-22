@@ -24,7 +24,8 @@ type FoodInfo = {
 const Events = () => {
   // These two is for map functionality
   const searchParams = useSearchParams();
-  const location = searchParams.get('location'); // 'ENG'
+  const initialLocation = (searchParams.get('location') ?? '') as FilterState['location'];
+
 
   const router = useRouter();
   const { user } = useAuth();
@@ -38,7 +39,7 @@ const Events = () => {
   const [filters, setFilters] = useState<FilterState>({
     date: 'any',
     // minor change here
-    location: location,
+    location: initialLocation,
     allergies: {
       dairy: false,
       treeNuts: false,
