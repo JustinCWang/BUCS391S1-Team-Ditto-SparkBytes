@@ -182,7 +182,7 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
 
             {/* Allergies Section */}
             <div className="mb-6">
-              <h3 className={formStyle}>Exclude Allergies</h3>
+              <h3 className={formStyle}>Exclude Dietary Restrictions</h3>
               <div className="grid grid-cols-2 gap-2">
                 {Object.entries(filters.allergies).map(([key, value]) => (
                   <label key={key} className="flex items-center font-poppins text-text-primary">

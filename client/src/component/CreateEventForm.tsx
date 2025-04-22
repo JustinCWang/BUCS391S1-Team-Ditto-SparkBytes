@@ -320,7 +320,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
 
               {/* Allergies */}
               <div>
-                <label className={formStyle}>Allergies</label>
+                <label className={formStyle}>Include Dietary Restrictions</label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {allergenOptions.map((allergen) => (
                     <label key={allergen} className="flex items-center font-poppins text-text-primary">

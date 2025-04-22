@@ -7,7 +7,7 @@ import { Logout } from "@/lib/auth";
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
-import { CircleUser, House, CalendarClock, Bell, MapPinCheck } from "lucide-react";
+import { CircleUser, House, CalendarClock, Bell, MapPinCheck, ChevronDown, ChevronUp } from "lucide-react";
 import { useNotifications } from "@/context/NotificationContext";
 import { useTheme } from '@/context/ThemeContext';
 
@@ -78,28 +78,33 @@ const CustomHeader = () => {
           >
             <Bell size={24} />
           </button>
+
+          <div className="h-full bg-gray-300 w-0.5 py-6"></div>
           
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className={`w-12 h-12 flex items-center justify-center rounded-full overflow-hidden transition-colors duration-300 ${
+            className={`flex justify-center items-center transition-colors duration-300 ${
               isDark ? 'bg-[#2a2a2c] hover:bg-[#3a3a3c]' : 'bg-gray-100 hover:bg-gray-200'
             }`}
           >
-            {avatarUrl ? (
-              <Image
-                src={avatarUrl}
-                alt="User Avatar"
-                width={40}
-                height={40}
-                className="object-cover w-full h-full"
-              />
-            ) : (
-              <CircleUser className={`w-full h-full ${isDark ? 'text-white' : 'text-[#222224]'}`} />
-            )}
+            <div className="w-12 h-12 flex items-center justify-center rounded-full overflow-hidden">
+              {avatarUrl ? (
+                <Image
+                  src={avatarUrl}
+                  alt="User Avatar"
+                  width={40}
+                  height={40}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <CircleUser className={`w-full h-full ${isDark ? 'text-white' : 'text-[#222224]'}`} />
+              )}
+            </div>
+            {dropdownOpen ? <ChevronUp/> : <ChevronDown/>}
           </button>
 
           <div
-            className={`absolute right-0 top-14 shadow-lg rounded-lg p-2 z-30 w-40 transition-all duration-300 ease-in-out transform ${
+            className={`absolute right-0 top-16 border-text-primary border-1 shadow-lg rounded-lg p-2 z-30 w-40 transition-all duration-300 ease-in-out transform ${
               dropdownOpen
                 ? 'opacity-100 translate-y-0 scale-100'
                 : 'opacity-0 -translate-y-2 scale-95 pointer-events-none'
@@ -121,7 +126,7 @@ const CustomHeader = () => {
                 Profile
               </Link>
             </div>
-            <div className="flex justify-center mt-2">
+            <div className="flex justify-center mt-2 mb-2">
               <button
                 onClick={() => {
                   handleLogout();

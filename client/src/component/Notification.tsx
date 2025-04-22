@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useNotifications } from '@/context/NotificationContext';
@@ -42,6 +42,12 @@ const Notification = () => {
       : `${base} bg-red-100 border-red-500 text-red-800`;
   };
 
+  useEffect(() => {
+    if(currentNotification) {
+      setTimeout(() => removeNotification(currentNotification.id), 5000)
+    }
+  }, [currentNotification])
+
   return (
     <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
       <AnimatePresence>
@@ -68,4 +74,4 @@ const Notification = () => {
   );
 };
 
-export default Notification;
+export default Notification; 
