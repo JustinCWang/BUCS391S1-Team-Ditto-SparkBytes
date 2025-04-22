@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import { X } from "lucide-react";
 
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -22,6 +23,7 @@ interface EventFormData {
   building: string;
   food_name: string;
   allergens: string[];
+  quantity: number;
 }
 
 const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSuccess }) => {
@@ -56,6 +58,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
     building: '',
     food_name: '',
     allergens: [],
+    quantity: 0,
   });
 
   const allergenOptions = [
@@ -113,7 +116,8 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
         .insert([{
           name: formData.food_name,
           allergens: formData.allergens.join(', '),
-          status: 'available'
+          status: 'available',
+          quantity: formData.quantity
         }])
         .select()
         .single();
@@ -166,14 +170,22 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
               bounce: 0,
               duration: 0.4,
             }}
-            className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6"
+            className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 relative"
           >
             <div>
               <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Post an Event</h2>
               <p className="text-text-primary font-inter text-xs lg:text-base mb-6">Share details about your event with leftover food.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4 ">
+            {/* Close button */}
+            <button
+              onClick={onClose}
+              className="absolute top-2 right-2 text-text-primary hover:text-brand-primary"
+            >
+              <X size={24} />
+            </button>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
               
               {/* Title */}
               <div>
@@ -279,6 +291,20 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
                 />
               </div>
 
+              {/* Food Quantity */}
+              <div>
+                <label className={formStyle}>Food Quantity</label>
+                <input
+                  type="number"
+                  value={formData.quantity || ''}
+                  onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) || 0 })}
+                  className={inputStyle}
+                  placeholder="e.g., 10"
+                  min="1"
+                  required
+                />
+              </div>
+
               {/* Allergies */}
               <div>
                 <label className={formStyle}>Allergies</label>
@@ -331,7 +357,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
           </motion.div>
         </motion.div>
       )}
-  </AnimatePresence>
+    </AnimatePresence>
   );
 };
 

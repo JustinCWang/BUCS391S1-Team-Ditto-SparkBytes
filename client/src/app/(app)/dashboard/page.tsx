@@ -16,6 +16,7 @@ type FoodInfo = {
   food_category?: string | null;
   name?: string | null;
   allergens?: string | null;
+  quantity?: number | null;
 };
 
 const Dashboard = () => {
@@ -32,7 +33,7 @@ const Dashboard = () => {
   const [currentMyEventsPage, setCurrentMyEventsPage] = useState(1);
   const [totalMyEventsPages, setTotalMyEventsPages] = useState(0);
   const LIKED_ITEMS_PER_PAGE = 6; // Number of events per page for liked events
-  const MY_EVENTS_ITEMS_PER_PAGE = 4; // Number of events per page for my events
+  const MY_EVENTS_ITEMS_PER_PAGE = 6; // Number of events per page for my events
 
   // Fetch upcoming events from the database with pagination and like count
   const fetchUpcomingEvents = useCallback(async () => {
@@ -82,7 +83,8 @@ const Dashboard = () => {
           food_id,
           food_category,
           name,
-          allergens
+          allergens,
+          quantity
         `)
         .in('food_id', validFoodIds);
       if (foodError) {
@@ -128,6 +130,7 @@ const Dashboard = () => {
           food_category: foodInfo.food_category || undefined,
           food_name: foodInfo.name || undefined,
           allergens: foodInfo.allergens || undefined,
+          quantity: foodInfo.quantity || 1,
           like_count: likeCounts[event.event_id] || 0,
           isLiked: likedEventIds.includes(event.event_id),
         };
@@ -206,7 +209,7 @@ const Dashboard = () => {
       if (foodIds.length > 0) {
         const { data: foodInfo, error: foodError } = await supabase
           .from('Food')
-          .select('food_id, food_category, name, allergens')
+          .select('food_id, food_category, name, allergens, quantity')
           .in('food_id', foodIds);
 
         if (!foodError) {
@@ -242,6 +245,7 @@ const Dashboard = () => {
           food_id: event.food_id || undefined,
           food_name: foodInfo.name || undefined,
           allergens: foodInfo.allergens || undefined,
+          quantity: foodInfo.quantity || 1,
           like_count: likeCounts[event.event_id] || 0,
           isLiked: true,
           organizer_id: event.organizer_id
@@ -312,7 +316,7 @@ const Dashboard = () => {
       if (foodIds.length > 0) {
         const { data: foodInfo, error: foodError } = await supabase
           .from('Food')
-          .select('food_id, food_category, name, allergens')
+          .select('food_id, food_category, name, allergens, quantity')
           .in('food_id', foodIds);
 
         if (!foodError) {
@@ -360,6 +364,7 @@ const Dashboard = () => {
           food_id: event.food_id || undefined,
           food_name: foodInfo.name || undefined,
           allergens: foodInfo.allergens || undefined,
+          quantity: foodInfo.quantity || 1,
           like_count: likeCounts[event.event_id] || 0,
           isLiked: likedEventIds.includes(event.event_id),
           organizer_id: event.organizer_id
@@ -395,21 +400,6 @@ const Dashboard = () => {
     fetchLikedEvents();
     fetchMyEvents();
   }, [fetchUpcomingEvents, fetchLikedEvents, fetchMyEvents]);
-
-  // Add useEffects for handling scroll on page changes
-  useEffect(() => {
-    const element = document.getElementById('liked');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [currentLikedPage]);
-
-  useEffect(() => {
-    const element = document.getElementById('my');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [currentMyEventsPage]);
 
   return (
     <div className="my-6">

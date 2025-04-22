@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { EventCardProps } from '@/types/supabase';
+import { X } from "lucide-react";
 
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -27,6 +28,7 @@ interface EventFormData {
   allergens: string[];
   event_id?: string;
   food_id?: string;
+  quantity: number;
 }
 
 const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSuccess, eventData, onEventUpdated }) => {
@@ -61,6 +63,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
     building: '',
     food_name: '',
     allergens: [],
+    quantity: 1,
   });
 
   // Initialize form data when the component receives event data
@@ -85,7 +88,8 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
         food_name: eventData.food_name || '',
         allergens: initialAllergens,
         event_id: eventData.event_id,
-        food_id: eventData.food_id
+        food_id: eventData.food_id,
+        quantity: eventData.quantity || 1,
       });
     }
   }, [eventData]);
@@ -151,6 +155,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
         .update({
           name: formData.food_name,
           allergens: formData.allergens.length > 0 ? formData.allergens.join(', ') : '',
+          quantity: formData.quantity
         })
         .eq('food_id', formData.food_id);
 
@@ -235,8 +240,16 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
               bounce: 0,
               duration: 0.4,
             }}
-            className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6"
+            className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 relative"
           >
+            {/* Close button */}
+            <button
+              onClick={onClose}
+              className="absolute top-2 right-2 text-text-primary hover:text-brand-primary"
+            >
+              <X size={24} />
+            </button>
+
             <div>
               <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Editing &quot;{eventData.name}&quot;</h2>
               <p className="text-text-primary font-inter text-xs lg:text-base mb-6">Update your event details.</p>
@@ -344,6 +357,20 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
                   onChange={(e) => setFormData({ ...formData, food_name: e.target.value })}
                   className={inputStyle}
                   placeholder="e.g., Pizza and Salad"
+                  required
+                />
+              </div>
+
+              {/* Food Quantity */}
+              <div>
+                <label className={formStyle}>Food Quantity</label>
+                <input
+                  type="number"
+                  value={formData.quantity}
+                  onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) || 1 })}
+                  className={inputStyle}
+                  placeholder="e.g., 10"
+                  min="1"
                   required
                 />
               </div>

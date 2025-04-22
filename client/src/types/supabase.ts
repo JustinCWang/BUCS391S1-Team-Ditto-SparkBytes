@@ -31,6 +31,7 @@ export type FoodProps = {
   food_category?: string;
   food_name?: string;
   allergens?: string;
+  quantity?: number;
 }
 
 export type LikeProps = {
