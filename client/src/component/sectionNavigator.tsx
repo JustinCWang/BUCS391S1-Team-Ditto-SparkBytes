@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 const SectionNavigator = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';  
 
   const sections = [
     { id: 'upcoming', label: 'Upcoming Events' },
@@ -18,16 +21,20 @@ const SectionNavigator = () => {
         {/* Toggle button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-center w-8 h-12 bg-white rounded-r-lg shadow-lg border border-gray-200
-                     hover:bg-gray-50 transition-all duration-300"
+          className={`flex items-center justify-center w-8 h-12 rounded-r-lg shadow-lg border transition-all duration-300 ${
+            isDark
+              ? 'bg-[#222224] text-white border-gray-700 hover:bg-[#2e2e30]'
+              : 'bg-white text-black border-gray-200 hover:bg-gray-50'
+          }`}
         >
           {isOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
         </button>
 
         {/* Navigation panel */}
         <div 
-          className={`absolute left-0 top-0 bg-white rounded-r-lg shadow-lg border border-gray-200
-                     transition-all duration-300 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+          className={`absolute left-0 top-0 rounded-r-lg shadow-lg border transition-all duration-300 transform ${
+            isOpen ? 'translate-x-0' : '-translate-x-full'
+          } ${isDark ? 'bg-[#222224] border-gray-700' : 'bg-white border-gray-200'}`}          
         >
           <div className="w-48 p-2">
             {sections.map((section) => (
@@ -44,8 +51,9 @@ const SectionNavigator = () => {
                   }
                   setIsOpen(false);
                 }}
-                className="w-full px-4 py-2 text-left hover:bg-gray-50 transition-colors
-                           font-poppins text-sm text-text-primary rounded-md"
+                className={`w-full px-4 py-2 text-left font-poppins text-sm rounded-md transition-colors ${
+                  isDark ? 'text-white hover:bg-[#2e2e30]' : 'text-text-primary hover:bg-gray-50'
+                }`}
               >
                 {section.label}
               </button>
