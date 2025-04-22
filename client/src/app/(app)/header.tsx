@@ -148,7 +148,7 @@ const CustomHeader = () => {
         {/* Mobile Menu Icon */}
         <button
           onClick={() => setMenu(!openMenu)}
-          className="z-[999] flex flex-col h-8 w-8 justify-center items-center relative overflow-hidden md:hidden"
+          className="z-[70] flex flex-col h-8 w-8 justify-center items-center relative overflow-hidden md:hidden"
           aria-label="Toggle menu"
         >
           <span className={`h-0.5 w-6 rounded-full bg-brand-primary transition ease transform duration-300 ${openMenu ? "rotate-45 translate-y-2.5" : ""}`}></span>
