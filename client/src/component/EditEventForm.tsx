@@ -10,8 +10,6 @@ import { X } from "lucide-react";
 
 import { useTheme } from '@/context/ThemeContext';
 
-import { X } from "lucide-react";
-
 import { motion, AnimatePresence } from 'motion/react';
 
 interface EditEventFormProps {

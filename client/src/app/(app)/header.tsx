@@ -13,6 +13,7 @@ import { useNotifications } from "@/context/NotificationContext";
 import MobileMenu from '@/component/MobileMenu';
 import LogoSwitcher from '@/component/LogoSwitcher';
 
+
 const CustomHeader = () => {
   const router = useRouter();
   const { avatarUrl } = useAuth();

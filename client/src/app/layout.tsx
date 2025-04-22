@@ -4,8 +4,6 @@ import { NotificationProvider } from '@/context/NotificationContext';
 import Notification from '@/component/Notification';
 
 import { ThemeProvider } from '@/context/ThemeContext';
-import { NotificationProvider } from '@/context/NotificationContext';
-import Notification from '@/component/Notification';
 
 export default function RootLayout({
   children,
