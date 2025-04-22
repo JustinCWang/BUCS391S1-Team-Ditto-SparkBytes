@@ -42,6 +42,7 @@ const Profile = () => {
   const [passwordTooShort, setPasswordTooShort] = useState(false);
   const [samePassword, setSamePassword] = useState(false);
   const { theme, toggleTheme } = useTheme(); 
+  const isDark = theme === 'dark';  
 
 
   useEffect(() => {
@@ -404,7 +405,11 @@ const Profile = () => {
               placeholder="Current Password"
               value={emailCurrentPass}
               onChange={(e) => setEmailPass(e.target.value)}
-              className={`w-full text-text-primary font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${emailWrongPassword ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-6 ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600 focus:border-white'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300 focus:border-text-primary'
+              } ${emailWrongPassword ? 'focus:border-red-500' : ''}`}
             />
           </div>
 
@@ -477,9 +482,11 @@ const Profile = () => {
               placeholder="Current Password"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md text-text-primary focus:outline-none ${
-                wrongPassword ? 'focus:border-red-500' : 'focus:border-text-primary'
-              } mb-4`}
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-4 ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600 focus:border-white'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300 focus:border-text-primary'
+              } ${wrongPassword ? 'focus:border-red-500' : ''}`}
             />
 
             <input
@@ -487,9 +494,11 @@ const Profile = () => {
               placeholder="New Password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 text-text-primary rounded-md focus:outline-none ${
-                emptyPassword || passwordConfirmError ? 'focus:border-red-500' : 'focus:border-text-primary'
-              } mb-4`}
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-4 ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600 focus:border-white'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300 focus:border-text-primary'
+              } ${(emptyPassword || passwordConfirmError) ? 'focus:border-red-500' : ''}`}
             />
 
             <input
@@ -497,9 +506,11 @@ const Profile = () => {
               placeholder="Confirm New Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className={`w-full font-inter border text-text-primary border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
-                passwordConfirmError ? 'focus:border-red-500' : 'focus:border-text-primary'
-              } mb-4`}
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-4 ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600 focus:border-white'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300 focus:border-text-primary'
+              } ${passwordConfirmError ? 'focus:border-red-500' : ''}`}
             />
           </div>
 
