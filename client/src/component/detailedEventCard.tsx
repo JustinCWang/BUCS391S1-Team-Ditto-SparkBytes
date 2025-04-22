@@ -5,6 +5,9 @@ import EditEventForm from "./EditEventForm";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "motion/react";
+import { useTheme } from '@/context/ThemeContext';
+import Share from './shareOption';
+
 
 interface DetailedEventCardProps extends EventCardProps {
   isOpen: boolean;
@@ -60,6 +63,11 @@ function DetailedEventCard({
 
   // Retrieve current user from authentication context
   const { user } = useAuth();
+
+  // Dark Mode
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
 
   // Check if current user is the organizer of the event
   const isEventOrganizer = user?.id === organizer_id;
@@ -132,7 +140,9 @@ function DetailedEventCard({
               bounce: 0,
               duration: 0.4,
             }}
-            className="bg-white rounded-lg shadow-lg w-full max-w-2xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 relative"
+            className={`rounded-lg shadow-lg w-full max-w-2xl mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto p-6 relative transition-colors duration-300 ${
+              isDark ? 'bg-[#222224] text-white' : 'bg-white text-black'
+            }`}
           >
             {/* Close button */}
             <button
@@ -202,7 +212,7 @@ function DetailedEventCard({
                 <div className="flex gap-2">
                   <button 
                     onClick={() => setIsShareOpen(true)}
-                    className="bg-white 
+                    className="bg-translucent
                       text-brand-primary 
                       font-poppins font-black 
                       py-1.5 px-2.5
@@ -232,38 +242,12 @@ function DetailedEventCard({
 
             {/* Share modal */}
             <AnimatePresence>
-              {isShareOpen && (
-                <motion.div
-                  key="share-modal"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-                >
-                  <motion.div
-                    initial={{ y: 40, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 40, opacity: 0 }}
-                    transition={{
-                      type: "spring",
-                      bounce: 0,
-                      duration: 0.4,
-                    }}
-                    className="bg-white p-6 rounded-xl shadow-xl w-72 space-y-4 text-center"
-                  >
-                    <h2 className="text-xl font-montserrat font-bold text-text-primary">Share this Event</h2>
-                    <button onClick={shareEmail} className="w-full font-poppins font-black bg-blue-500 text-white py-2 rounded-md duration-300 ease-in hover:bg-blue-600">
-                      Share via Email
-                    </button>
-                    <button onClick={shareSMS} className="w-full font-poppins font-black bg-green-500 text-white py-2 rounded-md duration-300 ease-in hover:bg-green-600">
-                      Share via SMS
-                    </button>
-                    <button onClick={() => setIsShareOpen(false)} className="text-gray-500 font-poppins font-black hover:underline">
-                      Cancel
-                    </button>
-                  </motion.div>
-                </motion.div>
-              )}
+            {isShareOpen && (
+              <Share
+              eventLink={eventLink}
+              onClose={() => setIsShareOpen(false)}
+              />
+            )}
             </AnimatePresence>
 
             {/* Edit event modal */}
