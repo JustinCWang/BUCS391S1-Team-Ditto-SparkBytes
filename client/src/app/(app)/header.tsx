@@ -54,18 +54,18 @@ const CustomHeader = () => {
           </Link>
 
           <div className="hidden md:flex items-center justify-center gap-8 text-text-primary font-poppins font-semibold">
-            <div className="flex justify-center items-center">
-              <House className="mr-1"/>
-              <Link href="/dashboard">Home</Link>
-            </div>
-            <div className="flex justify-center items-center">
-              <CalendarClock className="mr-1"/>
-              <Link href="/events">Events</Link>
-            </div>
-            <div className="flex justify-center items-center">
-              <MapPinCheck className="mr-1"/>
-              <Link href="/map">Map</Link>
-            </div>
+              <Link href="/dashboard" className="flex justify-center items-center">
+                <House className="mr-1"/>
+                Home
+              </Link>
+              <Link href="/events" className="flex justify-center items-center">
+                <CalendarClock className="mr-1"/>
+                Events
+              </Link>
+              <Link href="/map" className="flex justify-center items-center">
+                <MapPinCheck className="mr-1"/>
+                Map
+              </Link>
           </div>
         </div>
 
