@@ -349,7 +349,7 @@ const Profile = () => {
           <div className='flex justify-end gap-4'>
             <button 
             onClick={handleSaveNameClear}
-            className='bg-white 
+            className='bg-translucent 
             text-brand-primary 
               font-poppins font-black 
               py-1.5 px-5 

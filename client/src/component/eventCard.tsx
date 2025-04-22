@@ -6,6 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "motion/react";
 import DetailedEventCard from "./detailedEventCard";
+import { useTheme } from '@/context/ThemeContext';
+
 
 import { isEventCurrentlyHappening } from '@/lib/utils';
 import Share from './shareOption';
@@ -59,6 +61,10 @@ function EventCard({
 
   // Retrieve current user from authentication context
   const { user } = useAuth();
+
+  // Dark Mode
+  const { theme } = useTheme();
+
 
   // Check if current user is the organizer of the event
   const isEventOrganizer = user?.id === organizer_id;
@@ -114,8 +120,13 @@ function EventCard({
   }, [isShareOpen]);
 
   return (
-    <div className="relative bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-      {isEventCurrentlyHappening(date, start_time, end_time) && (
+<div
+  className={`relative rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 ${
+    theme === 'dark'
+      ? 'bg-[#222224] text-white border-gray-700'
+      : 'bg-white text-black border-gray-200'
+  } border`}
+>      {isEventCurrentlyHappening(date, start_time, end_time) && (
         <div className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 shadow-lg">
           <Bell className="w-4 h-4" />
         </div>
@@ -127,15 +138,15 @@ function EventCard({
         {/* Container for the event details */}
         <div className="flex flex-col">
           {/* Header section with event name and time */}
-          <div className="text-text-primary mb-4">
+          <div className={`${theme === 'dark' ? 'text-white' : 'text-text-primary'} mb-4`}>
             <h2 className="text-xl font-montserrat font-bold my-2">{name}</h2>
             <p className="font-inter text-sm">
               {date + " • " + start_time + " - " + end_time}
             </p>
           </div>
           {/* Section displaying location and food information with icons */}
-          <div className="text-text-primary font-inter">
-            <div className="flex mb-2">
+          <div className={`${theme === 'dark' ? 'text-white' : 'text-text-primary'} font-inter`}>
+          <div className="flex mb-2">
               <MapPin />
               <p className="ml-1">{building} | {location}</p>
             </div>
