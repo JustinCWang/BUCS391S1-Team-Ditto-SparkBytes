@@ -172,8 +172,8 @@ function EventCard({
                   e.stopPropagation(); // Prevent event card click when clicking share
                   setIsShareOpen(true);
                 }}
-                className="bg-white 
-                dark:bg-transparent
+                className="
+                bg-transparent
                 text-brand-primary 
                 font-poppins font-black 
                 py-1.5 px-2.5
@@ -189,8 +189,8 @@ function EventCard({
                     e.stopPropagation(); // Prevent event card click when clicking edit
                     setIsEditOpen(true);
                   }}
-                  className="bg-white 
-                  dark:bg-transparent
+                  className="
+                  bg-transparent
                   text-brand-primary 
                   font-poppins font-black 
                   py-1.5 px-3 

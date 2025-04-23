@@ -4,13 +4,43 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useNotifications } from '@/context/NotificationContext';
-import { useTheme } from '@/context/ThemeContext';
-
+import { useTheme } from '@/context/ThemeContext'; 
 
 const Notification = () => {
   const { currentNotification, removeNotification } = useNotifications();
-  const { theme } = useTheme();
+  const { theme } = useTheme(); 
   const isDark = theme === 'dark';
+
+  const getNotificationClasses = () => {
+    const base = 'p-4 rounded-lg shadow-lg max-w-sm border';
+
+    if (!currentNotification) return base;
+
+    const type = currentNotification.type;
+
+    if (type === 'info') {
+      return isDark
+        ? `${base} bg-[#2a2a2c] border-white text-white`
+        : `${base} bg-white border-black text-black`;
+    }
+
+    if (type === 'warning') {
+      return isDark
+        ? `${base} bg-yellow-900 border-yellow-400 text-yellow-100`
+        : `${base} bg-yellow-100 border-yellow-500 text-yellow-800`;
+    }
+
+    if (type === 'success') {
+      return isDark
+        ? `${base} bg-green-900 border-green-400 text-green-100`
+        : `${base} bg-green-100 border-green-500 text-green-800`;
+    }
+
+    // error
+    return isDark
+      ? `${base} bg-red-900 border-red-400 text-red-100`
+      : `${base} bg-red-100 border-red-500 text-red-800`;
+  };
 
   return (
     <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
@@ -20,23 +50,7 @@ const Notification = () => {
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
-            className={`p-4 rounded-lg shadow-lg max-w-sm transition-colors duration-300 ${
-            currentNotification.type === 'info'
-              ? isDark
-                ? 'bg-[#2a2a2c] border border-white text-white'
-                : 'bg-white border border-black text-black'
-              : currentNotification.type === 'warning'
-              ? isDark
-                ? 'bg-yellow-900 border border-yellow-400 text-yellow-100'
-                : 'bg-yellow-100 border border-yellow-500 text-yellow-800'
-              : currentNotification.type === 'success'
-              ? isDark
-                ? 'bg-green-900 border border-green-400 text-green-100'
-                : 'bg-green-100 border border-green-500 text-green-800'
-              : isDark
-              ? 'bg-red-900 border border-red-400 text-red-100'
-              : 'bg-red-100 border border-red-500 text-red-800'
-          }`}
+            className={getNotificationClasses()}
           >
             <div className="flex justify-between items-start">
               <p className="text-sm whitespace-pre-line">{currentNotification.message}</p>
