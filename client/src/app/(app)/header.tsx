@@ -73,7 +73,7 @@ const CustomHeader = () => {
           {/* New reset notifications button */}
           <button
             onClick={handleResetNotifications}
-            className="text-text-primary hover:text-brand-primary transition-colors duration-300 flex items-center justify-center"
+            className="text-text-primary hover:text-brand-primary transition-colors duration-300 flex items-center justify-center cursor-pointer"
             title="Reset notifications for your liked events"
           >
             <Bell size={24} />
@@ -83,9 +83,7 @@ const CustomHeader = () => {
           
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className={`flex justify-center items-center transition-colors duration-300 ${
-              isDark ? 'bg-[#2a2a2c] hover:bg-[#3a3a3c]' : 'bg-gray-100 hover:bg-gray-200'
-            }`}
+            className={`flex justify-center items-center transition-colors duration-300`}
           >
             <div className="w-12 h-12 flex items-center justify-center rounded-full overflow-hidden">
               {avatarUrl ? (
@@ -97,10 +95,10 @@ const CustomHeader = () => {
                   className="object-cover w-full h-full"
                 />
               ) : (
-                <CircleUser className={`w-full h-full ${isDark ? 'text-white' : 'text-[#222224]'}`} />
+                <CircleUser className={`w-full h-full ${isDark ? 'text-white' : 'text-text-primary'}`} />
               )}
             </div>
-            {dropdownOpen ? <ChevronUp/> : <ChevronDown/>}
+            {dropdownOpen ? <ChevronUp className={`${isDark ? 'text-white' : 'text-text-primary'}`}/> : <ChevronDown className={`${isDark ? 'text-white' : 'text-text-primary'}`}/>}
           </button>
 
           <div
@@ -133,7 +131,7 @@ const CustomHeader = () => {
                   setDropdownOpen(false);
                 }}
                 className="bg-brand-primary 
-              text-white font-poppins font-black 
+                text-white font-poppins font-black 
                 py-1.5 px-5 
                 rounded-md 
                 duration-300 ease-in hover:bg-hover-primary 

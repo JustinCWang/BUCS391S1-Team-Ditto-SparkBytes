@@ -14,6 +14,8 @@ import EventSearchBar from '@/component/EventSearchBar';
 
 const ITEMS_PER_PAGE = 9; // Number of events per page
 
+import { useTheme } from '@/context/ThemeContext';
+
 // Type definition for food-related data
 type FoodInfo = {
   food_id?: string;
@@ -27,6 +29,9 @@ type FoodInfo = {
 function EventsContent() {
   const searchParams = useSearchParams();
   const initialLocation = (searchParams.get('location') ?? '') as FilterState['location'];
+
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   
   const router = useRouter();
   const { user } = useAuth();
@@ -272,12 +277,12 @@ function EventsContent() {
           <div className="w-full flex flex-col sm:flex-row gap-4">
             <button
               onClick={() => setIsFilterOpen(true)}
-              className="bg-white dark:bg-transparent 
-               text-brand-primary font-poppins 
-               font-black py-3 px-5 rounded-md border 
-               border-brand-primary duration-300 ease-in 
-               hover:bg-brand-primary hover:text-white dark:hover:bg-transparent 
-               flex items-center justify-center w-full"
+              className={`bg-white
+                text-brand-primary font-poppins 
+                font-black py-3 px-5 rounded-md border 
+                border-brand-primary duration-300 ease-in 
+                hover:text-white
+                flex items-center justify-center w-full ${isDark ? "hover:bg-transparent" : "hover:bg-brand-primary"}`}
             >
               Filter Events
             </button>
