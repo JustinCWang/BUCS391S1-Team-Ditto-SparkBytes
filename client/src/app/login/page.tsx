@@ -14,6 +14,7 @@ const LoginPage = () => {
   // General state variables
   const [loading, setLoading] = useState(false);
   const [onError, setError] = useState(false);
+  const [resetPasswordError, setResetError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   // State for login form
@@ -57,20 +58,20 @@ const LoginPage = () => {
   // Function to send a password reset email using Supabase
   const sendResetPassword = async (email: string) => {
     try {
-      setError(false);
+      setResetError(false);
       setLoading(true);
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset`
       });
       if (error) {
-        setError(true);
+        setResetError(true);
         console.error('Reset password error:', error);
       } else {
         setSuccess(true);
       }
     } catch (error) {
       console.error('Reset password error:', error);
-      setError(true);
+      setResetError(true);
     } finally {
       setLoading(false);
     }
@@ -87,7 +88,7 @@ const LoginPage = () => {
         isDark ? 'text-white' : 'text-text-primary'
         }`}>Welcome back</h2>
         <p className={`text-sm font-inter mb-6 ${
-        isDark ? 'text-gray-300' : 'text-text-primary'
+        isDark ? 'text-white' : 'text-text-primary'
         }`}>Log In to your account</p>
           <form
             onSubmit={(e) => {
@@ -108,9 +109,9 @@ const LoginPage = () => {
               onChange={(e) => setEmail(e.target.value)}
               className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-6 ${
                 isDark
-                  ? 'text-white placeholder-gray-400 border border-gray-600 focus:border-white'
-                  : 'text-text-primary placeholder-gray-500 border border-gray-300 focus:border-text-primary'
-              } ${onError ? 'focus:border-red-500' : ''}`}
+                  ? 'text-white placeholder-gray-400 border border-gray-600'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300'
+              } ${onError ? 'focus:border-red-500' : isDark ? 'focus:border-white' : 'focus:border-text-primary'}`}
             />
             </div>
             <div className="relative">
@@ -120,7 +121,11 @@ const LoginPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                className="text-text-primary w-full font-inter border border-gray-300 px-4 py-3 rounded-md pr-10 focus:outline-none focus:border-text-primary"
+                className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300'
+              } ${onError ? 'focus:border-red-500' : isDark ? 'focus:border-white' : 'focus:border-text-primary'}`}
               />
               <div
                 onClick={() => setShowPassword((prev) => !prev)}
@@ -155,7 +160,7 @@ const LoginPage = () => {
             Don&apos;t have an account?{' '}
             <span
               onClick={() => router.push('/signup')}
-              className="text-blue-600 text-brand-primary font-semibold hover:underline cursor-pointer"
+              className="text-brand-primary font-semibold hover:underline cursor-pointer"
             >
               Register here
             </span>
@@ -167,10 +172,16 @@ const LoginPage = () => {
 
   // Render the reset password email form
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-[#222224] px-4 transition-colors duration-300">
+    <div className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-300 ${
+        isDark ? 'bg-[#222224]' : 'bg-gray-50'
+      }`}>
       <div className="w-full max-w-sm">
-        <h2 className="text-3xl font-bold font-montserrat text-text-primary">Reset Your Password</h2>
-        <p className={`text-sm font-inter mb-6 ${isDark ? 'text-gray-300' : 'text-text-primary'}`}>
+        <h2 className={`text-3xl font-bold font-montserrat ${
+        isDark ? 'text-white' : 'text-text-primary'
+        }`}>Reset Your Password</h2>
+        <p className={`text-sm font-inter mb-6 ${
+        isDark ? 'text-white' : 'text-text-primary'
+        }`}>
           Enter your email to receive a password reset link. 
         </p>  
         <form
@@ -179,7 +190,7 @@ const LoginPage = () => {
             sendResetPassword(email);
           }}
         >
-          {onError && (
+          {resetPasswordError && (
             <p className="font-inter italic text-sm text-red-500 mb-1 text-center">
               Unable to send reset link.
             </p>
@@ -191,9 +202,11 @@ const LoginPage = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
-                onError ? 'focus:border-red-500' : 'focus:border-text-primary'
-              } mb-6`}
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-6 ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300'
+              } ${resetPasswordError ? 'focus:border-red-500' : isDark ? 'focus:border-white' : 'focus:border-text-primary'}`}
             />
           </div>
           {success && (
@@ -222,7 +235,7 @@ const LoginPage = () => {
                 setResetPassword(false);
                 setSuccess(false);
               }}
-              className="text-blue-600 font-inter underline cursor-pointer"
+              className="text-brand-primary font-semibold hover:underline cursor-pointer"
             >
               Login
           </span>

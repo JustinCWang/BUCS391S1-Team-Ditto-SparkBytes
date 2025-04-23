@@ -49,7 +49,8 @@ const Notification = () => {
   }, [currentNotification])
 
   return (
-    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[999]">
+    <div className="fixed top-4 left-0 w-full z-[999]">
+      <div className="flex justify-center">
       <AnimatePresence>
         {currentNotification && (
           <motion.div
@@ -70,6 +71,7 @@ const Notification = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 };
