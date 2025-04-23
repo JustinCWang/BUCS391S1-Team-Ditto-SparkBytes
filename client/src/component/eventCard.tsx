@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import EditEventForm from "./EditEventForm";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import DetailedEventCard from "./detailedEventCard";
 import { useTheme } from '@/context/ThemeContext';
 
@@ -183,8 +183,8 @@ function EventCard({
                   e.stopPropagation(); // Prevent event card click when clicking share
                   setIsShareOpen(true);
                 }}
-                className="bg-white 
-                dark:bg-transparent
+                className="
+                bg-transparent
                 text-brand-primary 
                 font-poppins font-black 
                 py-1.5 px-2.5
@@ -200,8 +200,8 @@ function EventCard({
                     e.stopPropagation(); // Prevent event card click when clicking edit
                     setIsEditOpen(true);
                   }}
-                  className="bg-white 
-                  dark:bg-transparent
+                  className="
+                  bg-transparent
                   text-brand-primary 
                   font-poppins font-black 
                   py-1.5 px-3 

@@ -225,7 +225,7 @@ function DetailedEventCard({
                   {isEventOrganizer && (
                     <button
                       onClick={() => setIsEditOpen(true)}
-                      className="bg-white 
+                      className="bg-transparent
                         text-brand-primary 
                         font-poppins font-black 
                         py-1.5 px-3 
