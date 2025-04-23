@@ -34,13 +34,6 @@ const SignUpPage= () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  const inputStyle = `w-full font-inter px-4 py-3 rounded-md border mb-4
-  focus:outline-none focus:border-text-primary
-  ${isDark 
-    ? 'text-white bg-[#222224] border-gray-600 placeholder-gray-300' 
-    : 'text-black bg-white border-gray-300 placeholder-text-primary'}
-`;
-
   useEffect(() => {
       if (user) {
         router.push('/dashboard');

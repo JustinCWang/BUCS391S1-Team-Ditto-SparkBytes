@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import SecondaryButton from "./secondaryButton";
 import MainButton from "./primaryButton";
 import LogoSwitcher from "./LogoSwitcher";
 import FirstMenu from './FirstMenu'; 
 
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 
 function FirstNav() {
   const [menuOpen, setMenuOpen] = useState(false);

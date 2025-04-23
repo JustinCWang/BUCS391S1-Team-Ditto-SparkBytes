@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Logout } from "@/lib/auth";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import { CircleUser, House, CalendarClock, Bell, MapPinCheck } from "lucide-react";

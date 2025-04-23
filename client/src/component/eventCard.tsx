@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import EditEventForm from "./EditEventForm";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import DetailedEventCard from "./detailedEventCard";
 import { useTheme } from '@/context/ThemeContext';
 
@@ -43,17 +43,6 @@ function EventCard({
 
   // Temp Link
   const eventLink = `http://localhost:3000/events/${event_id}`
-
-  const shareEmail = () => {
-    const subject = encodeURIComponent("Check out this event!");
-    const body = encodeURIComponent(`Hungry? Thought you'd like this event: ${eventLink}`);
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-  };
-
-  const shareSMS = () => {
-    const message = encodeURIComponent(`Looking for something to eat? Check out this event: ${eventLink}`);
-    window.location.href = `sms:?&body=${message}`;
-  };
 
   // Local states for like status and like count
   const [liked, setLiked] = useState(isLiked);
