@@ -45,6 +45,14 @@ export default function Admin() {
           u.user_id === userId ? { ...u, role: newRole } : u
         )
       );
+
+      if (userId === user?.id) {
+        const { data, error } = await userRole(user.id);
+        if (!error) {
+          setRole(data.role);
+        }
+      }
+
     }
   
     setIsUpdating(null);

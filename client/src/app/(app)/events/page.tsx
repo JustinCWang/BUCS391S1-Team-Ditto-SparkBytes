@@ -15,6 +15,7 @@ import EventSearchBar from '@/component/EventSearchBar';
 const ITEMS_PER_PAGE = 9; // Number of events per page
 
 import { useTheme } from '@/context/ThemeContext';
+import { userRole } from "@/lib/user";
 
 // Type definition for food-related data
 type FoodInfo = {
@@ -35,6 +36,7 @@ function EventsContent() {
   
   const router = useRouter();
   const { user } = useAuth();
+  const [role, setRole] = useState<string>("");
   const [events, setEvents] = useState<EventCardProps[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -225,12 +227,24 @@ function EventsContent() {
     }
   }, [currentPage, searchQuery, filters, user]);
 
-  // Redirect to home if the user is not logged in
   useEffect(() => {
+    const fetchRole = async () => {
+      if (user) {
+        const { data, error } = await userRole(user.id);
+        if (error) {
+          console.error("Error fetching role:", error.message);
+        } else {
+          setRole(data.role)
+        }
+      }
+    };
+
     if (!user) {
       router.push('/');
+    } else {
+      fetchRole();
     }
-  }, [router, user]);
+  }, [user, router]);
 
   // Fetch events when dependencies change
   useEffect(() => {
@@ -288,7 +302,7 @@ function EventsContent() {
             </button>
             <button
               onClick={() => setIsCreateEventOpen(true)}
-              className="bg-brand-primary text-white font-poppins font-black py-3 px-5 rounded-md duration-300 ease-in hover:bg-hover-primary flex items-center justify-center w-full"
+              className={`bg-brand-primary text-white font-poppins font-black py-3 px-5 rounded-md duration-300 ease-in hover:bg-hover-primary flex items-center justify-center w-full ${role === "admin" ? "block" : "hidden"}`}
             >
               Post an Event
             </button>

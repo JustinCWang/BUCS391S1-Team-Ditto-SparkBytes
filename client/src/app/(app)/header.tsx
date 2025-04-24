@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Logout } from "@/lib/auth";
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
@@ -39,6 +39,20 @@ const CustomHeader = () => {
     clearShownEvents();
     console.log('[Notification] Reset notification history - users will receive notifications again');
   };
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (user) {
+        const { data, error } = await userRole(user.id);
+        if (!error) setRole(data.role);
+        else console.error("Role fetch error:", error.message);
+      }
+    };
+
+    fetchRole();
+  }, [user, pathname]);
 
   useEffect(() => {
     document.body.style.overflow = openMenu ? "hidden" : "auto";
