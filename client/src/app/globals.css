@@ -26,7 +26,7 @@ body {
 .dark html, 
 .dark body {
   background-color: #222224; /* Or dark-gray/black of your choice */
- }
+}
 
 .layout {
   min-height: 100vh;

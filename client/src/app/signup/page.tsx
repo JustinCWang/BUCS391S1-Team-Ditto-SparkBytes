@@ -68,15 +68,19 @@ const SignUpPage= () => {
     // Flex the form so that its in the middle of the screen
     <div
        className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-300 ${
-         isDark ? 'bg-[#1e1e1e] text-white' : 'bg-gray-50 text-black'
+         isDark ? 'bg-[#222224] text-white' : 'bg-gray-50 text-text-primary'
        }`}
      >
       {/** Define the container for the actual form */}
       <div className="w-full max-w-sm">
         {/** Title and min-description */}
-        <h2 className="text-3xl text-black dark:white font-bold font-montserrat text-text-primary">Welcome to Spark!Bytes
+        <h2 className={`text-3xl font-bold font-montserrat ${
+        isDark ? 'text-white' : 'text-text-primary'
+        }`}>Welcome to Spark!Bytes
         </h2>
-        <p className="text-sm font-inter mb-6">Use your &quot;bu.edu&quot; email address to make an account
+        <p className={`text-sm font-inter mb-6 ${
+        isDark ? 'text-white' : 'text-text-primary'
+        }`}>Use your &quot;bu.edu&quot; email address to make an account
         </p>
         {/** Actual form with the data */}
         <form
@@ -95,7 +99,11 @@ const SignUpPage= () => {
               required
               value={firstName}
               onChange={(e) => setFirst(e.target.value)}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:border-text-primary mb-6`}
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-4 ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600 focus:border-white'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300 focus:border-text-primary'
+              }`}
             />
             <input
               type="text"
@@ -104,7 +112,11 @@ const SignUpPage= () => {
               required
               value={lastName}
               onChange={(e) => setLast(e.target.value)}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:border-text-primary mb-6`}
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-4 ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600 focus:border-white'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300 focus:border-text-primary'
+              }`}
             />
           </div>
 
@@ -132,7 +144,16 @@ const SignUpPage= () => {
                 setEmail(e.target.value);
                 setInvalidEmailDomain(!e.target.value.toLowerCase().endsWith('@bu.edu'));
               }}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${onError ||  invalidEmailDomain ? "focus:border-red-500": " focus:border-text-primary"} mb-6`}
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-4
+                ${isDark 
+                  ? 'text-white placeholder-gray-400 border border-gray-600' 
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300'}
+                ${onError || invalidEmailDomain 
+                  ? 'focus:border-red-500' 
+                  : isDark 
+                    ? 'focus:border-white' 
+                    : 'focus:border-text-primary'}
+              `}
             />
           </div>
 
@@ -146,7 +167,11 @@ const SignUpPage= () => {
               required
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none focus:border-text-primary mb-6`}
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-4 ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600 focus:border-white'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300 focus:border-text-primary'
+              }`}
             />
           </div>
 
@@ -159,7 +184,11 @@ const SignUpPage= () => {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full font-inter border border-gray-300 px-4 py-3 rounded-md pr-10 focus:outline-none focus:border-text-primary"
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600 focus:border-white'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300 focus:border-text-primary'
+              }`}
             />
             {/** Alow users to see the password and position absolute to the input so that it stays */}
             <div

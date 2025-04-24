@@ -267,38 +267,38 @@ const Profile = () => {
 
         {/* Dark Mode Toggle Card */}
         <div className='border-2 border-text-primary text-text-primary rounded-lg px-6 py-6 mb-10 shadow-lg'>
-      <div className='max-w-xl mx-auto flex items-center justify-between'>
-        <div>
-          <h1 className='text-text-primary font-bold font-montserrat text-xl mb-1'>Appearance</h1>
-          <p className='text-sm font-inter text-gray-600 dark:text-gray'>Toggle between light and dark themes</p>
-        </div>
+      <div className='max-w-xl mx-auto'>
+        <h1 className='text-text-primary font-bold font-montserrat text-xl mb-6'>Appearance</h1>
     
         {/* Toggle Switch with Icon Inside */}
-        <label className="relative inline-block w-16 h-9 cursor-pointer">
-      <input
-        type="checkbox"
-        checked={theme === 'dark'}
-        onChange={toggleTheme}
-        className="sr-only peer"
-      />
-      {/* Background */}
-      <span className="block bg-gray-300 peer-checked:bg-gray-800 w-full h-full rounded-full transition-colors duration-300" />
-    
-      {/* Sliding Icon Handle */}
-      <span
-        className={`
-          absolute top-0.5 left-0.5 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center 
-          transition-all duration-300
-          ${theme === 'dark' ? 'translate-x-7' : ''}
-        `}
-      >
-        {theme === 'dark' ? (
-          <Moon size={18} className="text-brand-primary" />
-        ) : (
-          <Sun size={18} className="text-brand-primary" />
-        )}
-      </span>
-    </label>
+        <div className='flex items-center justify-between'>
+          <p className={`font-inter text-sm lg:text-base text-gray-600 ${isDark ? "text-white" : "text-text-primary"}`}>Toggle light and dark mode</p>
+          <label className="relative inline-block w-16 h-9 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={theme === 'dark'}
+            onChange={toggleTheme}
+            className="sr-only peer"
+          />
+          {/* Background */}
+          <span className="block bg-gray-300 peer-checked:bg-gray-800 w-full h-full rounded-full transition-colors duration-300"/>
+        
+          {/* Sliding Icon Handle */}
+          <span
+            className={`
+              absolute top-0.5 left-0.5 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center 
+              transition-all duration-300
+              ${theme === 'dark' ? 'translate-x-7' : ''}
+            `}
+          >
+            {theme === 'dark' ? (
+              <Moon size={18} className="text-brand-primary" />
+            ) : (
+              <Sun size={18} className="text-brand-primary" />
+            )}
+          </span>
+        </label>
+        </div>
       </div>
     </div>
 
@@ -473,7 +473,7 @@ const Profile = () => {
       {/** Change Password */}
       <div className='border-2 border-text-primary text-text-primary rounded-lg px-4 py-6 mt-10 shadow-lg'>
         <div className='max-w-xl mx-auto'> 
-          <h1 className='text-brand-primary font-bold font-montserrat text-xl mb-6'>Change Password</h1>
+          <h1 className='font-bold font-montserrat text-xl mb-6'>Change Password</h1>
 
           {/** Field Inputs */}
           <div className=''>

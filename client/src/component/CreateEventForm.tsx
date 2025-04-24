@@ -170,7 +170,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[999]"
         >
           <motion.div
             initial={{ y: 40, opacity: 0 }}
@@ -320,7 +320,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
 
               {/* Allergies */}
               <div>
-                <label className={formStyle}>Allergies</label>
+                <label className={formStyle}>Include Dietary Restrictions</label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {allergenOptions.map((allergen) => (
                     <label key={allergen} className="flex items-center font-poppins text-text-primary">

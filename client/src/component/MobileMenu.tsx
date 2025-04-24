@@ -3,7 +3,7 @@
 import { useTheme } from '@/context/ThemeContext';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Bell, CalendarClock, CircleUser, House } from 'lucide-react';
+import { Bell, CalendarClock, CircleUser, House, LayoutDashboard, MapPinCheck } from 'lucide-react';
 import Image from 'next/image';
 
 interface MobileMenuProps {
@@ -11,6 +11,7 @@ interface MobileMenuProps {
   onLogout: () => void;
   onResetNotifications: () => void;
   avatarUrl?: string | null;
+  role: string;
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({
@@ -18,6 +19,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   onLogout,
   onResetNotifications,
   avatarUrl,
+  role
 }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -30,73 +32,83 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
       exit={{ opacity: 0, y: -20, scale: 0.98 }}
       transition={{ ease: 'easeInOut', duration: 0.4 }}
       className={`fixed inset-0 z-10 pt-20 px-4 transition-colors duration-300 ${
-        isDark ? 'bg-[#222224] text-white' : 'bg-white text-black'
+        isDark ? 'bg-[#222224] text-white' : 'bg-white text-text-primary'
       }`}
     >
       <div className="flex flex-col items-center justify-center gap-4">
-        <div className="flex justify-center items-center">
-          <House className="mr-1" />
           <Link
             href="/dashboard"
             onClick={onClose}
-            className="text-xl font-poppins font-semibold"
+            className="text-xl font-poppins font-semibold flex justify-center items-center"
           >
+            <House className="mr-1" />
             Home
           </Link>
-        </div>
 
-        <div className="flex justify-center items-center">
-          <CalendarClock className="mr-1" />
           <Link
             href="/events"
             onClick={onClose}
-            className="text-xl font-poppins font-semibold"
+            className="text-xl font-poppins font-semibold flex justify-center items-center"
           >
+            <CalendarClock className="mr-1" />
             Events
           </Link>
-        </div>
 
-        <div className="flex justify-center items-center">
-          <Bell className="mr-1" />
+          <Link href="/map" 
+            onClick={onClose}
+            className="text-xl font-poppins font-semibold flex justify-center items-center"
+          >
+            <MapPinCheck className="mr-1"/>
+            Map
+          </Link>
+
+          {role === 'admin' && 
+            <Link href="/admin" 
+              onClick={onClose}
+              className="text-xl font-poppins font-semibold flex justify-center items-center"
+            >
+              <LayoutDashboard className="mr-1"/>
+              Admin
+            </Link>
+          }
+
           <button
             onClick={() => {
               onResetNotifications();
               onClose();
             }}
-            className="text-xl font-poppins font-semibold"
+            className="text-xl font-poppins font-semibold flex justify-center items-center"
           >
-            Reset Notifications
+            <Bell className="mr-1" />
+            Notifications
           </button>
-        </div>
 
-        <div className="flex justify-center items-center">
-          {avatarUrl ? (
-            <Link href="/profile">
-              <div className="w-7 h-7 rounded-full overflow-hidden border mr-1">
-                <Image
-                  src={avatarUrl}
-                  alt="User Avatar"
-                  width={40}
-                  height={40}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            </Link>
-          ) : (
-            <Link href="/profile">
-              <div className="w-7 h-7 flex justify-center items-center rounded-full overflow-hidden mr-1">
-                <CircleUser className="w-full h-full" />
-              </div>
-            </Link>
-          )}
           <Link
             href="/profile"
             onClick={onClose}
-            className="text-xl font-poppins font-semibold"
+            className="text-xl font-poppins font-semibold flex justify-center items-center"
           >
+            {avatarUrl ? (
+              <Link href="/profile">
+                <div className="w-7 h-7 rounded-full overflow-hidden border mr-1">
+                  <Image
+                    src={avatarUrl}
+                    alt="User Avatar"
+                    width={40}
+                    height={40}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              </Link>
+            ) : (
+              <Link href="/profile">
+                <div className="w-7 h-7 flex justify-center items-center rounded-full overflow-hidden mr-1">
+                  <CircleUser className="w-full h-full" />
+                </div>
+              </Link>
+            )}
             Profile
           </Link>
-        </div>
 
         <button
           onClick={onLogout}

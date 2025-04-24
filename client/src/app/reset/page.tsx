@@ -6,8 +6,13 @@ import { supabase } from '@/lib/supabase';
 import { Eye, EyeOff } from 'lucide-react';
 import { Loader } from 'lucide-react';
 
+import { useTheme } from '@/context/ThemeContext';
+
 const ResetPasswordPage = () => {
   const router = useRouter();
+
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   // General state variables
   const [loading, setLoading] = useState(false);
@@ -72,9 +77,13 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+    <div className={`flex items-center justify-center min-h-screen px-4 ${
+        isDark ? 'bg-[#222224]' : 'bg-gray-50'
+      }`}>
       <div className="w-full max-w-sm">
-        <h2 className="text-3xl font-bold font-montserrat text-text-primary">Reset Your Password</h2>
+        <h2 className={`text-3xl font-bold font-montserrat mb-6 ${
+        isDark ? 'text-white' : 'text-text-primary'
+        }`}>Reset Your Password</h2>
         <form
           onSubmit={async (e) => {
             e.preventDefault();
@@ -93,9 +102,11 @@ const ResetPasswordPage = () => {
               placeholder="Enter your new password"
               value={data.password}
               onChange={handleChange}
-              className={`w-full font-inter border border-gray-300 px-4 py-3 rounded-md focus:outline-none ${
-                onError ? 'focus:border-red-500' : 'focus:border-text-primary'
-              }`}
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300'
+              } ${onError ? 'focus:border-red-500' : isDark ? 'focus:border-white' : 'focus:border-text-primary'}`}
             />
             <div
               onClick={() => setShowPassword((prev) => !prev)}
@@ -117,7 +128,11 @@ const ResetPasswordPage = () => {
               placeholder="Confirm your new password"
               value={data.confirmPassword}
               onChange={handleChange}
-              className="w-full font-inter border border-gray-300 px-4 py-3 rounded-md pr-10 focus:outline-none focus:border-text-primary"
+              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none ${
+                isDark
+                  ? 'text-white placeholder-gray-400 border border-gray-600'
+                  : 'text-text-primary placeholder-gray-500 border border-gray-300'
+              } ${onError ? 'focus:border-red-500' : isDark ? 'focus:border-white' : 'focus:border-text-primary'}`}
             />
             <div
               onClick={() => setShowPassword((prev) => !prev)}
@@ -138,7 +153,6 @@ const ResetPasswordPage = () => {
             )}
           </button>
         </form>
-        <div className="border-t border-gray-300 my-6" />
       </div>
     </div>
   );

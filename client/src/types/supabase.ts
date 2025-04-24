@@ -39,5 +39,16 @@ export type LikeProps = {
   isLiked?: boolean;
 }
 
+export type UserRecord = {
+  user_id: string;
+  first_name: string;
+  last_name: string;
+  bu_email: string;
+  phone_num?: string;
+  role: string;
+  avatar_path?: string | null;
+  notifications?: boolean;
+};
+
 
 export type EventCardProps = EventBasicProps & FoodProps & LikeProps;
