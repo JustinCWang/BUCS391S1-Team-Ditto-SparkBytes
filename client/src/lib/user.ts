@@ -42,3 +42,30 @@ export const updatePassword = async ( email: string, currentPassword: string, ne
 
   return { error: updateError };
 };
+
+export const userRole = async ( userId:string ) => {
+  const { data, error } = await supabase
+  .from('Users')
+  .select('role')
+  .eq('user_id', userId)
+  .single();
+
+  if (error) {
+    return { error: error };
+  }
+
+  return { data };
+}
+
+export const fetchAllUsers = async () => {
+  const { data, error } = await supabase
+    .from('Users')
+    .select('*');
+
+  if (error) {
+    console.error("Error fetching users:", error.message);
+    return [];
+  }
+
+  return data;
+};

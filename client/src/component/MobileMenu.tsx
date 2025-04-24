@@ -3,7 +3,7 @@
 import { useTheme } from '@/context/ThemeContext';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Bell, CalendarClock, CircleUser, House } from 'lucide-react';
+import { Bell, CalendarClock, CircleUser, House, LayoutDashboard, MapPinCheck } from 'lucide-react';
 import Image from 'next/image';
 
 interface MobileMenuProps {
@@ -11,6 +11,7 @@ interface MobileMenuProps {
   onLogout: () => void;
   onResetNotifications: () => void;
   avatarUrl?: string | null;
+  role: string;
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({
@@ -18,6 +19,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   onLogout,
   onResetNotifications,
   avatarUrl,
+  role
 }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -51,6 +53,24 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <CalendarClock className="mr-1" />
             Events
           </Link>
+
+          <Link href="/map" 
+            onClick={onClose}
+            className="text-xl font-poppins font-semibold flex justify-center items-center"
+          >
+            <MapPinCheck className="mr-1"/>
+            Map
+          </Link>
+
+          {role === 'admin' && 
+            <Link href="/admin" 
+              onClick={onClose}
+              className="text-xl font-poppins font-semibold flex justify-center items-center"
+            >
+              <LayoutDashboard className="mr-1"/>
+              Admin
+            </Link>
+          }
 
           <button
             onClick={() => {

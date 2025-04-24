@@ -7,9 +7,10 @@ import { Logout } from "@/lib/auth";
 import { AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
-import { CircleUser, House, CalendarClock, Bell, MapPinCheck, ChevronDown, ChevronUp } from "lucide-react";
+import { CircleUser, House, CalendarClock, Bell, MapPinCheck, ChevronDown, ChevronUp, LayoutDashboard } from "lucide-react";
 import { useNotifications } from "@/context/NotificationContext";
 import { useTheme } from '@/context/ThemeContext';
+import { userRole } from "@/lib/user";
 
 import MobileMenu from '@/component/MobileMenu';
 import LogoSwitcher from '@/component/LogoSwitcher';
@@ -17,13 +18,14 @@ import LogoSwitcher from '@/component/LogoSwitcher';
 
 const CustomHeader = () => {
   const router = useRouter();
-  const { avatarUrl } = useAuth();
+  const { avatarUrl, user } = useAuth();
   const { clearShownEvents } = useNotifications();
   const [openMenu, setMenu] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
+  const [role, setRole] = useState<string>("");
 
   const handleLogout = async () => {
     const { error } = await Logout();
@@ -41,6 +43,21 @@ const CustomHeader = () => {
   useEffect(() => {
     document.body.style.overflow = openMenu ? "hidden" : "auto";
   }, [openMenu]);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (user) {
+        const { data, error } = await userRole(user.id);
+        if (error) {
+          console.error("Error fetching role:", error.message);
+        } else {
+          setRole(data.role)
+        }
+      }
+    };
+  
+    fetchRole();
+  }, [user])
 
   return (
     <nav className="w-full px-4 py-4 border-b border-gray-200">
@@ -66,6 +83,12 @@ const CustomHeader = () => {
                 <MapPinCheck className="mr-1"/>
                 Map
               </Link>
+              {role === 'admin' && 
+                <Link href="/admin" className="flex justify-center items-center">
+                  <LayoutDashboard className="mr-1"/>
+                  Admin
+                </Link>
+              }
           </div>
         </div>
 
@@ -163,6 +186,7 @@ const CustomHeader = () => {
       onLogout={handleLogout}
       onResetNotifications={handleResetNotifications}
       avatarUrl={avatarUrl}
+      role={role}
     />
   )}
       </AnimatePresence>
