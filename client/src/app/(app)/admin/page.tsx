@@ -8,13 +8,14 @@ import { Loader } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 import { useTheme } from "@/context/ThemeContext";
+import { UserRecord } from "@/types/supabase";
 
 // Main Page component that wraps the content in a Suspense boundary
 export default function Admin() {
   const { user } = useAuth();
   const router = useRouter();
   const [role, setRole] = useState<string>("");
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<UserRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
