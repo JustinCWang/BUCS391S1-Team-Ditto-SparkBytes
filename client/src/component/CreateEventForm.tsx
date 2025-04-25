@@ -221,6 +221,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
                   className={inputStyle}
                   rows={3}
                   required
+                  placeholder='e.g., Coffee & Conversations will take place in room 218 of ENG.'
                 />
               </div>
 
@@ -266,7 +267,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   className={inputStyle}
-                  placeholder="e.g., CDS 201"
+                  placeholder="e.g., 725 Commonwealth Ave, Boston, MA 02215"
                   required
                 />
               </div>
