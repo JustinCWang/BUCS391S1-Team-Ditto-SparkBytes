@@ -109,19 +109,23 @@ function EventCard({
   }, [isShareOpen]);
 
   return (
-<div
-  className={`relative rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 ${
-    theme === 'dark'
-      ? 'bg-[#222224] text-white border-gray-700'
-      : 'bg-white text-black border-gray-200'
-  } border`}
->      {isEventCurrentlyHappening(date, start_time, end_time) && (
+    <div
+      className={`relative rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300`}
+    >      
+
+      {isEventCurrentlyHappening(date, start_time, end_time) && (
         <div className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 shadow-lg">
           <Bell className="w-4 h-4" />
         </div>
       )}
+      
       <div 
-        className="border-2 border-text-primary rounded-lg px-4 py-2 shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300"
+        className={`border-2 rounded-lg px-4 py-2 shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300 
+          ${
+            theme === 'dark'
+              ? 'bg-[#222224] text-white border-white'
+              : 'bg-white text-text-primary border-text-primary'
+          } border`}
         onClick={() => setIsDetailedViewOpen(true)}
       >
         {/* Container for the event details */}
@@ -181,7 +185,7 @@ function EventCard({
                 duration-300 ease-in hover:bg-brand-primary hover:text-white 
                 flex items-center justify-center"
               >
-                <Share2 className="w-4 h-4" />
+                <Share2 className="w-4 h-6" />
               </button>
               {isEventOrganizer && (
                 <button
