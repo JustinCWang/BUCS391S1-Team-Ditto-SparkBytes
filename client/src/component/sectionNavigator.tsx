@@ -1,19 +1,52 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import { useAuth } from '@/context/AuthContext';
+import { userRole } from '@/lib/user';
 
 const SectionNavigator = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { theme } = useTheme();
-  const isDark = theme === 'dark';  
+  const isDark = theme === 'dark';
+  const { user } = useAuth();
+  const [role, setRole] = useState<string>("");
+  
+  // Fetch user role on component mount
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (user) {
+        const { data, error } = await userRole(user.id);
+        if (error) {
+          console.error("Error fetching role:", error.message);
+        } else {
+          setRole(data.role);
+        }
+      }
+    };
+    
+    if (user) {
+      fetchRole();
+    }
+  }, [user]);
 
-  const sections = [
-    { id: 'upcoming', label: 'Upcoming Events' },
-    { id: 'liked', label: 'Your Liked Events' },
-    { id: 'my', label: 'My Events' }
-  ];
+  // Define sections based on user role
+  const getAvailableSections = () => {
+    const baseSections = [
+      { id: 'upcoming', label: 'Upcoming Events' },
+      { id: 'liked', label: 'Your Liked Events' },
+    ];
+    
+    // Only add My Events section if user is admin
+    if (role === 'admin') {
+      baseSections.push({ id: 'my', label: 'My Events' });
+    }
+    
+    return baseSections;
+  };
+
+  const sections = getAvailableSections();
 
   return (
     <div className="fixed left-0 top-1/2 -translate-y-1/2 z-50">
@@ -65,4 +98,4 @@ const SectionNavigator = () => {
   );
 };
 
-export default SectionNavigator; 
+export default SectionNavigator;
