@@ -119,7 +119,7 @@ const STATIC_LISTINGS = [
     {
       id: '12',
       position: { lat: 42.35086706434192, lng: -71.10894760380761 },
-      code: 'BU GSU',
+      code: 'GSU',
       title: 'BU GSU',
       images: [
         '/images/GSU.jpg',
