@@ -9,6 +9,7 @@ import EventCard from '@/component/eventCard';
 import SecondaryButton from '@/component/secondaryButton';
 import { Loader } from 'lucide-react';
 import SectionNavigator from '@/component/sectionNavigator';
+import { userRole } from "@/lib/user"; // Import the userRole function
 
 // Type definition for food-related data
 type FoodInfo = {
@@ -19,9 +20,16 @@ type FoodInfo = {
   quantity?: number | null;
 };
 
+// Utility function to get current date in Boston time zone
+const getCurrentDateInBostonTZ = () => {
+  const bostonTime = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+  return new Date(bostonTime).toISOString().split('T')[0];
+};
+
 const Dashboard = () => {
   const router = useRouter();
   const { user } = useAuth();
+  const [role, setRole] = useState<string>(""); // Add role state
   const [upcomingEvents, setUpcomingEvents] = useState<EventCardProps[]>([]);
   const [likedEvents, setLikedEvents] = useState<EventCardProps[]>([]);
   const [myEvents, setMyEvents] = useState<EventCardProps[]>([]);
@@ -35,10 +43,32 @@ const Dashboard = () => {
   const LIKED_ITEMS_PER_PAGE = 6; // Number of events per page for liked events
   const MY_EVENTS_ITEMS_PER_PAGE = 6; // Number of events per page for my events
 
+  // Add useEffect to fetch user role
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (user) {
+        const { data, error } = await userRole(user.id);
+        if (error) {
+          console.error("Error fetching role:", error.message);
+        } else {
+          setRole(data.role)
+        }
+      }
+    };
+
+    if (!user) {
+      router.push('/');
+    } else {
+      fetchRole();
+    }
+  }, [user, router]);
+
   // Fetch upcoming events from the database with pagination and like count
   const fetchUpcomingEvents = useCallback(async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
+      // Get current date in Boston time zone
+      const currentDate = getCurrentDateInBostonTZ();
 
       // Build the main query to fetch event data
       const dataQuery = supabase
@@ -55,7 +85,7 @@ const Dashboard = () => {
           building,
           organizer_id
         `)
-        .gte('date', new Date().toISOString().split('T')[0]) // Only get events from today onwards
+        .gte('date', currentDate) // Use the Boston-adjusted date
         .order('date', { ascending: true }) // Order by date, closest first
         .limit(3); // Only get the 3 closest events
 
@@ -387,19 +417,15 @@ const Dashboard = () => {
     }
   }, [user, currentMyEventsPage]);
 
-  // Redirect to home if the user is not logged in
-  useEffect(() => {
-    if (!user) {
-      router.push('/');
-    }
-  }, [router, user]);
-
   // Fetch events when dependencies change
   useEffect(() => {
     fetchUpcomingEvents();
     fetchLikedEvents();
-    fetchMyEvents();
-  }, [fetchUpcomingEvents, fetchLikedEvents, fetchMyEvents]);
+    // Only fetch my events if user is an admin
+    if (role === 'admin') {
+      fetchMyEvents();
+    }
+  }, [fetchUpcomingEvents, fetchLikedEvents, fetchMyEvents, role]);
 
   return (
     <div className="my-6">
@@ -424,6 +450,7 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Update the Upcoming Events section */}
         {isLoading ? (
           // Display loader while fetching events
           <div className="w-full flex justify-center items-center h-[50vh]">
@@ -431,16 +458,26 @@ const Dashboard = () => {
           </div>
         ) : (
           <>
-            {/* Grid display for event cards */}
-            <div id="upcoming" className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-              {upcomingEvents.map((event, index) => (
-                <EventCard
-                  key={event.event_id || index}
-                  {...event}
-                  onEventUpdated={fetchUpcomingEvents}
-                />
-              ))}
-            </div>
+            {upcomingEvents.length > 0 ? (
+              <>
+                {/* Grid display for event cards */}
+                <div id="upcoming" className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+                  {upcomingEvents.map((event, index) => (
+                    <EventCard
+                      key={event.event_id || index}
+                      {...event}
+                      onEventUpdated={fetchUpcomingEvents}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="w-full flex justify-center items-center h-[30vh]">
+                <p className="text-lg text-gray-500 font-inter">
+                  Uh oh, it seems there are no upcoming events right now.
+                </p>
+              </div>
+            )}
           </>
         )}
 
@@ -457,6 +494,7 @@ const Dashboard = () => {
             </div>
           </div>
 
+          {/* Update the Liked Events section */}
           {isLoadingLiked ? (
             // Display loader while fetching events
             <div className="w-full flex justify-center items-center h-[50vh]">
@@ -464,107 +502,132 @@ const Dashboard = () => {
             </div>
           ) : (
             <>
-              {/* Grid display for event cards */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                {likedEvents.map((event, index) => (
-                  <EventCard
-                    key={event.event_id || index}
-                    {...event}
-                    onEventUpdated={fetchLikedEvents}
-                  />
-                ))}
-              </div>
+              {likedEvents.length > 0 ? (
+                <>
+                  {/* Grid display for event cards */}
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+                    {likedEvents.map((event, index) => (
+                      <EventCard
+                        key={event.event_id || index}
+                        {...event}
+                        onEventUpdated={fetchLikedEvents}
+                      />
+                    ))}
+                  </div>
 
-              {/* Pagination controls */}
-              <div className="flex flex-row justify-center items-center gap-4 mt-8">
-                <button
-                  onClick={() => setCurrentLikedPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentLikedPage === 1}
-                  className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
-                            text-brand-primary hover:bg-brand-primary hover:text-white 
-                            disabled:opacity-50 disabled:cursor-not-allowed transition"
-                >
-                  Previous
-                </button>
+                  {/* Pagination controls - only show if there are pages */}
+                  {totalLikedPages > 0 && (
+                    <div className="flex flex-row justify-center items-center gap-4 mt-8">
+                      <button
+                        onClick={() => setCurrentLikedPage((prev) => Math.max(prev - 1, 1))}
+                        disabled={currentLikedPage === 1}
+                        className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
+                                  text-brand-primary hover:bg-brand-primary hover:text-white 
+                                  disabled:opacity-50 disabled:cursor-not-allowed transition"
+                      >
+                        Previous
+                      </button>
 
-                <span className="font-poppins text-sm sm:text-base text-text-primary">
-                  Page {currentLikedPage} of {totalLikedPages}
-                </span>
+                      <span className="font-poppins text-sm sm:text-base text-text-primary">
+                        Page {currentLikedPage} of {totalLikedPages}
+                      </span>
 
-                <button
-                  onClick={() => setCurrentLikedPage((prev) => Math.min(prev + 1, totalLikedPages))}
-                  disabled={currentLikedPage === totalLikedPages}
-                  className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
-                            text-brand-primary hover:bg-brand-primary hover:text-white 
-                            disabled:opacity-50 disabled:cursor-not-allowed transition"
-                >
-                  Next
-                </button>
-              </div>
+                      <button
+                        onClick={() => setCurrentLikedPage((prev) => Math.min(prev + 1, totalLikedPages))}
+                        disabled={currentLikedPage === totalLikedPages}
+                        className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
+                                  text-brand-primary hover:bg-brand-primary hover:text-white 
+                                  disabled:opacity-50 disabled:cursor-not-allowed transition"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="w-full flex justify-center items-center h-[30vh]">
+                  <p className="text-lg text-gray-500 font-inter">
+                    Uh oh, it seems you haven&apos;t liked any events yet.
+                  </p>
+                </div>
+              )}
             </>
           )}
         </div>
 
-        {/* My Events section */}
-        <div id="my" className="mt-16">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-            <div>
-              <h1 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">
-                My Events
-              </h1>
-              <p className="text-text-primary font-inter text-xs lg:text-base">
-                Events you&apos;ve created
-              </p>
+        {/* My Events section - only show for admins */}
+        {role === 'admin' && (
+          <div id="my" className="mt-16">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+              <div>
+                <h1 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">
+                  My Events
+                </h1>
+                <p className="text-text-primary font-inter text-xs lg:text-base">
+                  Events you&apos;ve created
+                </p>
+              </div>
             </div>
+
+            {/* Update the My Events section */}
+            {isLoadingMyEvents ? (
+              <div className="w-full flex justify-center items-center h-[50vh]">
+                <Loader className="animate-spin text-brand-primary" size={40} style={{ animationDuration: '3s' }} />
+              </div>
+            ) : (
+              <>
+                {myEvents.length > 0 ? (
+                  <>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+                      {myEvents.map((event, index) => (
+                        <EventCard
+                          key={event.event_id || index}
+                          {...event}
+                          onEventUpdated={fetchMyEvents}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Pagination controls - only show if there are pages */}
+                    {totalMyEventsPages > 0 && (
+                      <div className="flex flex-row justify-center items-center gap-4 mt-8">
+                        <button
+                          onClick={() => setCurrentMyEventsPage((prev) => Math.max(prev - 1, 1))}
+                          disabled={currentMyEventsPage === 1}
+                          className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
+                                    text-brand-primary hover:bg-brand-primary hover:text-white 
+                                    disabled:opacity-50 disabled:cursor-not-allowed transition"
+                        >
+                          Previous
+                        </button>
+
+                        <span className="font-poppins text-sm sm:text-base text-text-primary">
+                          Page {currentMyEventsPage} of {totalMyEventsPages}
+                        </span>
+
+                        <button
+                          onClick={() => setCurrentMyEventsPage((prev) => Math.min(prev + 1, totalMyEventsPages))}
+                          disabled={currentMyEventsPage === totalMyEventsPages}
+                          className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
+                                    text-brand-primary hover:bg-brand-primary hover:text-white 
+                                    disabled:opacity-50 disabled:cursor-not-allowed transition"
+                        >
+                          Next
+                        </button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="w-full flex justify-center items-center h-[30vh]">
+                    <p className="text-lg text-gray-500 font-inter">
+                      Uh oh, it seems you haven&apos;t created any events yet.
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
           </div>
-
-          {isLoadingMyEvents ? (
-            // Display loader while fetching events
-            <div className="w-full flex justify-center items-center h-[50vh]">
-              <Loader className="animate-spin text-brand-primary" size={40} style={{ animationDuration: '3s' }} />
-            </div>
-          ) : (
-            <>
-              {/* Grid display for event cards */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                {myEvents.map((event, index) => (
-                  <EventCard
-                    key={event.event_id || index}
-                    {...event}
-                    onEventUpdated={fetchMyEvents}
-                  />
-                ))}
-              </div>
-
-              {/* Pagination controls */}
-              <div className="flex flex-row justify-center items-center gap-4 mt-8">
-                <button
-                  onClick={() => setCurrentMyEventsPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentMyEventsPage === 1}
-                  className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
-                            text-brand-primary hover:bg-brand-primary hover:text-white 
-                            disabled:opacity-50 disabled:cursor-not-allowed transition"
-                >
-                  Previous
-                </button>
-
-                <span className="font-poppins text-sm sm:text-base text-text-primary">
-                  Page {currentMyEventsPage} of {totalMyEventsPages}
-                </span>
-
-                <button
-                  onClick={() => setCurrentMyEventsPage((prev) => Math.min(prev + 1, totalMyEventsPages))}
-                  disabled={currentMyEventsPage === totalMyEventsPages}
-                  className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
-                            text-brand-primary hover:bg-brand-primary hover:text-white 
-                            disabled:opacity-50 disabled:cursor-not-allowed transition"
-                >
-                  Next
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

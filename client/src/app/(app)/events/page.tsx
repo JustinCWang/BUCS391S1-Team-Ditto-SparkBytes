@@ -291,12 +291,12 @@ function EventsContent() {
           <div className="w-full flex flex-col sm:flex-row gap-4">
             <button
               onClick={() => setIsFilterOpen(true)}
-              className={`bg-white
+              className={`${isDark ? 'bg-[#222224]' : 'bg-white'}
                 text-brand-primary font-poppins 
                 font-black py-3 px-5 rounded-md border 
                 border-brand-primary duration-300 ease-in 
-                hover:text-white
-                flex items-center justify-center w-full ${isDark ? "hover:bg-transparent" : "hover:bg-brand-primary"}`}
+                hover:text-white hover:bg-brand-primary
+                flex items-center justify-center w-full`}
             >
               Filter Events
             </button>
@@ -337,43 +337,55 @@ function EventsContent() {
           </div>
         ) : (
           <>
-            {/* Grid display for event cards */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {events.map((event, index) => (
-                <EventCard
-                  key={event.event_id || index}
-                  {...event}
-                  onEventUpdated={fetchEvents}
-                />
-              ))}
-            </div>
+            {events.length > 0 ? (
+              <>
+                {/* Grid display for event cards */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {events.map((event, index) => (
+                    <EventCard
+                      key={event.event_id || index}
+                      {...event}
+                      onEventUpdated={fetchEvents}
+                    />
+                  ))}
+                </div>
 
-            {/* Pagination controls */}
-            <div className="flex flex-row justify-center items-center gap-4 mt-8">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
-                          text-brand-primary hover:bg-brand-primary hover:text-white 
-                          disabled:opacity-50 disabled:cursor-not-allowed transition"
-              >
-                Previous
-              </button>
+                {/* Pagination controls - only show if there are pages */}
+                {totalPages > 0 && (
+                  <div className="flex flex-row justify-center items-center gap-4 mt-8">
+                    <button
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
+                              text-brand-primary hover:bg-brand-primary hover:text-white 
+                              disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    >
+                      Previous
+                    </button>
 
-              <span className="font-poppins text-sm sm:text-base text-text-primary">
-                Page {currentPage} of {totalPages}
-              </span>
+                    <span className="font-poppins text-sm sm:text-base text-text-primary">
+                      Page {currentPage} of {totalPages}
+                    </span>
 
-              <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
-                          text-brand-primary hover:bg-brand-primary hover:text-white 
-                          disabled:opacity-50 disabled:cursor-not-allowed transition"
-              >
-                Next
-              </button>
-            </div>
+                    <button
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                      className="px-5 py-2 font-poppins font-bold text-sm rounded-md border border-brand-primary 
+                              text-brand-primary hover:bg-brand-primary hover:text-white 
+                              disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="w-full flex justify-center items-center h-[30vh]">
+                <p className="text-lg text-gray-500 font-inter">
+                  Uh oh, it seems there are no events matching your search criteria.
+                </p>
+              </div>
+            )}
           </>
         )}
       </div>

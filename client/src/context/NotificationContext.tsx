@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { supabase } from '@/lib/supabase';
 import { useAuth } from './AuthContext';
 import { usePathname } from 'next/navigation';
+import { getCurrentDateInBostonTZ } from '@/lib/utils';
 
 interface Notification {
   id: string;
@@ -163,8 +164,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         // Check each event's start time
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
-        // Get today's date in YYYY-MM-DD format to match the database format
-        const currentDate = now.toISOString().split('T')[0];
+        // Get today's date in YYYY-MM-DD format using Boston time zone
+        const currentDate = getCurrentDateInBostonTZ();
 
         console.log(`[Notification] Current time: ${currentHour}:${currentMinute}, Date: ${currentDate}`);
 

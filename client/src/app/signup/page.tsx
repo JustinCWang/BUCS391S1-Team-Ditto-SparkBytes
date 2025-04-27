@@ -22,6 +22,8 @@ const SignUpPage= () => {
   // onErrorBU for when the user does not input a BU email
   const [invalidEmailDomain, setInvalidEmailDomain] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // for eye toggle
+  // Add state for password validation
+  const [passwordTooShort, setPasswordTooShort] = useState(false);
 
   // States needed for logging in
   const [firstName, setFirst] = useState('');
@@ -44,7 +46,15 @@ const SignUpPage= () => {
   const onSubmitRegister = async (values: {email: string, password: string, firstName:string, lastName:string, phoneNumber:string }) => {
     try {
       setError(false);
+      setPasswordTooShort(false);
       setLoading(true);
+
+      // Check password length before continuing
+      if (values.password.length < 8) {
+        setPasswordTooShort(true);
+        setLoading(false);
+        return;
+      }
 
       const parsedPhone = parsePhoneNumberWithError(values.phoneNumber, 'US');
       const formattedPhone = parsedPhone.number;
@@ -53,6 +63,7 @@ const SignUpPage= () => {
       const { error } = await Register(values);
       
       if (error) {
+        // Only set general error if it's not a password length issue
         setError(true);
         throw new Error(error.message);
       }
@@ -176,21 +187,33 @@ const SignUpPage= () => {
           </div>
 
           {/** Fourth form input which is the password */}
-          <div className="relative mb-10">
+          <div className="relative mb-2">
+            {/* Add password validation error message */}
+            {passwordTooShort && (
+              <p className="font-inter italic text-sm text-red-500 mb-1">
+                Password must be at least 8 characters long.
+              </p>
+            )}
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
               placeholder="Password"
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                // Clear the error when user types a valid password
+                if (e.target.value.length >= 8) {
+                  setPasswordTooShort(false);
+                }
+              }}
               className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none ${
                 isDark
                   ? 'text-white placeholder-gray-400 border border-gray-600 focus:border-white'
                   : 'text-text-primary placeholder-gray-500 border border-gray-300 focus:border-text-primary'
-              }`}
+              } ${passwordTooShort ? 'border-red-500' : ''}`}
             />
-            {/** Alow users to see the password and position absolute to the input so that it stays */}
+            {/** Allow users to see the password and position absolute to the input so that it stays */}
             <div
               onClick={() => setShowPassword((prev) => !prev)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-text-primary cursor-pointer"
@@ -199,6 +222,10 @@ const SignUpPage= () => {
             </div>
           </div>
           
+          <p className="text-xs text-gray-500 mb-10">
+            Password must be at least 8 characters long.
+          </p>
+
           {/** Submit the form plus loading animation while waiting to log in */}
           <button
             type="submit"
