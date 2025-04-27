@@ -132,7 +132,7 @@ function EventCard({
         <div className="flex flex-col">
           {/* Header section with event name and time */}
           <div className={`${theme === 'dark' ? 'text-white' : 'text-text-primary'} mb-4`}>
-            <h2 className="text-xl font-montserrat font-bold my-2">{name}</h2>
+            <h2 className="text-xl font-montserrat font-bold my-2 truncate">{name}</h2>
             <p className="font-inter text-sm">
               {date + " • " + start_time + " - " + end_time}
             </p>
@@ -140,20 +140,20 @@ function EventCard({
           {/* Section displaying location and food information with icons */}
           <div className={`${theme === 'dark' ? 'text-white' : 'text-text-primary'} font-inter`}>
           <div className="flex mb-2">
-              <MapPin />
-              <p className="ml-1">{building} | {location}</p>
+              <MapPin className="flex-shrink-0" />
+              <p className="ml-1 truncate">{building} | {location}</p>
             </div>
             <div className="flex mb-2">
-              <UtensilsCrossed />
-              <p className="ml-1">{food_name}</p>
+              <UtensilsCrossed className="flex-shrink-0" />
+              <p className="ml-1 truncate">{food_name}</p>
             </div>
             <div className="flex mb-2">
-              <Package />
-              <p className="ml-1">Quantity: {quantity}</p>
+              <Package className="flex-shrink-0" />
+              <p className="ml-1 truncate">Quantity: {quantity}</p>
             </div>
             <div className="flex mb-2">
-              <AlertTriangle />
-              <p className="ml-1">Allergens: {allergens}</p>
+              <AlertTriangle className="flex-shrink-0" />
+              <p className="ml-1 truncate">Allergens: {allergens}</p>
             </div>
           </div>
           {/* Section for like functionality and edit button */}
@@ -264,6 +264,7 @@ function EventCard({
         like_count={likeCount}
         isLiked={liked}
         organizer_id={organizer_id}
+        quantity={quantity}
         onEventUpdated={onEventUpdated}
       />
     </div>

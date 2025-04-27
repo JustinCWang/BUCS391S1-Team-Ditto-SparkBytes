@@ -59,7 +59,8 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
     };
   }, [isOpen]);
 
-  const [formData, setFormData] = useState<EventFormData>({
+  // Initial form state with empty values
+  const initialFormState: EventFormData = {
     name: '',
     description: '',
     date: null,
@@ -69,8 +70,17 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
     building: '',
     food_name: '',
     allergens: [],
-    quantity: 0,
-  });
+    quantity: 1,
+  };
+
+  const [formData, setFormData] = useState<EventFormData>(initialFormState);
+
+  // Reset form when modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(initialFormState);
+    }
+  }, [isOpen]);
 
   const allergenOptions = [
     'Dairy',
@@ -152,7 +162,13 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
 
       if (eventError) throw eventError;
 
+      // Reset form to initial state after successful submission
+      setFormData(initialFormState);
+      
+      // Call onSuccess callback if provided
       onSuccess?.();
+      
+      // Close the modal
       onClose();
     } catch (error) {
       console.error('Error creating event:', error);
@@ -375,4 +391,4 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
   );
 };
 
-export default CreateEventForm; 
+export default CreateEventForm;
