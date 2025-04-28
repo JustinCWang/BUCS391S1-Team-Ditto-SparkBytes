@@ -1,0 +1,41 @@
+food_id,status,food_category,name,quantity,allergens
+0025dd08-5af9-4e0a-abb1-51aa475d59c1,available,,Pasta Salad,30,"Gluten-Free, Tree Nuts"
+0513d1c4-c405-4a85-b67f-9361d7f09f1d,available,,Pizza,26,Tree Nuts
+0684fcac-700d-4dff-81d4-8facc9d3684a,available,,Cookies,12,"Tree Nuts, Dairy, Peanuts, Soy"
+0818f91e-17e6-4e1c-98b3-02ec4c6e4e65,available,,Sandwiches,33,"Tree Nuts, Soy"
+0acaeb01-2696-4b67-a9e6-eb12aa5c9d9a,available,,Spring Rolls,18,"Kosher, Tree Nuts"
+1126f96d-21ad-45e8-9978-50caa47f9e65,available,,Bagels,18,"Pescatarian, Gluten-Free"
+11531473-72a6-43ff-8cf1-925d13b86f04,available,,Cookies,14,"Soy, Tree Nuts, Vegetarian, Gluten-Free"
+1fab830a-33b3-429a-92dc-d9d25916c270,available,,Fruit Cups,40,"Tree Nuts, Shellfish, Eggs, Pescatarian"
+27d0d10a-c3bf-42b3-861d-f9e809ce9db5,available,,Spring Rolls,13,Dairy
+31419a24-dfec-49e0-a54d-e5ff56cee3f4,available,,Pasta Salad,37,Dairy
+36793f29-de86-4681-847d-5a6f7ef5d44c,available,,Cupcakes,37,"Vegan, Soy"
+398109a1-cf46-446d-9125-6b4ee4f080bf,available,,Cupcakes,10,"Halal, Pescatarian"
+3bb89a80-acb0-487f-819e-c7029ebd5543,available,,Pasta Salad,30,"Tree Nuts, Halal, Eggs, Soy"
+437fb4af-8e45-4681-9fda-1157bf7a1aa2,available,,Falafel Wraps,38,"Tree Nuts, Pescatarian, Halal, Gluten-Free"
+48d09b07-e941-4daf-9e51-b2bf2527bfa0,available,,Pizza,18,"Gluten-Free, Shellfish"
+4a6192de-7a98-45ef-9ce5-041ede76bfdb,available,,Cupcakes,12,Vegetarian
+5010ebcf-086f-42fb-a23c-8c44ba283e61,available,,Samosas,31,"Tree Nuts, Halal, Gluten-Free, Soy"
+584c1847-d87d-47dd-825b-787ad0be14ea,available,,Fruit Cups,23,"Eggs, Dairy"
+6ca9b027-55e0-43c8-ad82-ded3f4e1efcd,available,,Pizza,11,"Kosher, Halal"
+71b9ca46-0677-4069-aea9-26bbe205d29f,available,,Cookies,34,Kosher
+7a523857-2c47-4332-b074-e8ab222d693f,available,,Bagels,12,Dairy
+7c0fd8c9-1058-4c98-a386-a8250d14836d,available,,Fruit Cups,17,"Pescatarian, Vegan, Kosher, Vegetarian"
+814c02dc-295c-4713-bc0c-14da3190b725,available,,Pizza,21,"Tree Nuts, Gluten-Free"
+84413ae4-bb0c-42dc-8bf7-e3f2de0c20dd,available,,Pasta Salad,39,Halal
+8cca6f3e-7d16-478c-a9b9-e3750c4eb1ea,available,,Bagels,32,"Pescatarian, Vegan, Eggs, Gluten-Free"
+8eed11d3-f5c1-40e4-bc86-6afa1414765b,available,,Falafel Wraps,25,"Tree Nuts, Peanuts, Eggs"
+a5f9ce9d-2157-45fc-8a10-38d9e445b1ec,available,,Cupcakes,18,"Tree Nuts, Soy"
+aaaf745d-fcea-45d1-81cb-c4e8da7fe53d,available,,Spring Rolls,33,"Eggs, Tree Nuts, Vegetarian"
+b0ce70fd-f586-4c92-8502-5484160c6662,available,,Spring Rolls,21,Soy
+b4b5497c-edab-4a6b-aa10-9046c4843807,available,,Pasta Salad,38,Shellfish
+b5d5fb62-a3a0-47f7-b7b9-fabf3e12a712,available,,Spring Rolls,28,"Gluten-Free, Tree Nuts"
+b63a5d10-b350-434e-9ee7-423c0da20901,available,,Bagels,13,Tree Nuts
+bf08c1d5-1ef9-47d0-9495-b9ca752b051a,available,,Pizza,38,"Kosher, Vegan, Dairy"
+c9298b14-d142-4e97-95f6-acb0629d2d30,available,,Spring Rolls,37,"Pescatarian, Tree Nuts, Soy"
+c9dcd36b-8158-4c7c-96a7-5cc2e69b7372,available,,Bagels,19,"Kosher, Halal"
+d8ac3d0f-a4cc-4add-be2d-705907d6a9fc,available,,Fruit Cups,11,"Pescatarian, Dairy, Shellfish, Eggs"
+dea8c380-157d-432d-a90e-9ef6fbcacf79,available,,Falafel Wraps,28,"Vegetarian, Eggs, Halal, Dairy"
+e984110c-75f6-4e6a-8fe5-b7912ebe6687,available,,Bagels,19,Dairy
+f252fd50-f8f4-47b2-b180-ec9349806527,available,,Falafel Wraps,23,"Dairy, Shellfish"
+f53976bd-3469-495a-bc77-399692da8b8a,available,,Bagels,27,"Gluten-Free, Eggs"

@@ -1,0 +1,26 @@
+first_name,last_name,bu_email,phone_num,role,user_id,avatar_path,notifications
+John,Smith,jsmith@bu.edu,775-555-0103,student,17720e73-d5e7-453e-a551-bec783cd8968,,true
+Jane,Doe,jdoe@bu.edu,775-555-0104,student,1e702b18-4868-4f29-b585-bc4bf05ec314,,true
+Mike,Johnson,mjohnson@bu.edu,775-555-0105,student,28f1f033-6f43-4a85-9301-98bfb7279c77,,true
+Sarah,Brown,sbrown@bu.edu,775-555-0110,student,2b5e2680-b6cd-44a6-8155-9e06804708a0,,true
+David,Miller,dmiller@bu.edu,775-555-0101,student,2eafb59a-c68e-4077-8835-91eb947db0d5,,true
+Admin,Account,admin4@bu.edu,+19999999999,admin,437803f4-0027-4749-b863-09233eb83b40,avatars/437803f4-0027-4749-b863-09233eb83b40/437803f4-0027-4749-b863-09233eb83b40_1745729774440.webp,true
+User,Account,user@bu.edu,+11111111111,student,471e9f4e-8fb7-4999-9f21-db7e4c08de46,,true
+Emily,Davis,edavis@bu.edu,775-555-0116,student,5a2e7ea3-652f-405e-946e-3b86237cd843,,true
+Chris,Wilson,cwilson@bu.edu,775-555-0106,faculty,62307f16-7c96-4667-9f92-f02be360d71c,,true
+Laura,Moore,lmoore@bu.edu,775-555-0109,student,6625eae6-31ca-40d9-a1a6-61bb337cde8a,,true
+James,Taylor,jtaylor@bu.edu,775-555-0115,student,6a4044a5-c212-4ddc-b702-0364b36c51d1,,true
+Anna,Anderson,aanderson@bu.edu,775-555-0107,student,79ac3ed8-1afd-411b-ba80-aa52585c42f5,,true
+Brian,Thomas,bthomas@bu.edu,775-555-0112,student,8e77587a-9f39-422b-8c6a-0c96a62ed350,,true
+Megan,Lee,mlee@bu.edu,775-555-0108,student,8f3fdab8-248d-4fbb-90f2-469400ddaeb5,,true
+Admin,Account,admin3@bu.edu,+19999999999,admin,948f93c2-4ab1-4603-9f29-74f7b3ec60df,avatars/948f93c2-4ab1-4603-9f29-74f7b3ec60df/948f93c2-4ab1-4603-9f29-74f7b3ec60df_1745729360096.webp,true
+Kevin,Harris,kharris@bu.edu,775-555-0111,student,9ef6f80b-28fd-4e23-aaed-a550afa99df3,,true
+"Admin ",Account,admin2@bu.edu,+19999999999,admin,9f17e11e-b5e8-471e-9d4f-8e8933a1f926,avatars/9f17e11e-b5e8-471e-9d4f-8e8933a1f926/9f17e11e-b5e8-471e-9d4f-8e8933a1f926_1745728928520.webp,true
+Rachel,Clark,rclark@bu.edu,775-555-0117,student,a6056087-0b24-423c-af21-76d06eb6458a,,true
+Daniel,Lewis,dlewis@bu.edu,775-555-0118,student,b7d8c342-8962-42e9-809b-3c619964b591,,true
+Admin,Account,admin1@bu.edu,+19999999999,admin,bdd6ec91-8717-4fd5-b20e-86bd9e8c8e37,avatars/bdd6ec91-8717-4fd5-b20e-86bd9e8c8e37/bdd6ec91-8717-4fd5-b20e-86bd9e8c8e37_1745727106208.webp,true
+Olivia,Hall,ohall@bu.edu,775-555-0119,student,ca5ca249-3bbd-41a2-9b32-dcfc066bf191,,true
+Justin,Young,jyoung@bu.edu,775-555-0100,student,d187c6b1-56f7-4d88-a540-cf2bff976a91,,true
+Natalie,King,nking@bu.edu,775-555-0113,student,ee808861-4d4a-4782-98a9-9e67dd42b4f3,,true
+Ryan,Scott,rscott@bu.edu,775-555-0102,student,f207a0f2-6d65-4c18-a267-d7ec84274c7a,,true
+Samantha,Adams,sadams@bu.edu,775-555-0114,student,fe3baf1f-29b5-48da-9c31-004f8636043b,,true
