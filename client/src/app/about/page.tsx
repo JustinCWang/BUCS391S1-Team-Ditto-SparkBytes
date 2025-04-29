@@ -31,7 +31,7 @@ const About = () => {
           <AboutMe 
             linkedIn="https://www.linkedin.com/in/jiafei-fan-1a17b7335/"
             name="Jiafei Fan" 
-            bio="Fullstack Developer" 
+            bio="Fullstack Developer and Designer" 
             imageUrl="https://media.licdn.com/dms/image/v2/D4E03AQFQfTSH-lu2KQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1730228306674?e=1748476800&v=beta&t=dnIXD_HGa5vIYSdLLZYTegpU7zaTEuK5J8O4HBRs7dc"
           />
           
