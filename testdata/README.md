@@ -1,11 +1,11 @@
 ## Prerequisites
 
-Before using the test data, please ensure that you have set up a supabase account [README](BUCS391S1-Team-Ditto-SparkBytes/README.md)
+Before using the test data, please ensure that you have set up a supabase account [README](../BUCS391S1-Team-Ditto-SparkBytes/README.md)
 
 ## How to use and set up Test Data:
 
 1. Enter your Supabase project and click on Table Editor and click new Table
-2. Recreate the tables following the database schema in the [Documentation](BUCS391S1-Team-Ditto-SparkBytes/Documentation.pdf)
+2. Recreate the tables following the database schema in the [Documentation](../BUCS391S1-Team-Ditto-SparkBytes/Documentation.pdf)
 3. Upload the CSV data files in the following orders to respect foreign keys: Users_rows.csv --> Food_rows.csv --> Events_rows.csv --> Liked_events.csv
 4. You are all set!
 
