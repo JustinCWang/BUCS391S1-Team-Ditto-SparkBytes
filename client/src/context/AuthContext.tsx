@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 
+// Define the shape of the auth context
 interface AuthContextType {
   user: User | null;
   userSession: Session | null;
