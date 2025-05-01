@@ -1,6 +1,7 @@
 import { supabase } from './supabase';
 import { SignInCredentials, SignUpCredentials } from '../types/supabase';
 
+// Handles user login using Supabase auth
 export const Login = async ({ email, password}: SignInCredentials) => {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -10,6 +11,7 @@ export const Login = async ({ email, password}: SignInCredentials) => {
   return { data, error };
 };
 
+// Handles user registration with Supabase auth and inserts additional info into 'Users' table
 export const Register = async ({  
   email,
   password,
@@ -18,11 +20,13 @@ export const Register = async ({
   phoneNumber, 
 }: SignUpCredentials) => {
   
+  // Step 1: Register user with email and password
   const { data: data, error: error } = await supabase.auth.signUp({
     email,
     password,
   });
 
+  // If registration fails or user isn't returned, exit early
   if (error || !data.user) {
     return { error: error };
   }
@@ -42,6 +46,7 @@ export const Register = async ({
   return { error: insertError };
 };
 
+// Logs out the current user
 export const Logout = async () => {
   const { error } = await supabase.auth.signOut();
   return { error };
