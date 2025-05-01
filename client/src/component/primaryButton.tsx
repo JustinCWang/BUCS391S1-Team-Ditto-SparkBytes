@@ -1,11 +1,22 @@
 import Link from "next/link";
 
+/**
+ * Props for MainButton
+ * 
+ * @param text - The label to display inside the button
+ * @param linkTo - The URL path the button should navigate to
+ * @param styling - Optional additional Tailwind classes for custom styling
+ */
 interface MainButtonProps {
   text: string;
   linkTo: string;
   styling?: string;
 }
 
+/**
+ * Reusable styled button component for primary actions.
+ * Renders as a Next.js <Link> with default brand styling.
+ */
 function MainButton ({ text, linkTo, styling = "" }: MainButtonProps) {
   return (
     <Link 

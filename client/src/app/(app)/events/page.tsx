@@ -281,10 +281,10 @@ function EventsContent() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           {/* Search input field */}
           <div className="w-full md:max-w-2xl">
-          <EventSearchBar
-             searchQuery={searchQuery}
-             onChange={handleSearch}
-           />
+            <EventSearchBar
+              searchQuery={searchQuery}
+              onChange={handleSearch}
+            />
           </div>
 
           {/* Buttons for filtering and creating events */}

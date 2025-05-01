@@ -2,11 +2,21 @@
 
 import { useTheme } from '@/context/ThemeContext';
 
+/**
+ * Props for EventSearchBar component
+ * 
+ * @param searchQuery - current search input string
+ * @param onChange - callback to update search state in parent
+ */
 interface EventSearchBarProps {
   searchQuery: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+/**
+ * A themed search input for filtering event cards by name or keyword.
+ * It adapts to dark or light mode using context.
+ */
 const EventSearchBar: React.FC<EventSearchBarProps> = ({ searchQuery, onChange }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';

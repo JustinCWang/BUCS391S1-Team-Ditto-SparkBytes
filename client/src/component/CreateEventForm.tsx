@@ -1,5 +1,5 @@
 'use client';
- 
+
 import { useTheme } from '@/context/ThemeContext';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -10,12 +10,20 @@ import { X } from "lucide-react";
 
 import { motion, AnimatePresence } from 'motion/react';
 
+/**
+ * Props for CreateEventForm
+ * 
+ * @param isOpen - Whether the modal is currently visible
+ * @param onClose - Function to close the modal
+ * @param onSuccess - Optional callback fired after successful form submission
+ */
 interface CreateEventFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
 }
 
+// Structure of form data used to create an event.
 interface EventFormData {
   name: string;
   description: string;
@@ -34,16 +42,17 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
+  // Styling logic for dark vs light mode
   const inputStyle = `
-   w-full font-inter px-4 py-2 mt-2 rounded-md 
-   focus:outline-none focus:border-text-primary 
-   border ${isDark ? 'border-gray-600' : 'border-gray-300'} 
-   ${isDark ? 'text-white bg-[#1e1e1e] placeholder-gray-500' : 'text-black bg-white placeholder-gray-400'}
- `;
- 
+    w-full font-inter px-4 py-2 mt-2 rounded-md 
+    focus:outline-none focus:border-text-primary 
+    border ${isDark ? 'border-gray-600' : 'border-gray-300'} 
+    ${isDark ? 'text-white bg-[#1e1e1e] placeholder-gray-500' : 'text-black bg-white placeholder-gray-400'}
+  `;
+
   const formStyle = `${isDark ? 'text-white' : 'text-black'} font-bold font-montserrat text-base`;
 
-  // Prevents the user from scrolling
+  // Prevent background scroll when modal is open.
   useEffect(() => {
     if (isOpen) {
       // Disable scroll
@@ -82,36 +91,20 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
     }
   }, [isOpen]);
 
+  // Predefined options for dietary restrictions
   const allergenOptions = [
-    'Dairy',
-    'Tree Nuts',
-    'Pescatarian',
-    'Gluten-Free',
-    'Shellfish',
-    'Soy',
-    'Vegan',
-    'Kosher',
-    'Eggs',
-    'Peanuts',
-    'Vegetarian',
-    'Halal'
+    'Dairy', 'Tree Nuts', 'Pescatarian', 'Gluten-Free',
+    'Shellfish', 'Soy', 'Vegan', 'Kosher', 'Eggs', 
+    'Peanuts', 'Vegetarian', 'Halal'
   ];
 
+  // Valid building codes
   const LOCATION_OPTIONS = [
-    'ENG',
-    'SAR',
-    'STH',
-    'FLR',
-    'COM',
-    'GSU',
-    'MUG',
-    'CAS',
-    'MET',
-    'KHC',
-    'AGG',
-    'CDS'
+    'ENG', 'SAR', 'STH', 'FLR', 'COM', 'GSU',
+    'MUG', 'CAS', 'MET', 'KHC', 'AGG', 'CDS'
   ];
 
+  // Toggles allergen selection in the form state.
   const handleAllergenChange = (allergen: string) => {
     setFormData(prev => ({
       ...prev,
@@ -121,6 +114,10 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
     }));
   };
 
+  /**
+   * Submits the form to Supabase.
+   * First inserts food details, then creates an event linked to that food.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -176,8 +173,10 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({ isOpen, onClose, onSu
     }
   };
 
+  // Hide component entirely when not open
   if (!isOpen) return null;
 
+  // Render the animated modal form with slide and fade effects.
   return (
     <AnimatePresence>
       {isOpen && (

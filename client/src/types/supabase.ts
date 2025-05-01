@@ -1,6 +1,7 @@
 // Update your Database interface to include auth if needed
 // Then, add these types for auth functions
 
+// Credentials required for user registration
 export type SignUpCredentials = {
   email: string;
   password: string;
@@ -9,11 +10,13 @@ export type SignUpCredentials = {
   lastName: string;
 };
 
+// Credentials required for user login
 export type SignInCredentials = {
   email: string;
   password: string;
 };
 
+// Basic properties for representing an event
 export type EventBasicProps = {
   event_id?: string;
   name: string;
@@ -26,6 +29,7 @@ export type EventBasicProps = {
   organizer_id?: string;
 }
 
+// Information about food served at events (optional fields for flexibility)
 export type FoodProps = {
   food_id?: string;
   food_category?: string;
@@ -34,11 +38,13 @@ export type FoodProps = {
   quantity?: number;
 }
 
+// Like state data for event cards
 export type LikeProps = {
   like_count?: number;
   isLiked?: boolean;
 }
 
+// User profile record from the database
 export type UserRecord = {
   user_id: string;
   first_name: string;
@@ -50,5 +56,5 @@ export type UserRecord = {
   notifications?: boolean;
 };
 
-
+// Combined props used to render a full Event Card component
 export type EventCardProps = EventBasicProps & FoodProps & LikeProps;

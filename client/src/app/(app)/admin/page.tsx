@@ -25,10 +25,12 @@ export default function Admin() {
 
   const [searchName, setSearchName] = useState('');
 
+  // Filter users based on first name search
   const filteredUsers = users.filter((u) =>
     u.first_name.toLowerCase().includes(searchName.toLowerCase())
   );
 
+  // Toggle between admin and student roles for a given user
   const toggleAdmin = async (userId: string, currentRole: string) => {
     setIsUpdating(userId);
     const newRole = currentRole === 'admin' ? 'student' : 'admin';
@@ -41,12 +43,14 @@ export default function Admin() {
     if (error) {
       console.error('Failed to update role:', error.message);
     } else {
+      // Update local state with new role
       setUsers((prev) =>
         prev.map((u) =>
           u.user_id === userId ? { ...u, role: newRole } : u
         )
       );
 
+      // If current user demoted themselves, update their role state
       if (userId === user?.id) {
         const { data, error } = await userRole(user.id);
         if (!error) {
@@ -59,6 +63,7 @@ export default function Admin() {
     setIsUpdating(null);
   };  
 
+  // Fetch current user's role when component mounts
   useEffect(() => {
     const fetchRole = async () => {
       if (user) {
@@ -78,6 +83,7 @@ export default function Admin() {
     }
   }, [user, router]);
 
+  // Redirect if user is not admin, otherwise fetch all users
   useEffect(() => {
     if (role && role !== "admin") {
       router.push('/dashboard');
@@ -97,6 +103,8 @@ export default function Admin() {
   return (
     <div className="my-6">
       <div className="w-full max-w-6xl mx-auto">
+
+        {/* Title */}
         <h1 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">
           Admin Dashboard
         </h1>
@@ -104,6 +112,7 @@ export default function Admin() {
           Edit users status
         </p>
 
+        {/* Search bar */}
         <div className="flex justify-end mt-6">
           <input
             type="text"
@@ -118,6 +127,7 @@ export default function Admin() {
           />
         </div>
 
+        {/* Conditional loading spinner or user table */}
         {loading ? (
           <div className="w-full flex justify-center items-center h-[50vh]">
             <Loader className="animate-spin text-brand-primary" size={40} style={{ animationDuration: '3s' }} />

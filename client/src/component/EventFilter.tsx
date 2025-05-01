@@ -4,12 +4,20 @@ import React, {useEffect} from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import { motion, AnimatePresence } from 'motion/react';
 
+/**
+ * Props for EventFilter modal
+ * 
+ * @param isOpen - controls modal visibility
+ * @param onClose - closes the modal
+ * @param onApply - callback triggered with current filter state
+ */
 interface FilterProps {
   isOpen: boolean;
   onClose: () => void;
   onApply: (filters: FilterState) => void;
 }
 
+// Filter criteria state
 export interface FilterState {
   date: 'any' | 'today' | 'this_week';
   location: 'ENG' | 'SAR' | 'STH' | 'FLR' | 'COM' | 'GSU' | 'MUG' | 'CAS' | 'MET' | 'KHC' | 'AGG' | '';
@@ -29,6 +37,7 @@ export interface FilterState {
   };
 }
 
+// Dropdown options for building codes
 const LOCATION_OPTIONS = [
   { value: 'ENG', label: 'ENG - Engineering' },
   { value: 'SAR', label: 'SAR - Sargent College' },
@@ -65,6 +74,7 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
     };
   }, [isOpen]);
 
+  // Local state to manage filter selections
   const [filters, setFilters] = React.useState<FilterState>({
     date: 'any',
     location: '',
@@ -86,6 +96,7 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
 
   if (!isOpen) return null;
 
+  // Close the modal and apply filters
   const handleApply = () => {
     onApply(filters);
     onClose();
@@ -114,6 +125,7 @@ const EventFilter: React.FC<FilterProps> = ({ isOpen, onClose, onApply }) => {
               isDark ? 'bg-[#222224] text-white' : 'bg-white text-black'
             }`}          
           >
+            {/* Modal Header */}
             <h2 className="text-text-primary font-bold font-montserrat text-2xl lg:text-3xl">Filter Events</h2>
             <p className="text-text-primary font-inter text-xs lg:text-base mb-6">
               Set filters to find events that match your preferences.

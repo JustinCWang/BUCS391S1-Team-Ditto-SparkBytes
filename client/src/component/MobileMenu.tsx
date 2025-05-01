@@ -6,6 +6,15 @@ import Link from 'next/link';
 import { Bell, CalendarClock, CircleUser, House, LayoutDashboard, MapPinCheck } from 'lucide-react';
 import Image from 'next/image';
 
+/**
+ * Props for the MobileMenu component
+ * 
+ * @param onClose - function to close the mobile menu
+ * @param onLogout - function to trigger user logout
+ * @param onResetNotifications - resets notification state (optional logic)
+ * @param avatarUrl - URL of the user's avatar (if set)
+ * @param role - current user role (e.g., 'admin' to show admin tab)
+ */
 interface MobileMenuProps {
   onClose: () => void;
   onLogout: () => void;
@@ -14,6 +23,11 @@ interface MobileMenuProps {
   role: string;
 }
 
+/**
+ * THIS NAVIGATION IS USED FOR THE MAIN APPLICATION
+ * Responsive mobile navigation component with theme-aware styling,
+ * animated slide-in effect, user role-based routes, and logout/reset actions.
+ */
 const MobileMenu: React.FC<MobileMenuProps> = ({
   onClose,
   onLogout,
@@ -35,7 +49,11 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
         isDark ? 'bg-[#222224] text-white' : 'bg-white text-text-primary'
       }`}
     >
+
+      {/* Menu content container */}
       <div className="flex flex-col items-center justify-center gap-4">
+
+          {/* Home */}
           <Link
             href="/dashboard"
             onClick={onClose}
@@ -45,6 +63,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             Home
           </Link>
 
+          {/* Events */}
           <Link
             href="/events"
             onClick={onClose}
@@ -54,6 +73,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             Events
           </Link>
 
+          {/* Map */}
           <Link href="/map" 
             onClick={onClose}
             className="text-xl font-poppins font-semibold flex justify-center items-center"
@@ -62,6 +82,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             Map
           </Link>
 
+          {/* Admin (conditional on role) */}
           {role === 'admin' && 
             <Link href="/admin" 
               onClick={onClose}
@@ -72,6 +93,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             </Link>
           }
 
+          {/* Notifications reset */}
           <button
             onClick={() => {
               onResetNotifications();
@@ -83,6 +105,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             Notifications
           </button>
 
+          {/* Profile (shows avatar if available) */}
           <Link
             href="/profile"
             onClick={onClose}
@@ -109,7 +132,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             )}
             Profile
           </Link>
-
+        
+        {/* Logout */}
         <button
           onClick={onLogout}
           className="bg-brand-primary text-white font-poppins font-black py-2 px-6 rounded-md hover:bg-hover-primary"

@@ -6,10 +6,20 @@ import Link from 'next/link';
 import SecondaryButton from './secondaryButton';
 import MainButton from './primaryButton';
 
+/**
+ * Props for FirstMenu component
+ * 
+ * @param onClose - function to close the mobile menu (e.g., when a link is clicked)
+ */
 interface FirstMenuProps {
   onClose: () => void;
 }
 
+/**
+ * Mobile navigation menu displayed on smaller screens.
+ * Includes animated fade/slide-in transition, theming support,
+ * and basic navigation + auth action buttons.
+ */
 const FirstMenu: React.FC<FirstMenuProps> = ({ onClose }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -28,6 +38,8 @@ const FirstMenu: React.FC<FirstMenuProps> = ({ onClose }) => {
         isDark ? 'bg-[#222224] text-white' : 'bg-white text-black'
       }`}
     >
+      
+      {/* Menu content container */}
       <motion.div className="flex flex-col items-center justify-center gap-4">
         <Link
           href="/about"

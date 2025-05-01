@@ -1,3 +1,4 @@
+// Define the shape of the text to span
 interface TextToSpanProps {
   text: string
   splitBySpace: boolean

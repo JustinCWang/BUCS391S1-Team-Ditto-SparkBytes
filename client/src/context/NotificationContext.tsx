@@ -6,6 +6,7 @@ import { useAuth } from './AuthContext';
 import { usePathname } from 'next/navigation';
 import { getCurrentDateInBostonTZ } from '@/lib/utils';
 
+// Shape of a single notification object
 interface Notification {
   id: string;
   message: string;
@@ -14,6 +15,7 @@ interface Notification {
   eventId?: string;
 }
 
+// Shape of context value provided to consuming components
 interface NotificationContextType {
   currentNotification: Notification | null;
   addNotification: (message: string, type: Notification['type'], eventId?: string) => void;
@@ -21,11 +23,15 @@ interface NotificationContextType {
   clearShownEvents: () => void;
 }
 
+// Create the notification context
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
+// Context provider that wraps around the app
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentNotification, setCurrentNotification] = useState<Notification | null>(null);
   const [notificationQueue, setNotificationQueue] = useState<Notification[]>([]);
+  
+  // Track eventIds we've already notified the user about
   const [shownEventIds, setShownEventIds] = useState<Set<string>>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('shownEventIds');
@@ -43,6 +49,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   }, [shownEventIds]);
 
+  /**
+   * Adds a notification to the queue (with preference & duplicate checks)
+   */
   const addNotification = useCallback(async (message: string, type: Notification['type'], eventId?: string) => {
     if (!userSession || pathname === '/') {
       console.log('[Notification] Skipping notification - user not logged in or on landing page');
@@ -95,6 +104,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setNotificationQueue(prev => [...prev, newNotification]);
   }, [userSession, pathname, shownEventIds, user?.id]);
 
+  /**
+   * Removes the current notification and displays the next one in the queue
+   */
   const removeNotification = useCallback((id: string) => {
     console.log(`[Notification] Removing notification with ID: ${id}`);
     
@@ -235,6 +247,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return () => clearInterval(interval);
   }, [user, userSession, addNotification, pathname]);
 
+  /**
+   * Clear all previously shown event notifications
+   */
   const clearShownEvents = useCallback(() => {
     setShownEventIds(new Set());
   }, []);
@@ -246,6 +261,10 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   );
 };
 
+/**
+ * Custom hook to access notification context
+ * Ensures use within a valid provider
+ */
 export const useNotifications = () => {
   const context = useContext(NotificationContext);
   if (context === undefined) {

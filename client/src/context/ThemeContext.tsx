@@ -2,15 +2,19 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 
+// Allowed theme values
 type Theme = 'light' | 'dark';
 
+// Shape of the theme context
 type ThemeContextType = {
   theme: Theme;
   toggleTheme: () => void;
 };
 
+// Create the ThemeContext
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+// Provider component that wraps the app and manages theme state
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState<Theme>('light');
 
@@ -22,6 +26,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     const initial = stored ?? (prefersDark ? 'dark' : 'light');
     setTheme(initial);
 
+    // Apply the initial theme to the <html> element
     if (initial === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
@@ -39,6 +44,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+  // Toggle between light and dark mode
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
@@ -50,6 +56,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// Custom hook for using the theme context
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {

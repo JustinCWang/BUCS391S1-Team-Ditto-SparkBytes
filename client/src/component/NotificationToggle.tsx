@@ -6,12 +6,26 @@ import { useAuth } from '@/context/AuthContext';
 import { useNotifications } from '@/context/NotificationContext';
 import { Loader, Trash2 } from 'lucide-react';
 
+
+/**
+ * Allows users to toggle event notifications on/off and clear shown notifications.
+ * Syncs the setting with the Supabase `Users` table and handles local state/UI.
+ */
 const NotificationToggle = () => {
   const { user } = useAuth();
   const { clearShownEvents } = useNotifications();
+
+  // Whether notifications are enabled (synced with DB)
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
+  // Loading state for fetch and update operations
   const [loading, setLoading] = useState(true);
 
+
+  /**
+   * On component mount or when `user` changes,
+   * fetch the user's current notification preference from Supabase.
+   */
   useEffect(() => {
     const fetchNotificationPreference = async () => {
       if (!user) return;
@@ -35,6 +49,9 @@ const NotificationToggle = () => {
     fetchNotificationPreference();
   }, [user]);
 
+  /**
+   * Toggle notificationsEnabled state and update Supabase
+   */
   const handleToggle = async () => {
     if (!user) return;
 
@@ -54,18 +71,24 @@ const NotificationToggle = () => {
     }
   };
 
+  /**
+   * Clears localStorage and resets shown notification events
+   */
   const clearNotificationHistory = () => {
     localStorage.removeItem('shownEventIds');
     clearShownEvents();
     console.log('[Notification] Cleared notification history');
   };
 
+  // Show a spinner while loading user preference
   if (loading) {
     return <Loader className="animate-spin" size={20} />;
   }
 
   return (
     <div className="flex items-center gap-4">
+
+      {/* Toggle button */}
       <button
         onClick={handleToggle}
         className={`w-12 h-6 rounded-full transition-colors duration-200 ${
@@ -78,6 +101,8 @@ const NotificationToggle = () => {
           }`}
         />
       </button>
+
+      {/* Clear local notification history button (for testing/dev) */}
       <button
         onClick={clearNotificationHistory}
         className="text-red-500 hover:text-red-700 transition-colors"

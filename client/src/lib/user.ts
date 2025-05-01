@@ -1,5 +1,6 @@
 import { supabase } from "./supabase";
 
+// Update a user's first and last name in the Users table
 export const updateUserName = async (userId: string, firstName: string, lastName: string) => {
   const { error } = await supabase
     .from('Users')
@@ -9,6 +10,7 @@ export const updateUserName = async (userId: string, firstName: string, lastName
   return { error };
 };
 
+// Update a user's email address
 export const updateEmail = async (email: string, password: string, newEmail: string) => {
   // Step 1: Reauthenticate to see if the password is valid for the current user
   const { error: loginError } = await supabase.auth.signInWithPassword({
@@ -24,6 +26,7 @@ export const updateEmail = async (email: string, password: string, newEmail: str
   return { data, error };
 };
 
+// Update a user's password
 export const updatePassword = async ( email: string, currentPassword: string, newPassword: string) => {
   // Step 1: Re-authenticate the user
   const { error: authError } = await supabase.auth.signInWithPassword({
@@ -43,7 +46,10 @@ export const updatePassword = async ( email: string, currentPassword: string, ne
   return { error: updateError };
 };
 
+// Fetch the role of a specific user
 export const userRole = async ( userId:string ) => {
+
+  console.log(userId)
   const { data, error } = await supabase
   .from('Users')
   .select('role')
@@ -57,6 +63,7 @@ export const userRole = async ( userId:string ) => {
   return { data };
 }
 
+// Fetch all user records from the Users table
 export const fetchAllUsers = async () => {
   const { data, error } = await supabase
     .from('Users')

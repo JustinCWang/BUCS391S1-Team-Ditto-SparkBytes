@@ -1,5 +1,6 @@
 'use client';
 
+// Core components and layout
 import FooterSection from '@/component/footer';
 import MainButton from '@/component/primaryButton';
 import SecondaryButton from '@/component/secondaryButton';
@@ -12,6 +13,11 @@ import TextFade from '@/component/animations/TextFade';
 import TextToSpan from '@/component/animations/TextToSpan';
 import AnimatedCounter from '@/component/animations/AnimateCounter';
 
+
+/**
+ * Main landing layout that renders the full-page structure
+ * consisting of header, sections, and footer.
+ */
 export default function LandingPage() {
   return (
     <main className="flex flex-col min-h-screen">
@@ -29,6 +35,10 @@ export default function LandingPage() {
  * Split the website into different sections
  */
 
+/**
+ * HeaderSection
+ * Renders the hero section with animated text and call-to-action button.
+ */
 function HeaderSection() {
   return (
     <header
@@ -48,6 +58,8 @@ function HeaderSection() {
 
       {/* Blur Circle 2 */}
       <div className="absolute bottom-0 right-0 w-[200px] lg:w-[600px] h-[500px] bg-brand-primary/20 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2"></div>
+
+      {/* Hero text with split animation */}
       <TextFade>
         <h1 className="text-text-primary font-bold font-montserrat text-5xl lg:text-7xl mb-0 sm:mb-4">
           <TextToSpan text='Free Food.' splitBySpace={true}/>
@@ -60,6 +72,7 @@ function HeaderSection() {
         </p>
       </TextFade>
       
+      {/* CTA Button */}
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -79,6 +92,10 @@ function HeaderSection() {
   );
 }
 
+/**
+ * SectionOne
+ * Explains how Spark Bytes works with a 3-step card layout.
+ */
 function SectionOne() {
   const containerVariants = {
     hidden: {},
@@ -146,6 +163,10 @@ function SectionOne() {
   );
 }
 
+/**
+ * SectionTwo
+ * Highlights Spark Bytes' sustainability mission and includes CTA buttons.
+ */
 function SectionTwo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.4 });
@@ -180,6 +201,8 @@ function SectionTwo() {
             waste from events while helping students access free meals.' splitBySpace={true}/>
           </p>
         </TextFade>
+
+        {/* Buttons: Meet Team & Sign Up */}
         <motion.div
           ref={containerRef}
           variants={containerVariants}
@@ -195,6 +218,10 @@ function SectionTwo() {
   );
 }
 
+/**
+ * SectionThree
+ * Displays animated statistics showcasing the impact of Spark Bytes.
+ */
 function SectionThree() {
   return (
     <section className="px-4 py-32 text-center">

@@ -27,6 +27,7 @@ const CustomHeader = () => {
 
   const [role, setRole] = useState<string>("");
 
+  // Logout handler
   const handleLogout = async () => {
     const { error } = await Logout();
     if (!error) {
@@ -34,6 +35,7 @@ const CustomHeader = () => {
     }
   };
 
+  // Reset notifications (also clears localStorage)
   const handleResetNotifications = () => {
     localStorage.removeItem('shownEventIds');
     clearShownEvents();
@@ -42,6 +44,7 @@ const CustomHeader = () => {
 
   const pathname = usePathname();
 
+  // Fetch user role once user is available or pathname changes
   useEffect(() => {
     const fetchRole = async () => {
       if (user) {
@@ -54,29 +57,17 @@ const CustomHeader = () => {
     fetchRole();
   }, [user, pathname]);
 
+  // Prevent scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = openMenu ? "hidden" : "auto";
   }, [openMenu]);
-
-  useEffect(() => {
-    const fetchRole = async () => {
-      if (user) {
-        const { data, error } = await userRole(user.id);
-        if (error) {
-          console.error("Error fetching role:", error.message);
-        } else {
-          setRole(data.role)
-        }
-      }
-    };
-  
-    fetchRole();
-  }, [user])
 
   return (
     <nav className="w-full px-4 py-4 border-b border-gray-200">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         <div className="flex justify-center items-center gap-6">
+
+          {/* Logo & Desktop Nav Links */}
           <Link
             href="/dashboard"
             className="text-sm sm:text-3xl font-poppins font-semibold text-text-primary mr-4 z-20"
@@ -106,6 +97,7 @@ const CustomHeader = () => {
           </div>
         </div>
 
+        {/* User Dropdown + Notification (Desktop Only) */}
         <div className="hidden md:flex items-center gap-4 relative">
           {/* New reset notifications button */}
           <button
@@ -116,8 +108,10 @@ const CustomHeader = () => {
             <Bell size={24} />
           </button>
 
+          {/* Divider */}
           <div className="h-full bg-gray-300 w-0.5 py-6"></div>
           
+          {/* Avatar + Dropdown */}
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className={`flex justify-center items-center transition-colors duration-300`}
@@ -138,6 +132,7 @@ const CustomHeader = () => {
             {dropdownOpen ? <ChevronUp className={`${isDark ? 'text-white' : 'text-text-primary'}`}/> : <ChevronDown className={`${isDark ? 'text-white' : 'text-text-primary'}`}/>}
           </button>
 
+          {/* Dropdown Menu */}
           <div
             className={`absolute right-0 top-16 border-text-primary border-1 shadow-lg rounded-lg p-2 z-30 w-40 transition-all duration-300 ease-in-out transform ${
               dropdownOpen
@@ -180,7 +175,7 @@ const CustomHeader = () => {
           </div>
         </div>
 
-        {/* Mobile Menu Icon */}
+        {/* Mobile Menu Toggle */}
         <button
           onClick={() => setMenu(!openMenu)}
           className="z-[70] flex flex-col h-8 w-8 justify-center items-center relative overflow-hidden md:hidden"
@@ -192,17 +187,17 @@ const CustomHeader = () => {
         </button>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Nav Overlay */}
       <AnimatePresence>
-      {openMenu && (
-      <MobileMenu
-      onClose={() => setMenu(false)}
-      onLogout={handleLogout}
-      onResetNotifications={handleResetNotifications}
-      avatarUrl={avatarUrl}
-      role={role}
-    />
-  )}
+        {openMenu && (
+          <MobileMenu
+            onClose={() => setMenu(false)}
+            onLogout={handleLogout}
+            onResetNotifications={handleResetNotifications}
+            avatarUrl={avatarUrl}
+            role={role}
+          />
+        )}
       </AnimatePresence>
     </nav>
   );

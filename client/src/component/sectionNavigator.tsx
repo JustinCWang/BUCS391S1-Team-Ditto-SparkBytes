@@ -6,11 +6,24 @@ import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
 import { userRole } from '@/lib/user';
 
+
+/**
+ * A slide-out floating sidebar that allows users to quickly navigate
+ * to key sections of the events page, such as "Upcoming Events",
+ * "Liked Events", and "My Events" (for admins).
+ */
 const SectionNavigator = () => {
+  // Sidebar open/close state
   const [isOpen, setIsOpen] = useState(false);
+
+   // Theming context
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+
+  // Auth context to get current user
   const { user } = useAuth();
+
+  // Role state (used to determine what sections to show)
   const [role, setRole] = useState<string>("");
   
   // Fetch user role on component mount

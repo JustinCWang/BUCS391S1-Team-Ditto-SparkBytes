@@ -12,6 +12,15 @@ import { useTheme } from '@/context/ThemeContext';
 
 import { motion, AnimatePresence } from 'motion/react';
 
+/**
+ * Props passed to EditEventForm component
+ * 
+ * @param isOpen - whether the modal is currently visible
+ * @param onClose - closes the modal
+ * @param onSuccess - optional callback after successful update/delete
+ * @param eventData - prefilled event data for editing
+ * @param onEventUpdated - optional callback after the event is updated
+ */
 interface EditEventFormProps {
   isOpen: boolean;
   onClose: () => void;
@@ -20,6 +29,7 @@ interface EditEventFormProps {
   onEventUpdated?: () => void;
 }
 
+// Local state structure for editing an event
 interface EventFormData {
   name: string;
   description: string;
@@ -40,6 +50,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
+  // Input and label styles adjusted by theme
   const inputStyle = `w-full font-inter px-4 py-2 mt-2 rounded-md 
   focus:outline-none focus:border-text-primary 
   border ${isDark ? 'border-gray-600' : 'border-gray-300'} 
@@ -64,6 +75,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
     };
   }, [isOpen]);
 
+  // Local state for editing form
   const [formData, setFormData] = useState<EventFormData>({
     name: '',
     description: '',
@@ -135,6 +147,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
     'CDS'
   ];
 
+  // Toggles an allergen in the form state
   const handleAllergenChange = (allergen: string) => {
     setFormData(prev => {
       const newAllergens = prev.allergens.includes(allergen)
@@ -148,6 +161,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
     });
   };
 
+  // Submit updated data to Supabase
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !formData.event_id || !formData.food_id) return;
@@ -203,6 +217,7 @@ const EditEventForm: React.FC<EditEventFormProps> = ({ isOpen, onClose, onSucces
     }
   };
 
+  // Delete the event and associated food item
   const handleDelete = async () => {
     if (!user || !formData.event_id || !formData.food_id) return;
 
