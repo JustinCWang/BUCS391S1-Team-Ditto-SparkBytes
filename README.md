@@ -45,6 +45,11 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="your anon key"
 NEXT_PUBLIC_MAPS_API_KEY="your google map API Key"
 ```
 
+### Setting up Supabase Database & Test data
+
+To set up your Supabase database for this project, please refer to the schema in the [documentation](../Documentation.pdf). To set up the test data, please refer to the [README](../testdata/README.md)
+
+
 ### Development Server
 
 Then you can start your devlopment server!
