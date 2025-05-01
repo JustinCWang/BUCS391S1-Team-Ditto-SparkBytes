@@ -29,10 +29,14 @@ const getCurrentDateInBostonTZ = () => {
 const Dashboard = () => {
   const router = useRouter();
   const { user } = useAuth();
+
+  // Core state for role and data collections
   const [role, setRole] = useState<string>(""); // Add role state
   const [upcomingEvents, setUpcomingEvents] = useState<EventCardProps[]>([]);
   const [likedEvents, setLikedEvents] = useState<EventCardProps[]>([]);
   const [myEvents, setMyEvents] = useState<EventCardProps[]>([]);
+
+  // Loading and pagination states
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingLiked, setIsLoadingLiked] = useState(true);
   const [isLoadingMyEvents, setIsLoadingMyEvents] = useState(true);
@@ -43,7 +47,7 @@ const Dashboard = () => {
   const LIKED_ITEMS_PER_PAGE = 6; // Number of events per page for liked events
   const MY_EVENTS_ITEMS_PER_PAGE = 6; // Number of events per page for my events
 
-  // Add useEffect to fetch user role
+  // Fetch the user's role once authenticated
   useEffect(() => {
     const fetchRole = async () => {
       if (user) {
@@ -63,7 +67,7 @@ const Dashboard = () => {
     }
   }, [user, router]);
 
-  // Fetch upcoming events from the database with pagination and like count
+  // Fetch the 3 closest upcoming events
   const fetchUpcomingEvents = useCallback(async () => {
     setIsLoading(true);
     try {

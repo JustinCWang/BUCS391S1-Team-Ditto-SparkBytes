@@ -48,6 +48,8 @@ export const updatePassword = async ( email: string, currentPassword: string, ne
 
 // Fetch the role of a specific user
 export const userRole = async ( userId:string ) => {
+
+  console.log(userId)
   const { data, error } = await supabase
   .from('Users')
   .select('role')

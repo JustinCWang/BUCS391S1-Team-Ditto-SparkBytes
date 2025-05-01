@@ -3,8 +3,10 @@ import React from 'react';
 import { APIProvider, Map } from '@vis.gl/react-google-maps';
 import { CustomMarker } from '@/component/custom-advanced-marker/custom-advanced-marker';
 
+// Load the Google Maps API key from the environment variable
 const API_KEY = process.env.NEXT_PUBLIC_MAPS_API_KEY!;
 
+// Static list of BU campus buildings with location, image, and description
 const STATIC_LISTINGS = [
     {
       id: '1',
@@ -128,9 +130,10 @@ const STATIC_LISTINGS = [
     },
   ];
   
-
+// Component that renders the interactive Google Map
 export default function MapPage() {
   return (
+    // Container that takes up the full viewport height and width
     <div style={{ width: '100%', height: '100vh' }}>
       <APIProvider apiKey={API_KEY} libraries={['marker']}>
         <Map

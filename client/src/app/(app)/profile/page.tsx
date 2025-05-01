@@ -16,7 +16,10 @@ import '@ant-design/v5-patch-for-react-19';
 const Profile = () => {
   const router = useRouter();
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme(); 
+  const isDark = theme === 'dark';  
 
+  // States for user name
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [originalFirstName, setOriginalFirstName] = useState('');
@@ -24,6 +27,7 @@ const Profile = () => {
   const [nameError, setNameError] = useState(false);
   const [loadingName, setNameLoading] = useState(false);
 
+  // States for email
   const [email, setEmail] = useState('');
   const [emailCurrentPass, setEmailPass] = useState('');
   const [emailLoading, setEmailLoading] = useState(false);
@@ -32,6 +36,7 @@ const Profile = () => {
   const [invalidEmailDomain, setInvalidEmailDomain] = useState(false);
   const [noEmail, setNoEmail] = useState(false);
 
+  // States for password change
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -41,10 +46,8 @@ const Profile = () => {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordTooShort, setPasswordTooShort] = useState(false);
   const [samePassword, setSamePassword] = useState(false);
-  const { theme, toggleTheme } = useTheme(); 
-  const isDark = theme === 'dark';  
 
-
+  // Redirect unauthorized user or fetch profile data if authorized
   useEffect(() => {
     if (!user) {
       router.push('/');
@@ -72,8 +75,14 @@ const Profile = () => {
 
   }, [router, user]);
 
-  // Start of save name section 
+  // ---------------- NAME UPDATE ----------------
 
+  /**
+   * Updates the user's first and last name in the database.
+   * - Prevents saving if the fields are empty or unchanged.
+   * - Uses Supabase to persist the changes.
+   * - Displays a success or error message via Ant Design.
+   */
   const handleSaveName = async () => {
     if (!user) return;
 
@@ -109,16 +118,24 @@ const Profile = () => {
     }
   };
 
+  /**
+   * Clears the first and last name fields and resets name error state.
+   * Typically used when the user clicks "Cancel" on the name form.
+   */
   const handleSaveNameClear = () => {
     setFirstName('');
     setLastName('');
     setNameError(false);
   }
 
-  // End of save name section 
+  // ---------------- EMAIL UPDATE ----------------
 
-  // Start of email change
-
+  /**
+   * Attempts to update the user's email address using Supabase.
+   * - Validates the input and checks if the user entered their current password.
+   * - Handles errors like duplicate email, empty input, or incorrect password.
+   * - Triggers a confirmation email to the new address if successful.
+   */
   const handleUpdateEmail = async () => {
     if (!user) return;
   
@@ -175,6 +192,10 @@ const Profile = () => {
     setEmailLoading(false);
   };
 
+  /**
+   * Resets all email-related input fields and error states.
+   * Called when the user cancels the email change form.
+   */
   const handleEmailClear = () => {
     setEmail('');
     setEmailPass('');
@@ -184,10 +205,14 @@ const Profile = () => {
     setNoEmail(false);
   }
 
-  // End of the email change
+  // ---------------- PASSWORD CHANGE ----------------
 
-  // Start of password change 
-
+  /**
+   * Updates the user's password through Supabase authentication.
+   * - Validates input: checks for empty, short, mismatched, or reused passwords.
+   * - Displays relevant error messages for each case.
+   * - On success, clears all password fields and shows a success message.
+   */
   const handleChangePassword = async () => {
     if (!user) return;
   
@@ -242,6 +267,10 @@ const Profile = () => {
     setPasswordLoading(false);
   };
 
+  /**
+   * Clears all password input fields and related error messages.
+   * Called when the user clicks "Cancel" on the password change form.
+   */
   const handlePasswordClear = () => {
     setOldPassword('');
     setNewPassword('');
@@ -253,7 +282,7 @@ const Profile = () => {
     setSamePassword(false);
   }
 
-  // End of password change
+  // ---------------- UI RENDER ----------------
 
   return (
     <div className='my-6 w-full max-w-6xl mx-auto'>
