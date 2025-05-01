@@ -6,8 +6,9 @@ Before using the test data, please ensure that you have set up a supabase accoun
 
 1. Enter your Supabase project and click on Table Editor and click new Table
 2. Recreate the tables following the database schema in the [Documentation](../Documentation.pdf)
-3. Upload the CSV data files in the following orders to respect foreign keys: Users_rows.csv --> Food_rows.csv --> Events_rows.csv --> Liked_events.csv
-4. You are all set!
+3. Implement the Row Level Security (RLS) for each of the tables as documented in the [Documentation](../Documentation.pdf)
+4. Upload the CSV data files in the following orders to respect foreign keys: Users_rows.csv --> Food_rows.csv --> Events_rows.csv --> Liked_events.csv
+5. You are all set!
 
 ## Test Accounts (User & Admins)
 
