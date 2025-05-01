@@ -6,6 +6,11 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { Loader } from 'lucide-react';
 
+/**
+ * Allows users to upload a new profile picture using react-dropzone.
+ * Handles upload to Supabase Storage, updates the avatar path in the DB,
+ * and sets the new avatar URL in global auth context.
+ */
 const ProfilePictureUpload: React.FC = () => {
   const { user, avatarUrl, setAvatarUrl } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

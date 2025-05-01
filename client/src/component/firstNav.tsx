@@ -9,7 +9,12 @@ import FirstMenu from './FirstMenu';
 
 import { AnimatePresence } from "motion/react";
 
+/**
+ * Responsive navigation bar component for both desktop and mobile.
+ * Includes logo, links, login/signup buttons, and a mobile menu toggle.
+ */
 function FirstNav() {
+  // State to control mobile menu visibility
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Prevent background scroll when menu is open
@@ -20,7 +25,8 @@ function FirstNav() {
   return (
     <nav className="w-full px-4 py-4 border-b border-gray-200">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
-        {/* Logo */}
+        
+        {/* Logo Section */}
         <Link
           href="/"
           className="text-sm sm:text-3xl font-poppins font-semibold text-text-primary mr-4 z-20"
@@ -63,8 +69,8 @@ function FirstNav() {
       {/* Fullscreen Mobile Menu */}
       <AnimatePresence>
       {menuOpen && (
-         <FirstMenu onClose={() => setMenuOpen(false)} />
-       )}
+        <FirstMenu onClose={() => setMenuOpen(false)} />
+      )}
       </AnimatePresence>
     </nav>
   );

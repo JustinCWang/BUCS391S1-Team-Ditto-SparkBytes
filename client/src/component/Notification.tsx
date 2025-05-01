@@ -6,11 +6,17 @@ import { X } from 'lucide-react';
 import { useNotifications } from '@/context/NotificationContext';
 import { useTheme } from '@/context/ThemeContext'; 
 
+/**
+ * Displays animated toast-style alerts for the user.
+ * Messages auto-dismiss after 5 seconds or can be dismissed manually.
+ * Supports theming and alert types (info, success, warning, error).
+ */
 const Notification = () => {
   const { currentNotification, removeNotification } = useNotifications();
   const { theme } = useTheme(); 
   const isDark = theme === 'dark';
 
+  // Returns appropriate styles based on notification type and current theme.
   const getNotificationClasses = () => {
     const base = 'p-4 rounded-lg shadow-lg max-w-sm border';
 
@@ -42,6 +48,7 @@ const Notification = () => {
       : `${base} bg-red-100 border-red-500 text-red-800`;
   };
 
+  // Auto-dismiss the notification after 5 seconds
   useEffect(() => {
     if(currentNotification) {
       setTimeout(() => removeNotification(currentNotification.id), 5000)
@@ -60,7 +67,11 @@ const Notification = () => {
             className={getNotificationClasses()}
           >
             <div className="flex justify-between items-start">
+
+              {/* Notification message */}
               <p className="text-sm whitespace-pre-line">{currentNotification.message}</p>
+
+              {/* Close button */}
               <button
                 onClick={() => removeNotification(currentNotification.id)}
                 className="ml-4 text-gray-500 hover:text-gray-700"

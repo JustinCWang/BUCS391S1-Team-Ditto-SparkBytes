@@ -8,13 +8,23 @@ import { motion, AnimatePresence } from "motion/react";
 import { useTheme } from '@/context/ThemeContext';
 import Share from './shareOption';
 
-
+/**
+ * Props for the DetailedEventCard component.
+ * Combines event, food, like, and modal visibility props.
+ */
 interface DetailedEventCardProps extends EventCardProps {
   isOpen: boolean;
   onClose: () => void;
   onEventUpdated?: () => void;
 }
 
+/**
+ * Displays a modal view of a single event with:
+ * - Event + food details
+ * - Like/unlike functionality
+ * - Edit button for event organizers
+ * - Share modal for copying event links
+ */
 function DetailedEventCard({
   // Event basic info
   event_id,

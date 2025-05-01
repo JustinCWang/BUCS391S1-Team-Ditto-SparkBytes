@@ -12,6 +12,14 @@ import { useTheme } from '@/context/ThemeContext';
 import { isEventCurrentlyHappening } from '@/lib/utils';
 import Share from './shareOption';
 
+/**
+ * Displays a compact card with summary of an event.
+ * Supports:
+ * - Liking/unliking the event
+ * - Opening a detailed modal
+ * - Editing (if the current user is the organizer)
+ * - Sharing via modal
+ */
 function EventCard({
   // Event basic info
   event_id,
