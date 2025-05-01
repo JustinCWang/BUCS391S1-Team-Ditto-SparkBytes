@@ -3,15 +3,23 @@ import FirstNav from "@/component/firstNav";
 import FooterSection from "@/component/footer";
 import AboutMe from "@/component/aboutMe";
 
-// Define the About component
+/**
+ * Displays an introduction to the team behind the project.
+ */
 const About = () => {
   return (
     <main className="flex flex-col min-h-screen">
+
+      {/* Top navigation */}
       <FirstNav />
+
+      {/* Team Section */}
       <section className="my-20 mx-4">
         <div>
           <h2 className="text-text-primary text-4xl lg:text-6xl font-montserrat font-bold mb-8 text-center">Meet the Team!</h2>
         </div>
+
+        {/* Team member cards in responsive grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 justify-center items-center max-w-6xl mx-auto">
           
           <AboutMe 
@@ -43,6 +51,8 @@ const About = () => {
           />
         </div>
       </section>
+
+      {/* Footer */}
       <FooterSection />
     </main>
   );

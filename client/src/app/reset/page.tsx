@@ -77,24 +77,27 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div className={`flex items-center justify-center min-h-screen px-4 ${
-        isDark ? 'bg-[#222224]' : 'bg-gray-50'
-      }`}>
+    <div className={`flex items-center justify-center min-h-screen px-4 ${isDark ? 'bg-[#222224]' : 'bg-gray-50'}`}>
       <div className="w-full max-w-sm">
-        <h2 className={`text-3xl font-bold font-montserrat mb-6 ${
-        isDark ? 'text-white' : 'text-text-primary'
-        }`}>Reset Your Password</h2>
+        <h2 className={`text-3xl font-bold font-montserrat mb-6 ${isDark ? 'text-white' : 'text-text-primary'}`}>
+          Reset Your Password
+        </h2>
+
+        {/* Form to reset password */}
         <form
           onSubmit={async (e) => {
             e.preventDefault();
             await confirmPasswords();
           }}
         >
+          {/* General error */}
           {onError && (
             <p className="font-inter italic text-sm text-red-500 mb-1">
               An error occurred while resetting your password.
             </p>
           )}
+
+          {/* New Password Field */}
           <div className="relative mb-6">
             <input
               type={showPassword ? 'text' : 'password'}
@@ -115,12 +118,15 @@ const ResetPasswordPage = () => {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </div>
           </div>
+
           {/* Display error message if the password is too short */}
           {passwordTooShort && (
             <p className="font-inter italic text-sm text-red-500 mb-1">
               Password must be at least 8 characters long.
             </p>
           )}
+
+          {/* Confirm Password Field */}
           <div className="relative mb-6">
             <input
               type={showPassword ? 'text' : 'password'}
@@ -141,6 +147,8 @@ const ResetPasswordPage = () => {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </div>
           </div>
+
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}

@@ -25,19 +25,19 @@ const LoginPage = () => {
   const [resetPassword, setResetPassword] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
 
+  // Theme and user context
   const { user } = useAuth();
-
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
+  // Redirect logged-in user to dashboard
   useEffect(() => {
-    // Redirect to dashboard if the user is already logged in
     if (user) {
       router.push('/dashboard');
     }
   }, [router, user]);
 
-  // Function to handle login form submission
+  // Submit login credentials
   const onSubmitLogin = async (values: { email: string; password: string }) => {
     try {
       setError(false);
@@ -80,16 +80,16 @@ const LoginPage = () => {
   if (!resetPassword) {
     // Render the login form
     return (
-      <div className={`flex items-center justify-center min-h-screen px-4 ${
-        isDark ? 'bg-[#222224]' : 'bg-gray-50'
-      }`}>
+      <div className={`flex items-center justify-center min-h-screen px-4 ${isDark ? 'bg-[#222224]' : 'bg-gray-50'}`}>
         <div className="w-full max-w-sm">
-        <h2 className={`text-3xl font-bold font-montserrat ${
-        isDark ? 'text-white' : 'text-text-primary'
-        }`}>Welcome back</h2>
-        <p className={`text-sm font-inter mb-6 ${
-        isDark ? 'text-white' : 'text-text-primary'
-        }`}>Log In to your account</p>
+          <h2 className={`text-3xl font-bold font-montserrat ${isDark ? 'text-white' : 'text-text-primary'}`}>
+            Welcome back
+          </h2>
+          <p className={`text-sm font-inter mb-6 ${isDark ? 'text-white' : 'text-text-primary'}`}>
+            Log In to your account
+          </p>
+          
+          {/* Login Form */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -101,19 +101,23 @@ const LoginPage = () => {
                 Login or password is invalid.
               </p>
             )}
+            
+            {/* Email */}
             <div>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-6 ${
-                isDark
-                  ? 'text-white placeholder-gray-400 border border-gray-600'
-                  : 'text-text-primary placeholder-gray-500 border border-gray-300'
-              } ${onError ? 'focus:border-red-500' : isDark ? 'focus:border-white' : 'focus:border-text-primary'}`}
-            />
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={`w-full font-inter px-4 py-3 rounded-md focus:outline-none mb-6 ${
+                  isDark
+                    ? 'text-white placeholder-gray-400 border border-gray-600'
+                    : 'text-text-primary placeholder-gray-500 border border-gray-300'
+                } ${onError ? 'focus:border-red-500' : isDark ? 'focus:border-white' : 'focus:border-text-primary'}`}
+              />
             </div>
+
+            {/* Password with toggle */}
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -134,6 +138,8 @@ const LoginPage = () => {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </div>
             </div>
+
+            {/* Forgot Password */}
             <p
               onClick={() => {
                 setResetPassword(true);
@@ -143,6 +149,8 @@ const LoginPage = () => {
             >
               Forgot your password?
             </p>
+
+            {/* Submit Button */}
             <button
               type="submit"
               className="w-full bg-brand-primary text-white text-2xl font-poppins font-black py-2 px-5 rounded-md duration-300 ease-in hover:bg-hover-primary flex items-center justify-center"
@@ -156,6 +164,8 @@ const LoginPage = () => {
             </button>
           </form>
           <div className={`border-t my-6 ${isDark ? 'border-gray-700' : 'border-gray-300'}`} />
+
+          {/* Register link */}
           <p className="text-text-primary text-center font-inter text-sm mt-4">
             Don&apos;t have an account?{' '}
             <span
@@ -172,18 +182,16 @@ const LoginPage = () => {
 
   // Render the reset password email form
   return (
-    <div className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-300 ${
-        isDark ? 'bg-[#222224]' : 'bg-gray-50'
-      }`}>
+    <div className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-300 ${isDark ? 'bg-[#222224]' : 'bg-gray-50'}`}>
       <div className="w-full max-w-sm">
-        <h2 className={`text-3xl font-bold font-montserrat ${
-        isDark ? 'text-white' : 'text-text-primary'
-        }`}>Reset Your Password</h2>
-        <p className={`text-sm font-inter mb-6 ${
-        isDark ? 'text-white' : 'text-text-primary'
-        }`}>
+        <h2 className={`text-3xl font-bold font-montserrat ${isDark ? 'text-white' : 'text-text-primary'}`}>
+          Reset Your Password
+        </h2>
+        <p className={`text-sm font-inter mb-6 ${isDark ? 'text-white' : 'text-text-primary'}`}>
           Enter your email to receive a password reset link. 
-        </p>  
+        </p>
+
+        {/* Reset Form */}  
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -195,6 +203,8 @@ const LoginPage = () => {
               Unable to send reset link.
             </p>
           )}
+
+          {/* Email */}
           <div>
             <input
               type="email"
@@ -209,11 +219,15 @@ const LoginPage = () => {
               } ${resetPasswordError ? 'focus:border-red-500' : isDark ? 'focus:border-white' : 'focus:border-text-primary'}`}
             />
           </div>
+
+          {/* Success message */}
           {success && (
             <div className="mb-4 text-green-600 text-center">
               Success! Check your email to reset your password!
             </div>
           )}
+
+          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-brand-primary text-white text-2xl font-poppins font-black py-2 px-5 rounded-md duration-300 ease-in hover:bg-hover-primary flex items-center justify-center"
@@ -227,6 +241,8 @@ const LoginPage = () => {
           </button>
         </form>
         <div className={`border-t my-6 ${isDark ? 'border-gray-700' : 'border-gray-300'}`} />
+
+        {/* Return to login */}
         <p className={`text-center font-inter text-sm mt-4 ${
         isDark ? 'text-gray-300' : 'text-text-primary'}`}>
         Remember your password?{' '}

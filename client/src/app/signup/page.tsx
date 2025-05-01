@@ -10,18 +10,21 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Loader } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
-// Define the LoginPage component as a React Functional Component
+// Sign-up form for new Spark!Bytes users using BU email
 const SignUpPage= () => {
   // Use the useRouter hook from Next.js for navigation
   const router = useRouter();
 
   // General states to have animations and error handling
   const [loading, setLoading] = useState(false);
+
   // onError for general errors
   const [onError, setError] = useState(false);
+
   // onErrorBU for when the user does not input a BU email
   const [invalidEmailDomain, setInvalidEmailDomain] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // for eye toggle
+
   // Add state for password validation
   const [passwordTooShort, setPasswordTooShort] = useState(false);
 
@@ -36,13 +39,14 @@ const SignUpPage= () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
+  // Redirect to dashboard if already logged in
   useEffect(() => {
       if (user) {
         router.push('/dashboard');
       }
   }, [router, user]);
 
-  // Function to handle form submission
+  // Handle form submission
   const onSubmitRegister = async (values: {email: string, password: string, firstName:string, lastName:string, phoneNumber:string }) => {
     try {
       setError(false);
@@ -56,10 +60,12 @@ const SignUpPage= () => {
         return;
       }
 
+      // Format and validate phone number
       const parsedPhone = parsePhoneNumberWithError(values.phoneNumber, 'US');
       const formattedPhone = parsedPhone.number;
       values.phoneNumber = formattedPhone;
 
+      // Submit registration
       const { error } = await Register(values);
       
       if (error) {
@@ -77,23 +83,20 @@ const SignUpPage= () => {
 
   return (
     // Flex the form so that its in the middle of the screen
-    <div
-       className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-300 ${
-         isDark ? 'bg-[#222224] text-white' : 'bg-gray-50 text-text-primary'
-       }`}
-     >
+    <div className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-300 ${isDark ? 'bg-[#222224] text-white' : 'bg-gray-50 text-text-primary'}`}>
+      
       {/** Define the container for the actual form */}
       <div className="w-full max-w-sm">
+
         {/** Title and min-description */}
-        <h2 className={`text-3xl font-bold font-montserrat ${
-        isDark ? 'text-white' : 'text-text-primary'
-        }`}>Welcome to Spark!Bytes
+        <h2 className={`text-3xl font-bold font-montserrat ${isDark ? 'text-white' : 'text-text-primary'}`}>
+          Welcome to Spark!Bytes
         </h2>
-        <p className={`text-sm font-inter mb-6 ${
-        isDark ? 'text-white' : 'text-text-primary'
-        }`}>Use your &quot;bu.edu&quot; email address to make an account
+        <p className={`text-sm font-inter mb-6 ${isDark ? 'text-white' : 'text-text-primary'}`}>
+          Use your &quot;bu.edu&quot; email address to make an account
         </p>
-        {/** Actual form with the data */}
+        
+        {/* Sign-up Form */}
         <form
           className=""
           onSubmit={(e) => {
