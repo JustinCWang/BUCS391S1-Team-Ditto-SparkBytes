@@ -30,7 +30,7 @@ To set up and run the frontend locally:
 You will need to go into the frontend directory then install all the dependencies for the project.
 
 ```bash
-cd frontend
+cd .\client\
 npm install
 ```
 
