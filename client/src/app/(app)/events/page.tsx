@@ -30,12 +30,12 @@ type FoodInfo = {
 function EventsContent() {
   const searchParams = useSearchParams();
   const initialLocation = (searchParams.get('location') ?? '') as FilterState['location'];
-
+  
+  const router = useRouter();
+  const { user, isLoading: authLoading } = useAuth();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
-  const router = useRouter();
-  const { user } = useAuth();
   const [role, setRole] = useState<string>("");
   const [events, setEvents] = useState<EventCardProps[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -239,12 +239,10 @@ function EventsContent() {
       }
     };
 
-    if (!user) {
-      router.push('/');
-    } else {
+    if (!authLoading && user) {
       fetchRole();
     }
-  }, [user, router]);
+  }, [user, authLoading]);
 
   // Fetch events when dependencies change
   useEffect(() => {
@@ -262,6 +260,23 @@ function EventsContent() {
     setCurrentPage(1);
   };
 
+  // Only redirect if auth is not loading and user is not logged in
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/');
+    }
+  }, [user, authLoading, router]);
+
+  // Show loading state while authentication is being determined
+  if (authLoading) {
+    return (
+      <div className="w-full flex justify-center items-center h-screen">
+        <Loader className="animate-spin text-brand-primary" size={40} style={{ animationDuration: '3s' }} />
+      </div>
+    );
+  }
+
+  // If not loading and still in the component, user is authenticated
   return (
     <div className="my-6">
       <div className="w-full max-w-6xl mx-auto">

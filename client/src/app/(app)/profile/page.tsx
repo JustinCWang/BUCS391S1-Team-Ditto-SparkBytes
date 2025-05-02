@@ -15,7 +15,7 @@ import '@ant-design/v5-patch-for-react-19';
 
 const Profile = () => {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const { theme, toggleTheme } = useTheme(); 
   const isDark = theme === 'dark';  
 
@@ -49,31 +49,42 @@ const Profile = () => {
 
   // Redirect unauthorized user or fetch profile data if authorized
   useEffect(() => {
-    if (!user) {
+    if (!authLoading && !user) {
       router.push('/');
+      return;
     }
 
-    const fetchUserData = async () => {
-      const { data, error } = await supabase
-        .from('Users')
-        .select('first_name, last_name, bu_email, phone_num')
-        .eq('user_id', user?.id)
-        .single();
-  
-      if (!error) {
-        setFirstName(data.first_name);
-        setLastName(data.last_name);
-        setOriginalFirstName(data.first_name)
-        setOriginalLastName(data.last_name)
-        setEmail(data.bu_email);
-      } else {
-        console.log(error);
-      }
-    };
-  
-    fetchUserData();
+    if (user) {
+      const fetchUserData = async () => {
+        const { data, error } = await supabase
+          .from('Users')
+          .select('first_name, last_name, bu_email, phone_num')
+          .eq('user_id', user?.id)
+          .single();
+    
+        if (!error) {
+          setFirstName(data.first_name);
+          setLastName(data.last_name);
+          setOriginalFirstName(data.first_name)
+          setOriginalLastName(data.last_name)
+          setEmail(data.bu_email);
+        } else {
+          console.log(error);
+        }
+      };
+    
+      fetchUserData();
+    }
+  }, [router, user, authLoading]);
 
-  }, [router, user]);
+  // Show loading state while authentication is being determined
+  if (authLoading) {
+    return (
+      <div className="w-full flex justify-center items-center h-screen">
+        <Loader className="animate-spin text-brand-primary" size={40} style={{ animationDuration: '3s' }} />
+      </div>
+    );
+  }
 
   // ---------------- NAME UPDATE ----------------
 

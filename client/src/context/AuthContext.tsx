@@ -11,6 +11,9 @@ interface AuthContextType {
   
   avatarUrl: string | null;
   setAvatarUrl: (url: string | null) => void;
+  
+  // New loading state to track authentication status
+  isLoading: boolean;
 }
 
 /**
@@ -31,36 +34,48 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   // Contains the URL of the user's avatar image
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  // Track authentication loading state
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // useEffect hook that runs once when the component is mounted
   useEffect(() => {
     const getSession = async () => {
-      const { data: currentSession, error } = await supabase.auth.getSession();
-  
-      if (error) {
-        console.error('Error getting session:', error);
-        return;
-      }
-  
-      setSession(currentSession.session);
-      setUser(currentSession.session?.user ?? null);
+      // Set loading to true at the start of authentication check
+      setIsLoading(true);
       
-      // if (currentSession.session && currentSession.session.user)
-      if (currentSession.session?.user) {
-        const { data } = await supabase
-          .from('Users')
-          .select('avatar_path')
-          .eq('user_id', currentSession.session.user.id)
-          .single();
-        // If the avatar_path is available, get its public URL and update the state
-        if (data && data.avatar_path) {
-          const { data: { publicUrl } } = supabase
-            .storage
-            .from('avatars')
-            .getPublicUrl(data.avatar_path);
-          // Set the avatarUrl state to the public URL retrieved
-          setAvatarUrl(publicUrl);
+      try {
+        const { data: currentSession, error } = await supabase.auth.getSession();
+    
+        if (error) {
+          console.error('Error getting session:', error);
+          return;
         }
+    
+        setSession(currentSession.session);
+        setUser(currentSession.session?.user ?? null);
+        
+        // if (currentSession.session && currentSession.session.user)
+        if (currentSession.session?.user) {
+          const { data } = await supabase
+            .from('Users')
+            .select('avatar_path')
+            .eq('user_id', currentSession.session.user.id)
+            .single();
+          // If the avatar_path is available, get its public URL and update the state
+          if (data && data.avatar_path) {
+            const { data: { publicUrl } } = supabase
+              .storage
+              .from('avatars')
+              .getPublicUrl(data.avatar_path);
+            // Set the avatarUrl state to the public URL retrieved
+            setAvatarUrl(publicUrl);
+          }
+        }
+      } catch (err) {
+        console.error('Unexpected error during session retrieval:', err);
+      } finally {
+        // Set loading to false once authentication is complete
+        setIsLoading(false);
       }
     };
 
@@ -72,18 +87,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         (async () => {
-          const { data } = await supabase
-            .from('Users')
-            .select('avatar_path')
-            .eq('user_id', session.user.id)
-            .single();
-          if (data && data.avatar_path) {
-            const { data: { publicUrl } } = supabase
-              .storage
-              .from('avatars')
-              .getPublicUrl(data.avatar_path);
-            setAvatarUrl(publicUrl);
-          } else {
+          try {
+            const { data } = await supabase
+              .from('Users')
+              .select('avatar_path')
+              .eq('user_id', session.user.id)
+              .single();
+            if (data && data.avatar_path) {
+              const { data: { publicUrl } } = supabase
+                .storage
+                .from('avatars')
+                .getPublicUrl(data.avatar_path);
+              setAvatarUrl(publicUrl);
+            } else {
+              setAvatarUrl(null);
+            }
+          } catch (err) {
+            console.error('Error fetching avatar during auth change:', err);
             setAvatarUrl(null);
           }
         })();
@@ -97,7 +117,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ userSession, user, avatarUrl, setAvatarUrl }}>
+    <AuthContext.Provider value={{ userSession, user, avatarUrl, setAvatarUrl, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
@@ -109,7 +129,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
  * @returns The value provided by AuthContext.Provider.
  * If the component is not wrapped inside an AuthProvider, it throws an error.
  */
-// use value={{ userSession, user, avatarUrl, setAvatarUrl }}
+// use value={{ userSession, user, avatarUrl, setAvatarUrl, isLoading }}
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error('useAuth must be used within an AuthProvider');

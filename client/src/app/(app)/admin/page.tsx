@@ -12,7 +12,7 @@ import { UserRecord } from "@/types/supabase";
 
 // Main Page component that wraps the content in a Suspense boundary
 export default function Admin() {
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [role, setRole] = useState<string>("");
   const [users, setUsers] = useState<UserRecord[]>([]);
@@ -57,7 +57,6 @@ export default function Admin() {
           setRole(data.role);
         }
       }
-
     }
   
     setIsUpdating(null);
@@ -76,12 +75,13 @@ export default function Admin() {
       }
     };
 
-    if (!user) {
+    // Only redirect if auth is not loading and user is not logged in
+    if (!authLoading && !user) {
       router.push('/');
-    } else {
+    } else if (user) {
       fetchRole();
     }
-  }, [user, router]);
+  }, [user, authLoading, router]);
 
   // Redirect if user is not admin, otherwise fetch all users
   useEffect(() => {
@@ -99,6 +99,15 @@ export default function Admin() {
     fetchUsers();
 
   }, [role, router]);
+  
+  // Show loading state while authentication is being determined
+  if (authLoading) {
+    return (
+      <div className="w-full flex justify-center items-center h-screen">
+        <Loader className="animate-spin text-brand-primary" size={40} style={{ animationDuration: '3s' }} />
+      </div>
+    );
+  }
   
   return (
     <div className="my-6">

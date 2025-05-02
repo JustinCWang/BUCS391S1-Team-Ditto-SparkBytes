@@ -9,7 +9,7 @@ import EventCard from '@/component/eventCard';
 import SecondaryButton from '@/component/secondaryButton';
 import { Loader } from 'lucide-react';
 import SectionNavigator from '@/component/sectionNavigator';
-import { userRole } from "@/lib/user"; // Import the userRole function
+import { userRole } from "@/lib/user";
 
 // Type definition for food-related data
 type FoodInfo = {
@@ -28,10 +28,10 @@ const getCurrentDateInBostonTZ = () => {
 
 const Dashboard = () => {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
 
   // Core state for role and data collections
-  const [role, setRole] = useState<string>(""); // Add role state
+  const [role, setRole] = useState<string>("");
   const [upcomingEvents, setUpcomingEvents] = useState<EventCardProps[]>([]);
   const [likedEvents, setLikedEvents] = useState<EventCardProps[]>([]);
   const [myEvents, setMyEvents] = useState<EventCardProps[]>([]);
@@ -47,6 +47,13 @@ const Dashboard = () => {
   const LIKED_ITEMS_PER_PAGE = 6; // Number of events per page for liked events
   const MY_EVENTS_ITEMS_PER_PAGE = 6; // Number of events per page for my events
 
+  // Only redirect if auth is not loading and user is not logged in
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/');
+    }
+  }, [user, authLoading, router]);
+
   // Fetch the user's role once authenticated
   useEffect(() => {
     const fetchRole = async () => {
@@ -60,12 +67,10 @@ const Dashboard = () => {
       }
     };
 
-    if (!user) {
-      router.push('/');
-    } else {
+    if (user) {
       fetchRole();
     }
-  }, [user, router]);
+  }, [user]);
 
   // Fetch the 3 closest upcoming events
   const fetchUpcomingEvents = useCallback(async () => {
@@ -431,6 +436,16 @@ const Dashboard = () => {
     }
   }, [fetchUpcomingEvents, fetchLikedEvents, fetchMyEvents, role]);
 
+  // Show loading state while authentication is being determined
+  if (authLoading) {
+    return (
+      <div className="w-full flex justify-center items-center h-screen">
+        <Loader className="animate-spin text-brand-primary" size={40} style={{ animationDuration: '3s' }} />
+      </div>
+    );
+  }
+
+  // If not loading and still in the component, user is authenticated
   return (
     <div className="my-6">
       <SectionNavigator />
