@@ -11,7 +11,7 @@ Before running the app, you’ll need to set up a supabase account and Google Cl
 2. Then go to project settings and click on Data API.
 3. Note down the supabase URL and anon public key for you .env file later.
 
-### [Google Clound](https://cloud.google.com/)
+### [Google Cloud](https://cloud.google.com/)
 1. Sign up or Sign in your Google Cloud account
 2. Navigate to console and then create a new project
 3. In the navigation menu, go to APIs & Services > Library.
@@ -30,7 +30,7 @@ To set up and run the frontend locally:
 You will need to go into the frontend directory then install all the dependencies for the project.
 
 ```bash
-cd frontend
+cd .\client\
 npm install
 ```
 
@@ -54,6 +54,10 @@ To set up your Supabase database for this project, please refer to the schema in
 To set up the share event link properly, use ```http://localhost:3000/events/${event_id}``` and change port as necessary inside ```eventCard.tsx``` and ```detailedEventCard.tsx```. 
 
 If you are deploying the server, remember to update this link accordingly. 
+
+### Setting up Supabase Reset Password Email Link
+
+To set up your Supabase Email Link, navigate to the ```Authentication``` tab and then to ```URL Configuration```. You should see a section called ```Site URL```. Set the URL to your current server such as ```http://localhost:3000/reset``` when on your development server. 
 
 ### Development Server
 
