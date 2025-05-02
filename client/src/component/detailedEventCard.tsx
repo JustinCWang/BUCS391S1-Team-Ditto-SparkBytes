@@ -54,7 +54,7 @@ function DetailedEventCard({
   const [isShareOpen, setIsShareOpen] = useState(false);
 
   // Temp Link
-  const eventLink = `https://bucs-391-s1-team-ditto-spark-bytes-lake.vercel.app/events?name=${encodeURIComponent(name)}`;
+  const eventLink = `https://bucs-391-s1-team-ditto-spark-bytes-lake.vercel.app/events?search=${encodeURIComponent(name)}`;
 
   // Local states for like status and like count
   const [liked, setLiked] = useState(isLiked);

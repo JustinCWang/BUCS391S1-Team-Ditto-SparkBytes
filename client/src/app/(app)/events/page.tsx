@@ -30,6 +30,11 @@ type FoodInfo = {
 function EventsContent() {
   const searchParams = useSearchParams();
   const initialLocation = (searchParams.get('location') ?? '') as FilterState['location'];
+  // Get the initial search query from URL parameters
+  const initialSearch = searchParams.get('search') ?? '';
+  
+  // Initialize searchQuery with the value from URL
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
@@ -41,7 +46,6 @@ function EventsContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isCreateEventOpen, setIsCreateEventOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
