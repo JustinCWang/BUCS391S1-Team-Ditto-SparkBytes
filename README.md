@@ -11,7 +11,7 @@ Before running the app, you’ll need to set up a supabase account and Google Cl
 2. Then go to project settings and click on Data API.
 3. Note down the supabase URL and anon public key for you .env file later.
 
-### [Google Clound](https://cloud.google.com/)
+### [Google Cloud](https://cloud.google.com/)
 1. Sign up or Sign in your Google Cloud account
 2. Navigate to console and then create a new project
 3. In the navigation menu, go to APIs & Services > Library.
