@@ -55,6 +55,10 @@ To set up the share event link properly, use ```http://localhost:3000/events/${e
 
 If you are deploying the server, remember to update this link accordingly. 
 
+### Setting up Supabase Reset Password Email Link
+
+To set up your Supabase Email Link, navigate to the ```Authentication``` tab and then to ```URL Configuration```. You should see a section called ```Site URL```. Set the URL to your current server such as ```http://localhost:3000/reset``` when on your development server. 
+
 ### Development Server
 
 Then you can start your devlopment server!
