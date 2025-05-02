@@ -20,14 +20,14 @@ The test data provides 4 admin accounts to simulate a administrative team runnin
 
 ```bash
 Admin Email: admin#@bu.edu (# = 1-4)
-Admin Pass: admin123
+Admin Pass: admin123 <-- Use this password for all admin test accounts for consistency
 ```
 
 There is also one user account pre-made for user testing. 
 
 ```bash
 User Email: user@bu.edu
-User user1234
+User user1234 <-- Use this password for all user test accounts for consistency
 ```
 
-Note: All other test student accounts have the password ```user1234```.
+Note: All other test student accounts fall under user test accounts. 
