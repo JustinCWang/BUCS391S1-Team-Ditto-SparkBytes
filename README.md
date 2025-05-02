@@ -49,6 +49,11 @@ NEXT_PUBLIC_MAPS_API_KEY="your google map API Key"
 
 To set up your Supabase database for this project, please refer to the schema in the [documentation](./Documentation.pdf). To set up the test data, please refer to the [README](/testdata/README.md)
 
+### Setting up Share Event Link
+
+To set up the share event link properly, use ```http://localhost:3000/events/${event_id}``` and change port as necessary. 
+
+If you are deploying the server, remember to update this link accordingly. 
 
 ### Development Server
 
