@@ -50,7 +50,7 @@ function EventCard({
   const [isDetailedViewOpen, setIsDetailedViewOpen] = useState(false);
 
   // Temp Link
-  const eventLink = `https://bucs-391-s1-team-ditto-spark-bytes-lake.vercel.app/events/${event_id}`
+  const eventLink = `https://bucs-391-s1-team-ditto-spark-bytes-lake.vercel.app/events?name=${encodeURIComponent(name)}`
 
   // Local states for like status and like count
   const [liked, setLiked] = useState(isLiked);

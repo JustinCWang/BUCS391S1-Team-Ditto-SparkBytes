@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
-import { useNotifications } from '@/context/NotificationContext';
-import { Loader, Trash2 } from 'lucide-react';
+import { Loader } from 'lucide-react';
 
 
 /**
@@ -13,7 +12,6 @@ import { Loader, Trash2 } from 'lucide-react';
  */
 const NotificationToggle = () => {
   const { user } = useAuth();
-  const { clearShownEvents } = useNotifications();
 
   // Whether notifications are enabled (synced with DB)
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -71,15 +69,6 @@ const NotificationToggle = () => {
     }
   };
 
-  /**
-   * Clears localStorage and resets shown notification events
-   */
-  const clearNotificationHistory = () => {
-    localStorage.removeItem('shownEventIds');
-    clearShownEvents();
-    console.log('[Notification] Cleared notification history');
-  };
-
   // Show a spinner while loading user preference
   if (loading) {
     return <Loader className="animate-spin" size={20} />;
@@ -100,15 +89,6 @@ const NotificationToggle = () => {
             notificationsEnabled ? 'translate-x-6' : 'translate-x-1'
           }`}
         />
-      </button>
-
-      {/* Clear local notification history button (for testing/dev) */}
-      <button
-        onClick={clearNotificationHistory}
-        className="text-red-500 hover:text-red-700 transition-colors"
-        title="Clear notification history (for testing)"
-      >
-        <Trash2 size={16} />
       </button>
     </div>
   );
