@@ -51,7 +51,7 @@ To set up your Supabase database for this project, please refer to the schema in
 
 ### Setting up Share Event Link
 
-To set up the share event link properly, use ```http://localhost:3000/events/${event_id}``` and change port as necessary. 
+To set up the share event link properly, use ```http://localhost:3000/events/${event_id}``` and change port as necessary inside ```eventCard.tsx``` and ```detailedEventCard.tsx```. 
 
 If you are deploying the server, remember to update this link accordingly. 
 
